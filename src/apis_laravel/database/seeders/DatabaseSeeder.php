@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Support\Str; // Pour la fonction Str::random()
 
 use \App\Models\User;
 use \App\Models\TypeUtilisateur;
@@ -74,6 +75,11 @@ class DatabaseSeeder extends Seeder
 
 
         // TABLES AVEC 1 DEPENDANCES
+        foreach([
+            ["name" => "Root","email" => "root@root.root","password" => bcrypt("root"),"type_utilisateur_id" => 1],
+            ["name" => "Root2","email" => "root2@root.root","password" => bcrypt("root"),"type_utilisateur_id" => 2],
+            ["name" => "Root3","email" => "root3@root.root","password" => bcrypt("root"),"type_utilisateur_id" => 3],
+            ] as $val){User::create($val);}
         User::factory(20)->create();
 
 

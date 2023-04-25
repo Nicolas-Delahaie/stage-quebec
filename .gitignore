@@ -1,5 +1,7 @@
 src/apis_laravel/.gitignore
 src/appli-react/.gitignore
 
+src/appli-react/node_modules
+
 src/Dockerfile
 src/docker-compose.yml

@@ -1,0 +1,30 @@
+.authentification {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem 0rem;
+}
+
+.authentification form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    width: 300px;
+}
+
+.authentification form label {
+    white-space: nowrap;
+    padding-right: 1rem;
+}
+
+.authentification form button {
+    grid-column: 2;
+    margin-top: 1rem;
+}
+
+.authentification form p {
+    grid-column: span 2;
+    color: red;
+    text-align: center;
+}
