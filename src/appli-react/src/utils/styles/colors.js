@@ -1,3 +1,6 @@
+/**
+ * Fichier permettant de définir les couleurs utilisées dans l'application.
+*/
 export const colors = {
     bleuFonce: "#00296B",
     bleuMoyen: "#003F88",
@@ -7,4 +10,5 @@ export const colors = {
     blanc: "#FFFFFF",
     noir: "#000000",
     gris: "#C4C4C4",
+    vert: "#00A651",
 }

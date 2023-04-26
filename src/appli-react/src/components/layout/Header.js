@@ -1,14 +1,35 @@
+/**
+ * Header de l'application
+ */
+
+/* --------------------------------- IMPORTS -------------------------------- */
+
+/* import pour créer le style */
 import styled from "styled-components"
+
+/* import des variables de style */
 import { colors } from "../../utils/styles"
+
+/* import du logo d'accueil*/
 import home from "../../assets/svg/home.svg"
+
+/* import du composant Link de react-router-dom servant à faire les liens sous React */
 import { Link } from "react-router-dom"
+
+/* import du composant Lien de notre application */
 import  Lien  from "../forms/Lien"
+
+/* import du contexte de notre application contenant les variables globales comme par exemple si l'utilisateur est connecté et sous quelle type */
 import { useContext } from "react"
 import { AppContext } from "../../utils/context/context"
+
+/* import du curseur personnalisé */
 import whiteCursor from "../../assets/svg/whiteCursor.svg"
+import cursor from "../../assets/svg/cursor.svg"
 
 /* --------------------------------- STYLES --------------------------------- */
 
+/*Container général du header */
 const HeaderStyle = styled.header`
     display: flex;
     align-items: center;
@@ -26,12 +47,15 @@ const ImgLogo = styled.img`
 `;
 
 const ButtonTexte = styled.div`
-    cursor: url(${whiteCursor}), auto;
+    cursor: url(${cursor}), auto;
 `;
 
 /* ----------------------------------- DOM ---------------------------------- */
 
-
+/**
+ * 
+ * @returns Le header de l'application
+ */
 function Header(){
     const { toggleConnexion, isConnected } = useContext(AppContext);
     return (
@@ -39,6 +63,7 @@ function Header(){
             <Link to="/">
                 <ImgLogo src={home} alt="logo"/>
             </Link>
+            {/* Si l'utilisateur est connecté, on affiche le bouton de déconnexion, sinon on affiche le bouton de connexion */}
             {isConnected ? (
                 <Lien to="/login">
                     <ButtonTexte onClick={() => toggleConnexion(true) }>Se connecter</ButtonTexte>

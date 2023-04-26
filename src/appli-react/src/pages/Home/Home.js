@@ -1,7 +1,16 @@
+/* --------------------------------- IMPORT --------------------------------- */
+
+/*import du composant ArticleTitle */
 import ArticleTitle from "../../components/forms/ArticleTitle"
+
+/* import pour créer le style */
 import styled from "styled-components"
+
+/* import des images */
 import Repartition_plusieurs from "../../assets/images/Home/Repartition_plusieurs.svg"
 import Tableau from "../../assets/images/Home/Tableau.svg"
+
+/* ---------------------------------- STYLE --------------------------------- */
 
 const ArticleStyle = styled.div`
     padding: 1rem 3rem;
@@ -16,6 +25,8 @@ const ImageArticle = styled.img`
     height: auto;
     margin: 0 2rem;
 `;
+
+/* ----------------------------------- DOM ---------------------------------- */
 
 function Home() {
     return (

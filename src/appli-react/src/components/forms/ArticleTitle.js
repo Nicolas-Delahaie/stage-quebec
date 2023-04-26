@@ -1,4 +1,10 @@
+/**
+ * Composant ArticleTitle Utilisé pour afficher le titre d'un article avec une ligne au dessous
+ */
+
+/* import pour créer le style */
 import styled from "styled-components"
+/* import des variables de style */
 import { colors,fonts } from "../../utils/styles"
 
 const ArticleTitleStyle = styled.h1`
@@ -17,6 +23,11 @@ const ArticleTitleStyle = styled.h1`
         margin: 0.5rem auto;
 `;
 
+/**
+ * 
+ * @param {string} texte Prend en paramètre le texte à afficher
+ * @returns le titre d'un article avec une ligne au dessous
+ */
 function ArticleTitle({texte}){
     return(
         <ArticleTitleStyle>
