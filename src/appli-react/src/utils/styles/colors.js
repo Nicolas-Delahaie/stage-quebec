@@ -1,7 +1,10 @@
 export const colors = {
-    DarkBlue: "#00296B",
-    MediumBlue: "#003F88",
-    LightBlue: "#00509D",
-    DarkYellow: "#FDC500",
-    LightYellow: "#FFD500",
+    bleuFonce: "#00296B",
+    bleuMoyen: "#003F88",
+    bleuClair: "#00509D",
+    jauneFonce: "#FDC500",
+    jauneClair: "#FFD500",
+    blanc: "#FFFFFF",
+    noir: "#000000",
+    gris: "#C4C4C4",
 }
