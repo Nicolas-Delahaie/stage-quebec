@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import CarteHorizontal from '../../components/layout/CarteHorizontal';
+import CarteHorizontale from '../../components/layout/CarteHorizontale';
 
 import Valider from '../../assets/images/Scenarios/Valider.svg'
 
@@ -15,26 +15,26 @@ const Container = styled.div`
 function scenarios() {
     return (
         <Container>
-            <CarteHorizontal urlImage={Valider} titre={'Département : informatique'} texteBouton={'Voir en détail'} lien={'/'}>
+            <CarteHorizontale urlImage={Valider} titre={'Département : informatique'} texteBouton={'Voir en détail'} lien={'/'}>
                 <p> Coordonateur : Frédéric Guérin </p>
                 <p> Validation du responsable : X</p>
                 <p> Dernière modification : il y a une semaine</p>
-            </CarteHorizontal>
-            <CarteHorizontal urlImage={Valider} titre={'Département : informatique'} texteBouton={'Voir en détail'} lien={'/'}>
+            </CarteHorizontale>
+            <CarteHorizontale urlImage={Valider} titre={'Département : informatique'} texteBouton={'Voir en détail'} lien={'/'}>
                 <p> Coordonateur : Frédéric Guérin </p>
                 <p> Validation du responsable : X</p>
                 <p> Dernière modification : il y a une semaine</p>
-            </CarteHorizontal>
-            <CarteHorizontal urlImage={Valider} titre={'Département : informatique'} texteBouton={'Voir en détail'} lien={'/'}>
+            </CarteHorizontale>
+            <CarteHorizontale urlImage={Valider} titre={'Département : informatique'} texteBouton={'Voir en détail'} lien={'/'}>
                 <p> Coordonateur : Frédéric Guérin </p>
                 <p> Validation du responsable : X</p>
                 <p> Dernière modification : il y a une semaine</p>
-            </CarteHorizontal>
-            <CarteHorizontal urlImage={Valider} titre={'Département : informatique'} texteBouton={'Voir en détail'} lien={'/'}>
+            </CarteHorizontale>
+            <CarteHorizontale urlImage={Valider} titre={'Département : informatique'} texteBouton={'Voir en détail'} lien={'/'}>
                 <p> Coordonateur : Frédéric Guérin </p>
                 <p> Validation du responsable : X</p>
                 <p> Dernière modification : il y a une semaine</p>
-            </CarteHorizontal>
+            </CarteHorizontale>
         </Container>
     )
 }

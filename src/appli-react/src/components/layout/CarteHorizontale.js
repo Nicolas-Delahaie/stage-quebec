@@ -45,7 +45,7 @@ const ContenuCarte = styled.div`
  * @param enfants Prend en paramètre les enfants à afficher
  * @returns Carte avec une image à gauche et du texte à droite sur la longueur
  */
-function CarteHorizontal({urlImage, titre, texteBouton, lien, children:enfants}){
+function CarteHorizontale({urlImage, titre, texteBouton, lien, children:enfants}){
     return(
         <Carte>
             <ContenuCarte>
@@ -60,4 +60,4 @@ function CarteHorizontal({urlImage, titre, texteBouton, lien, children:enfants})
     )
 }
 
-export default CarteHorizontal
+export default CarteHorizontale

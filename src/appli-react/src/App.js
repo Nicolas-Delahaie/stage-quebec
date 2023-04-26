@@ -14,6 +14,7 @@ import Login from "./pages/Auth/Login";
 import Logout from "./pages/Auth/Logout";
 import Authentifie from "./pages/Home/Authentifie/Authentifie";
 import Scenarios from "./pages/scenarios/scenarios";
+import Departements from "./pages/Departements/Departements";
 
 /* Import des Layout */
 import Header from "./components/layout/Header";
@@ -33,6 +34,7 @@ function App() {
             <Route exact path="/logout" element={<Logout />} />
             <Route exact path="/authentifie" element={<Authentifie />} />
             <Route exact path="/scenarios" element={<Scenarios />} />
+            <Route exact path="/departements" element={<Departements />} />
           </Routes>
           <Footer />
         </AppProvider>
