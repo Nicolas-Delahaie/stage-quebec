@@ -149,38 +149,9 @@ return new class extends Migration
     public function down(): void
     {
         // SUPPRESSION REFERENCES
-        Schema::table("users", function (Blueprint $table) {
-            // Modification de users
-            $table->dropForeign("users_type_utilisateur_id_foreign");
-        });
-        Schema::table("DEPARTEMENT", function (Blueprint $table) {
-            $table->dropForeign("departement_coordonnateur_id_foreign");
-        });
-        Schema::table("SCENARIO", function (Blueprint $table) {
-            $table->dropForeign("scenario_proprietaire_id_foreign");
-            $table->dropForeign("scenario_departement_id_foreign");
-        });        
-        Schema::table("RDV", function(Blueprint $table){
-            $table->dropForeign("rdv_scenario_id_foreign");
-        });
-        Schema::table("MODIFICATION", function(Blueprint $table){
-            $table->dropForeign("modification_utilisateur_id_foreign");
-            $table->dropForeign("modification_scenario_id_foreign");
-        });
-        Schema::table("PROPOSER", function (Blueprint $table){
-            $table->dropForeign("proposer_cours_id_foreign");
-            $table->dropForeign("proposer_departement_id_foreign");
-        });
-        Schema::table("ENSEIGNER", function(Blueprint $table){
-            $table->dropForeign("enseigner_cours_id_foreign");
-            $table->dropForeign("enseigner_utilisateur_id_foreign");
-        });
-        Schema::table("ALOUER", function(Blueprint $table){
-            $table->dropForeign("alouer_utilisateur_id_foreign");
-            $table->dropForeign("alouer_liberation_id_foreign");
-        });
+        Schema::disableForeignKeyConstraints();
          
-        
+
         // SUPPRESSION TABLES CREES
         $nomsTables = array("rdv", "proposer", "enseigner", "modification", "alouer","cours", "liberation", "organiser", "type_utilisateur","departement","scenario");
         foreach($nomsTables as $nomTable){Schema::dropIfExists($nomTable);}
