@@ -10,11 +10,11 @@ export const AppContext = createContext();
 
 /* création du state */
 export const AppProvider = ({ children }) => {
-    const [isConnected, setisConnected] = useState(false);
+    const [isConnected, setIsConnected] = useState(false);
 
     /*fonction permetant de changer la valeur de isConnected */
     const toggleConnexion = () => {
-        setisConnected(!isConnected);
+        setIsConnected(true);
         console.log(isConnected);
     };
     /*retourne le context de l'application */
