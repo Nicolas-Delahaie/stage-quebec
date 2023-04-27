@@ -15,6 +15,8 @@ import Logout from "./pages/Auth/Logout";
 import Authentifie from "./pages/Home/Authentifie/Authentifie";
 import Scenarios from "./pages/scenarios/scenarios";
 import Departements from "./pages/Departements/Departements";
+import DetailsDepartement from "./pages/Departements/DetailsDepartement";
+import ProfesseurModification from "./pages/Professeur/ProfesseurModification";
 
 /* Import des Layout */
 import Header from "./components/layout/Header";
@@ -35,6 +37,8 @@ function App() {
             <Route exact path="/authentifie" element={<Authentifie />} />
             <Route exact path="/scenarios" element={<Scenarios />} />
             <Route exact path="/departements" element={<Departements />} />
+            <Route exact path="/departements/:id" element={<DetailsDepartement />} />
+            <Route exact path="/professeur/modifier/:id" element={<ProfesseurModification />} />
           </Routes>
           <Footer />
         </AppProvider>
