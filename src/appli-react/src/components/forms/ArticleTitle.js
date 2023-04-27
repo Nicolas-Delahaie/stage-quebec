@@ -14,6 +14,7 @@ const ArticleTitleStyle = styled.h1`
     text-align: center;
     margin: 1rem 0;
     padding: 0.5rem 0;
+    width: 100%;
     &::after{
         content: "";
         display: block;
@@ -21,6 +22,7 @@ const ArticleTitleStyle = styled.h1`
         height: 3px;
         background-color: ${colors.jauneFonce};
         margin: 0.5rem auto;
+    }
 `;
 
 /**

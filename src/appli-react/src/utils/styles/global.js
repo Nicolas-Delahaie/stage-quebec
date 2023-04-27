@@ -20,7 +20,7 @@ const GlobalStyle = createGlobalStyle`
         font-family: ${fonts.texte};
     }
     .App {
-        height: 100vh;
+        height: 80.5vh;
     }
 `;
 

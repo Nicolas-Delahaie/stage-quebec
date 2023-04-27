@@ -11,4 +11,5 @@ export const colors = {
     noir: "#000000",
     gris: "#C4C4C4",
     vert: "#00A651",
+    rouge: "#E60000",
 }

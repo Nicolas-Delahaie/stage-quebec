@@ -1,15 +1,57 @@
-// import Input from "../../components/forms/Input"
+import {Input, Bouton } from "../../components/forms"
+import { colors,fonts } from "../../utils/styles"
+
+import styled from 'styled-components'
+
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import "../../styles/pageLogin.css"
-import styled from 'styled-components'
+
 import { AppContext } from "../../utils/context/context"
+import { useContext } from "react"
+
+
+/* ---------------------------------- STYLE --------------------------------- */
+
+const DivAuthentification = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80.5vh;
+`;
+
+const H1Authentification = styled.h1`
+    font-family: ${fonts.titre};
+    font-size: 2rem;
+    color: ${colors.bleuFonce};
+`;
+
+const FormAuthentification = styled.form`
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+`;
+
+const DivLabelInput = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+`;
+
+const PErreur = styled.p`
+    color: ${colors.rouge};
+`;
+
+/* ----------------------------------- DOM ---------------------------------- */
 
 function Login() {
     const [mail, setMail] = useState("");
     const [mdp, setMdp] = useState("");
     const [erreur, setErreur] = useState("");
     const navigate = useNavigate();
+    const { setIsConnected } = useContext(AppContext);
 
 
     const connexion = (e) => {
@@ -44,23 +86,27 @@ function Login() {
     }
 
     return (
-        <div className="authentification">
-            <h1>Login</h1>
-            <form onSubmit={connexion}>
+        <DivAuthentification>
+            <H1Authentification>Connexion</H1Authentification>
+            <FormAuthentification onSubmit={connexion}>
+                <DivLabelInput>
                 <label>Adresse professionnelle</label>
-                <input type="text"
+                <Input type="text"
                     required
                     value={mail}
                     onChange={(e) => setMail(e.target.value)} />
+                </DivLabelInput>
+                <DivLabelInput>
                 <label>Mot de passe</label>
-                <input type="password"
+                <Input type="password"
                     required
                     value={mdp}
                     onChange={(e) => setMdp(e.target.value)} />
-                <button>Se connecter</button>
-                <p>{erreur}</p>
-            </form>
-        </div>
+                </DivLabelInput>
+                <Bouton>Se connecter</Bouton>
+                <PErreur>{erreur}</PErreur>
+            </FormAuthentification>
+        </DivAuthentification>
     )
 }
 

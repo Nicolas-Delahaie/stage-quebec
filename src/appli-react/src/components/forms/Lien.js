@@ -20,9 +20,8 @@ const LinkStyle = styled(Link)`
     font-weight: bold;
     padding: 0.5rem 1rem;
     border-radius: 1rem;
-    transition: all 0.1s ease-in-out;
+    margin: 1rem;
 `;
-
 
 /**
  * 

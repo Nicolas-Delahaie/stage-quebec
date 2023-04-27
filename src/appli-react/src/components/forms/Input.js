@@ -17,6 +17,7 @@ const StyledInput = styled.input`
     border-radius: 0.5rem;
     font-family: ${fonts.texte};
     padding: 0rem 0.25rem;
+    margin: 1rem;
     &:focus{
         outline: none;
     }

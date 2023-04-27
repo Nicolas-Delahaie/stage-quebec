@@ -1,7 +1,10 @@
 /* --------------------------------- IMPORT --------------------------------- */
+/*import pour les fonctionnalités*/
+import { useState, useEffect } from "react"
 
 /* import pour le style */
 import styled from "styled-components"
+import { Loader } from "../../utils/styles"
 
 /* import des composants */
 import CarteHorizontale from "../../components/layout/CarteHorizontale"
@@ -37,28 +40,62 @@ const StyledDepartements = styled.div`
     justify-content: center;
 `
 
+const DivPageDepartements = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 80.5vh;
+`;
+
 /* ----------------------------------- DOM ---------------------------------- */
 
-function Departements(){
+function Departements() {
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [departementsData, setDepartementsData] = useState([]);
+
+    useEffect(() => {
+        setIsLoading(true);
+        fetch("http://localhost:8000/departements")
+            .then((response) => response.json())
+            .then(({ departementsData }) => {
+                setDepartementsData(departementsData);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                setIsLoading(false);
+            });
+    }, []);
+
     return (
-        <StyledDepartements>
-            <ArticleTitle title="Départements" />
-            <CarteHorizontale urlImage={Administation} titre="Administration" texteBouton="Voir les détails" lien="/departements/administration">
-                <p>Coordonateur : Frédéric Guérin</p>
-                <p>Nombre d'étudiant : 200</p>
-                <p>Nombre d'enseignant : 10</p>
-            </CarteHorizontale>
-            <CarteHorizontale urlImage={analyses_biomedicales} titre="Analyses biomédicales" texteBouton="Voir les détails" lien="/departements/analyses-biomedicales">
-                <p>Coordonateur : Frédéric Guérin</p>
-                <p>Nombre d'étudiant : 200</p>
-                <p>Nombre d'enseignant : 10</p>
-            </CarteHorizontale>
-            <CarteHorizontale urlImage={architecture} titre="Architecture" texteBouton="Voir les détails" lien="/departements/architecture">
-                <p>Coordonateur : Frédéric Guérin</p>
-                <p>Nombre d'étudiant : 200</p>
-                <p>Nombre d'enseignant : 10</p>
-            </CarteHorizontale>
-        </StyledDepartements>
+        <DivPageDepartements>
+        <ArticleTitle texte="Départements" />
+        {
+            isLoading ? (
+                <Loader />
+                )
+                : (
+                <StyledDepartements>
+                    {departementsData.map((departement) => (
+                        <CarteHorizontale
+                            key={departement.id}
+                            titre={departement.nom}
+                            texte={departement.description}
+                            image={departement.image}
+                            lien={`/departements/${departement.id}`}
+                        >
+                            <p>Coordonateur : {departement.coordonateur}</p>
+                            <p>Nombre d'étudiant : {departement.nombreEtdiant}</p>
+                            <p>Nombre d'enseignant : {departement.nombreProfesseur}</p>
+                        </CarteHorizontale>
+                    ))
+                    }
+                </StyledDepartements>
+            )
+        }
+        </DivPageDepartements>
     )
 }
 
