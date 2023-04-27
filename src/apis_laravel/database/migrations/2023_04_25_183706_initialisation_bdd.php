@@ -15,7 +15,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // CREATION TABLES SIMPLES
+        // ------- CREATION TABLES --------
+        // TABLES 0 DEPENDANCE
         Schema::create("TYPE_UTILISATEUR", function (Blueprint $table) {
             $table->id();
 
@@ -33,7 +34,7 @@ return new class extends Migration
             $table->string("motif", 255)->unique();
         });
 
-        // CREATION TABLES AVEC CLES ETRANGERES
+        // TABLES 1 DEPENDANCE
         Schema::table("users", function (Blueprint $table) {
             // Modification de users
             $table->string("contraintes", 255)->nullable();
@@ -72,6 +73,9 @@ return new class extends Migration
                 // ->onUpdate("CASCADE");
             $table->timestamps();
         });
+        
+        
+        // TABLES 2 DEPENDANCE
         Schema::create("MODIFICATION", function(Blueprint $table){
             $table->id();
 
@@ -83,9 +87,6 @@ return new class extends Migration
                 // ->onUpdate("CASCADE");
             $table->timestamps();
         });
-
-
-        // CREATION RELATIONS
         Schema::create("PROPOSER", function (Blueprint $table){
             $table->foreignId("cours_id")->references("id")->on("COURS");
                 // ->onDelete("CASCADE")
@@ -129,7 +130,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //Suppression des modifications sur users
+        // SUPPRESSION MODIFICATIONS
         if (Schema::hasColumn("users", "contraintes")){
             Schema::table('users', function (Blueprint $table) {
                 $table->dropColumn('contraintes'); 
@@ -142,8 +143,14 @@ return new class extends Migration
             });
         }
 
-        //Supprime toutes les tables et associations precedemment crees
-        $nomsTables = array("proposer", "enseigner", "modifier", "alouer", "scenario", "cours", "liberation", "departement", "type_utilisateur", "rdv");
-        foreach($nomsTables as $nomTable){Schema::dropIfExists($nomTable);}
+        // SUPPRESSION TABLES
+        $tablesPriority1 = array("proposer", "enseigner", "modification", "alouer");
+        $tablesPriority2 = array("cours", "liberation", "organiser", "type_utilisateur");
+        $tablesPriority3 = array("departement");
+        $tablesPriority4 = array("scenario");
+        foreach($tablesPriority1 as $nomTable){Schema::dropIfExists($nomTable);}
+        foreach($tablesPriority2 as $nomTable){Schema::dropIfExists($nomTable);}
+        foreach($tablesPriority3 as $nomTable){Schema::dropIfExists($nomTable);}
+        foreach($tablesPriority4 as $nomTable){Schema::dropIfExists($nomTable);}
     }
 };
