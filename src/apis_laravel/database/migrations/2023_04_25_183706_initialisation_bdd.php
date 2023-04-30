@@ -24,7 +24,6 @@ return new class extends Migration
         Schema::create("type_utilisateur", function (Blueprint $table) {
             $table->id();
             $table->string("nom", 255)->unique();
-            $table->timestamps();
         });
         Schema::create("cours", function(Blueprint $table){
             $table->id();
@@ -37,11 +36,13 @@ return new class extends Migration
         Schema::create("departement", function (Blueprint $table) {
             $table->id();
             $table->string("nom", 255)->unique();
+            $table->smallInteger("nbEleves");
             $table->unsignedBigInteger("coordonnateur_id");
         });
         Schema::create("scenario", function (Blueprint $table) {
             $table->id();
             $table->boolean("aEteValide")->default(false);
+            $table->unsignedSmallInteger("annee");
             $table->timestamps();
             $table->unsignedBigInteger("proprietaire_id");
             $table->unsignedBigInteger("departement_id");
@@ -55,7 +56,7 @@ return new class extends Migration
         });
         Schema::create("modification", function(Blueprint $table){
             $table->id();
-            $table->timestamps();
+            $table->date("date_modif");
             $table->unsignedBigInteger("utilisateur_id");
             $table->unsignedBigInteger("scenario_id");
         });
@@ -63,22 +64,22 @@ return new class extends Migration
             $table->unsignedBigInteger("cours_id");
             $table->unsignedBigInteger("departement_id");
             $table->unique(["cours_id", "departement_id"]);
-            $table->float("ponderation");
-            $table->unsignedSmallInteger("nbEleves")->default(0);
-            $table->unsignedTinyInteger("nbGroupes")->default(0);
+            $table->unsignedTinyInteger("ponderation");
+            $table->unsignedTinyInteger("tailleGroupes")->default(0);
+            $table->unsignedSmallInteger("nbGroupes")->default(0);
         });
         Schema::create("enseigner", function(Blueprint $table){
             $table->unsignedBigInteger("cours_id");
-            $table->unsignedBigInteger("utilisateur_id");
-            $table->unique(["cours_id", "utilisateur_id"]);
+            $table->unsignedBigInteger("professeur_id");
+            $table->unique(["cours_id", "professeur_id"]);
         });
         Schema::create("alouer", function(Blueprint $table){
             $table->unsignedBigInteger("utilisateur_id");
             $table->unsignedBigInteger("liberation_id");
-            $table->unique(["utilisateur_id", "liberation_id"]);	
-            $table->unsignedDecimal("tempsAloue", 5, 5);
             $table->unsignedSmallInteger("annee")->nullable();
             $table->unsignedTinyInteger("semestre")->nullable();
+            $table->unique(["utilisateur_id", "liberation_id", "annee", "semestre"]);	
+            $table->unsignedDecimal("tempsAloue", 5, 5);
             $table->timestamps();
         });
     
@@ -128,7 +129,7 @@ return new class extends Migration
             $table->foreign("cours_id")->references("id")->on("cours");
                 // ->onDelete("CASCADE")
                 // ->onUpdate("CASCADE");
-            $table->foreign("utilisateur_id")->references("id")->on("users");
+            $table->foreign("professeur_id")->references("id")->on("users");
                 // ->onDelete("CASCADE")
                 // ->onUpdate("CASCADE");
         });
@@ -148,7 +149,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // SUPPRESSION REFERENCES
+        // DESACTIVATION REFERENCES
         Schema::disableForeignKeyConstraints();
          
 
@@ -165,6 +166,7 @@ return new class extends Migration
         }
         if (Schema::hasColumn("users", "type_utilisateur_id")){
             Schema::table('users', function (Blueprint $table) {
+                $table->dropForeign(['type_utilisateur_id']);
                 $table->dropColumn('type_utilisateur_id');
             });
         }

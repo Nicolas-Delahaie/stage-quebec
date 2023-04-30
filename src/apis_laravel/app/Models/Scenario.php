@@ -11,6 +11,8 @@ class Scenario extends Model
     protected $table = 'scenario';
     protected $fillable = [
         'aEteValide',
+        'annee',
+        'semestre',
         'proprietaire_id',
         'departement_id',
     ];
