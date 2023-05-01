@@ -101,3 +101,26 @@ Route::get('/rdvs', function () {
 Route::get('rdv/{id}', function ($id) {
     return new RDVResource(RDV::findOrFail($id));
 })->name('/rdv');
+
+/* -------------------------------------------------------------------------- */
+/*                                MODIFICATION                                */
+/* -------------------------------------------------------------------------- */
+
+use App\Http\Resources\ModificationResource;
+use App\Models\Modification;
+
+/**
+ * route retournant les informations de toutes les modifications sous le format json
+ * par exemple : http://localhost:8000/api/modifications
+ */
+Route::get('/modifications', function () {
+    return ModificationResource::collection(Modification::all());
+})->name('/modifications');
+
+/**
+ * route retournant les informations d'une modification en fonction de son id sous le format json
+ * par exemple : http://localhost:8000/api/modification/1
+ */
+Route::get('modification/{id}', function ($id) {
+    return new ModificationResource(Modification::findOrFail($id));
+})->name('/modification');
