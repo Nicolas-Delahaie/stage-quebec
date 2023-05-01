@@ -2,8 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Resources\UserResource;
-use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +14,90 @@ use App\Models\User;
 |
 */
 
+/* -------------------------------------------------------------------------- */
+/*                                    USERS                                   */
+/* -------------------------------------------------------------------------- */
+
+
+use App\Http\Resources\UserResource;
+use App\Models\User;
+
+/**
+ * route retournant les informations d'un utilisateur en fonction de son id sous le format json
+ * par exemple : http://localhost:8000/api/user/1
+ */
 Route::get('/user/{id}', function ($id) {
     return new UserResource(User::findOrFail($id));
+})->name('/user');
+
+
+/**
+ * route retournant les informations de tous les utilisateurs sous le format json
+ * par exemple : http://localhost:8000/api/users
+ */
+Route::get('/users', function () {
+    return UserResource::collection(User::all());
 })->name('/users');
+
+/* -------------------------------------------------------------------------- */
+/*                              TYPE_UTILISATEUR                              */
+/* -------------------------------------------------------------------------- */
+
+use App\Http\Resources\TypeUtilisateurResource;
+use App\Models\TypeUtilisateur;
+
+/**
+ * route retournant les informations de tous les types d'utilisateurs sous le format json
+ * par exemple : http://localhost:8000/api/type_utilisateurs
+ */
+Route::get('/type_utilisateurs', function () {
+    return TypeUtilisateurResource::collection(TypeUtilisateur::all());
+})->name('/type_utilisateurs');
+
+
+/* -------------------------------------------------------------------------- */
+/*                                  SCÉNARIOS                                 */
+/* -------------------------------------------------------------------------- */
+
+use App\Http\Resources\ScenarioResource;
+use App\Models\Scenario;
+
+
+/**
+ * route retournant les informations de tous les scénarios sous le format json
+ * par exemple : http://localhost:8000/api/scenarios
+ */
+Route::get('/scenarios', function () {
+    return ScenarioResource::collection(Scenario::all());
+})->name('/scenarios');
+
+/**
+ * route retournant les informations d'un scénario en fonction de son id sous le format json
+ * par exemple : http://localhost:8000/api/scénario/1
+ */
+Route::get('scenario/{id}', function ($id) {
+    return new ScenarioResource(Scenario::findOrFail($id));
+})->name('/scenario');
+
+/* -------------------------------------------------------------------------- */
+/*                                     RDV                                    */
+/* -------------------------------------------------------------------------- */
+
+use App\Http\Resources\RDVResource;
+use App\Models\RDV;
+
+/**
+ * route retournant les informations de tous les rdv sous le format json
+ * par exemple : http://localhost:8000/api/rdvs
+ */
+Route::get('/rdvs', function () {
+    return RDVResource::collection(RDV::all());
+})->name('/rdvs');
+
+/**
+ * route retournant les informations d'un rdv en fonction de son id sous le format json
+ * par exemple : http://localhost:8000/api/rdv/1
+ */
+Route::get('rdv/{id}', function ($id) {
+    return new RDVResource(RDV::findOrFail($id));
+})->name('/rdv');

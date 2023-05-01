@@ -6,10 +6,34 @@
 <body>
     <h1>Bienvenue sur l'api Laravel</h1>
     <p>Voici les urls que propose cette API</p>
+    <h2>Utilisateurs</h2>
     <ul>
         <li>
-            <a href="{{ route('/users', ['id' => 1] )}}">Infos d'un utilisateur</a>
+            <a href="{{ route('/user', ['id' => 1] )}}">Infos de l'utilisateur 1</a>
+        </li>
+        <li>
+            <a href="{{ route('/users')}}">Infos de tous les utilisateurs</a>
         </li>
     </ul>
+    <h2>Types d'utilisateurs</h2>
+    <ul>
+        <li>
+            <a href="{{ route('/type_utilisateurs')}}">Infos de tous les types d'utilisateurs</a>
+        </li>
+    </ul>
+    <h2>Scénarios</h2>
+    <li>
+        <a href="{{ route('/scenarios')}}">Infos de tous les scénarios</a>
+    </li>
+    <li>
+        <a href="{{ route('/scenario', ['id' => 1])}}">Infos du scénario 1</a>
+    </li>
+    <h2>RDV</h2>
+    <li>
+        <a href="{{ route('/rdvs')}}">Infos de tous les RDV</a>
+    </li>
+    <li>
+        <a href="{{ route('/rdv', ['id' => 1])}}">Infos du RDV 1</a>
+    </li>
 </body> 
 </html>
