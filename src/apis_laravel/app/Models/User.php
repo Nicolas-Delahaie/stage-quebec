@@ -26,7 +26,7 @@ class User extends Authenticatable
     ];
 
     public function getType(){
-        return $this->belongsTo(TypeUtilisateur::class)->nom;
+        return $this->belongsTo(TypeUtilisateur::class, "type_utilisateur_id")->first()->nom;
     }
 
 
