@@ -13,4 +13,9 @@ class Liberation extends Model
     protected $fillable = [
         'motif',
     ];
+
+    public function users(){
+        return $this->belongsToMany(User::class, "alouer", "utilisateur_id", "liberation_id")
+            ->withPivot('tempsAloue', 'annee', 'semestre');
+    }
 }
