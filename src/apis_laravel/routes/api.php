@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Route;
 /* -------------------------------------------------------------------------- */
 
 
-use App\Http\Resources\UserResource;
 use App\Models\User;
 
 /**
@@ -27,7 +26,7 @@ use App\Models\User;
  * par exemple : http://localhost:8000/api/user/1
  */
 Route::get('/user/{id}', function ($id) {
-    return new UserResource(User::findOrFail($id));
+    return User::findOrFail($id);
 })->name('/user');
 
 
@@ -36,14 +35,13 @@ Route::get('/user/{id}', function ($id) {
  * par exemple : http://localhost:8000/api/users
  */
 Route::get('/users', function () {
-    return UserResource::collection(User::all());
+    return User::all();
 })->name('/users');
 
 /* -------------------------------------------------------------------------- */
 /*                              TYPE_UTILISATEUR                              */
 /* -------------------------------------------------------------------------- */
 
-use App\Http\Resources\TypeUtilisateurResource;
 use App\Models\TypeUtilisateur;
 
 /**
@@ -51,7 +49,7 @@ use App\Models\TypeUtilisateur;
  * par exemple : http://localhost:8000/api/type_utilisateurs
  */
 Route::get('/type_utilisateurs', function () {
-    return TypeUtilisateurResource::collection(TypeUtilisateur::all());
+    return TypeUtilisateur::all();
 })->name('/type_utilisateurs');
 
 
@@ -59,7 +57,6 @@ Route::get('/type_utilisateurs', function () {
 /*                                  SCÉNARIOS                                 */
 /* -------------------------------------------------------------------------- */
 
-use App\Http\Resources\ScenarioResource;
 use App\Models\Scenario;
 
 
@@ -68,7 +65,7 @@ use App\Models\Scenario;
  * par exemple : http://localhost:8000/api/scenarios
  */
 Route::get('/scenarios', function () {
-    return ScenarioResource::collection(Scenario::all());
+    return Scenario::all();
 })->name('/scenarios');
 
 /**
@@ -76,14 +73,13 @@ Route::get('/scenarios', function () {
  * par exemple : http://localhost:8000/api/scénario/1
  */
 Route::get('scenario/{id}', function ($id) {
-    return new ScenarioResource(Scenario::findOrFail($id));
+    return Scenario::findOrFail($id);
 })->name('/scenario');
 
 /* -------------------------------------------------------------------------- */
 /*                                     RDV                                    */
 /* -------------------------------------------------------------------------- */
 
-use App\Http\Resources\RDVResource;
 use App\Models\RDV;
 
 /**
@@ -91,7 +87,7 @@ use App\Models\RDV;
  * par exemple : http://localhost:8000/api/rdvs
  */
 Route::get('/rdvs', function () {
-    return RDVResource::collection(RDV::all());
+    return RDV::all();
 })->name('/rdvs');
 
 /**
@@ -99,14 +95,13 @@ Route::get('/rdvs', function () {
  * par exemple : http://localhost:8000/api/rdv/1
  */
 Route::get('rdv/{id}', function ($id) {
-    return new RDVResource(RDV::findOrFail($id));
+    return RDV::findOrFail($id);
 })->name('/rdv');
 
 /* -------------------------------------------------------------------------- */
 /*                                MODIFICATION                                */
 /* -------------------------------------------------------------------------- */
 
-use App\Http\Resources\ModificationResource;
 use App\Models\Modification;
 
 /**
@@ -114,7 +109,7 @@ use App\Models\Modification;
  * par exemple : http://localhost:8000/api/modifications
  */
 Route::get('/modifications', function () {
-    return ModificationResource::collection(Modification::all());
+    return Modification::all();
 })->name('/modifications');
 
 /**
@@ -122,5 +117,5 @@ Route::get('/modifications', function () {
  * par exemple : http://localhost:8000/api/modification/1
  */
 Route::get('modification/{id}', function ($id) {
-    return new ModificationResource(Modification::findOrFail($id));
+    return Modification::findOrFail($id);
 })->name('/modification');

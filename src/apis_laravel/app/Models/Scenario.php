@@ -16,4 +16,12 @@ class Scenario extends Model
         'proprietaire_id',
         'departement_id',
     ];
+
+    public function getProprietaire(){
+        return $this->belongsTo(User::class, "proprietaire_id")->first()->name;
+    }
+
+    public function getDepartement(){
+        return $this->belongsTo(Departement::class, "departement_id")->first()->nom;
+    }
 }
