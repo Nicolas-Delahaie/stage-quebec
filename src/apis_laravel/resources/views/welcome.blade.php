@@ -9,10 +9,10 @@
     <h2>Utilisateurs</h2>
     <ul>
         <li>
-            <a href="{{ route('/user', ['id' => 1] )}}">Infos de l'utilisateur 1</a>
+            <a href="{{ route('/users')}}">Infos de tous les utilisateurs</a>
         </li>
         <li>
-            <a href="{{ route('/users')}}">Infos de tous les utilisateurs</a>
+            <a href="{{ route('/user', ['id' => 1] )}}">Infos de l'utilisateur 1</a>
         </li>
     </ul>
     <h2>Types d'utilisateurs</h2>
@@ -35,5 +35,14 @@
     <li>
         <a href="{{ route('/rdv', ['id' => 1])}}">Infos du RDV 1</a>
     </li>
+    <h2>Modifications</h2>
+    <ul>
+        <li>
+            <a href="{{ route('/modifications')}}">Infos de toutes les modifications de scénarios</a>
+        </li>
+        <li>
+            <a href="{{ route('/modification', ['id' => 1] )}}">Infos de la modification 1</a>
+        </li>
+    </ul>
 </body> 
 </html>
