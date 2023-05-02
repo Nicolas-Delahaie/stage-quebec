@@ -21,58 +21,34 @@ use Illuminate\Support\Facades\Route;
 /* -------------------------------------------------------------------------- */
 /*                                    COURS                                   */
 /* -------------------------------------------------------------------------- */
-use App\Models\Cours;
+use App\HTTP\Controllers\CoursController;
 
-Route::get('/cours', function () {
-    return Cours::all();
-});
-Route::get('/cours/{id}', function ($id) {
-    return Cours::findOrFail($id);
-});
-Route::get('/cours/{id}/enseignants', function ($id) {
-    return Cours::findOrFail($id)->enseignants->toJson();
-});
-Route::get('/cours/{id}/departements', function ($id) {
-    return Cours::findOrFail($id)->departements->toJson();
-});
+Route::get('/cours', [CoursController::class, 'index']);
+Route::get('/cours/{id}', [CoursController::class, 'show']);
+Route::get('/cours/{id}/enseignants', [CoursController::class, 'showEnseignants']);
+Route::get('/cours/{id}/departements', [CoursController::class, 'showDepartements']);
 
 
 /* -------------------------------------------------------------------------- */
 /*                                DEPARTEMENT                                 */
 /* -------------------------------------------------------------------------- */
-use App\Models\Departement;
+use App\HTTP\Controllers\DepartementController;
 
-Route::get('/departements', function () {
-    return Departement::all();
-});
-Route::get('/departements/{id}', function ($id) {
-    return Departement::findOrFail($id);
-});
-Route::get('/departements/{id}/coordonnateur', function ($id) {
-    return Departement::findOrFail($id)->coordonnateur->toJson();
-});
-Route::get('/departements/{id}/cours', function ($id) {
-    return Departement::findOrFail($id)->cours->toJson();
-});
-Route::get('/departements/{id}/scenarios', function ($id) {
-    return Departement::findOrFail($id)->scenarios->toJson();
-});
+Route::get('/departements', [DepartementController::class, 'index']);
+Route::get('/departements/{id}', [DepartementController::class, 'show']);
+Route::get('/departements/{id}/coordonnateur', [DepartementController::class, 'showCoordonnateur']);
+Route::get('/departements/{id}/cours', [DepartementController::class, 'showCours']);
+Route::get('/departements/{id}/scenarios', [DepartementController::class, 'showScenarios']);
 
 
 /* -------------------------------------------------------------------------- */
 /*                                LIBERATION                                  */
 /* -------------------------------------------------------------------------- */
-use App\Models\Liberation;
+use App\HTTP\Controllers\LiberationController;
 
-Route::get('/liberations', function () {
-    return Liberation::all();
-});
-Route::get('/liberations/{id}', function ($id) {
-    return Liberation::findOrFail($id);
-});
-Route::get('/liberations/{id}/users', function ($id) {
-    return Liberation::findOrFail($id)->users->toJson();
-});
+Route::get('/liberations', [LiberationController::class, 'index']);
+Route::get('/liberations/{id}', [LiberationController::class, 'show']);
+Route::get('/liberations/{id}/users', [LiberationController::class, 'showUsers']);
 
 
 /* -------------------------------------------------------------------------- */
@@ -80,16 +56,10 @@ Route::get('/liberations/{id}/users', function ($id) {
 /* -------------------------------------------------------------------------- */
 use App\HTTP\Controllers\ModificationController;
 
-/**
- * route retournant les informations de toutes les modifications sous le format json
- * par exemple : http://localhost:8000/api/modifications
- */
-Route::get('/modifications', [ModificationController::class, 'index']);
-/**
- * route retournant les informations d'une modification en fonction de son id sous le format json
- * par exemple : http://localhost:8000/api/modification/1
- */
-Route::get('modification/{id}', [ModificationController::class, 'show']);
+Route::get('modifications', [ModificationController::class, 'index']);
+Route::get('modifications/{id}', [ModificationController::class, 'show']);
+Route::get('modifications/{id}/user', [ModificationController::class, 'showUser']);
+Route::get('modifications/{id}/scenario', [ModificationController::class, 'showScenario']);
 
 
 /* -------------------------------------------------------------------------- */
@@ -97,16 +67,9 @@ Route::get('modification/{id}', [ModificationController::class, 'show']);
 /* -------------------------------------------------------------------------- */
 use App\HTTP\Controllers\RDVController;
 
-/**
- * route retournant les informations de tous les rdv sous le format json
- * par exemple : http://localhost:8000/api/rdvs
- */
-Route::get('/rdvs', [RDVController::class, 'index']);
-/**
- * route retournant les informations d'un rdv en fonction de son id sous le format json
- * par exemple : http://localhost:8000/api/rdv/1
- */
+Route::get('rdvs', [RDVController::class, 'index']);
 Route::get('rdvs/{id}', [RDVController::class, 'show']);
+Route::get('rdvs/{id}/scenario', [RDVController::class, 'showScenario']);
 
 
 /* -------------------------------------------------------------------------- */
@@ -114,16 +77,12 @@ Route::get('rdvs/{id}', [RDVController::class, 'show']);
 /* -------------------------------------------------------------------------- */
 use App\Http\Controllers\ScenarioController;
 
-/**
- * route retournant les informations de tous les scénarios sous le format json
- * par exemple : http://localhost:8000/api/scenarios
- */
 Route::get('/scenarios', [ScenarioController::class, 'index']);
-/**
- * route retournant les informations d'un scénario en fonction de son id sous le format json
- * par exemple : http://localhost:8000/api/scénario/1
- */
 Route::get('scenarios/{id}', [ScenarioController::class, 'show']);
+Route::get('scenarios/{id}/departement', [ScenarioController::class, 'showDepartement']);
+Route::get('scenarios/{id}/proprietaire', [ScenarioController::class, 'showProprietaire']);
+Route::get('scenarios/{id}/rdvs', [ScenarioController::class, 'showRDVs']);
+Route::get('scenarios/{id}/modifications', [ScenarioController::class, 'showModifications']);
 
 
 /* -------------------------------------------------------------------------- */
@@ -131,11 +90,9 @@ Route::get('scenarios/{id}', [ScenarioController::class, 'show']);
 /* -------------------------------------------------------------------------- */
 use App\Http\Controllers\TypeUtilisateurController;
 
-/**
- * route retournant les informations de tous les types d'utilisateurs sous le format json
- * par exemple : http://localhost:8000/api/type_utilisateurs
- */
 Route::get('/types_utilisateur', [TypeUtilisateurController::class, 'index']);
+Route::get('/types_utilisateur/{id}', [TypeUtilisateurController::class, 'show']);
+Route::get('/types_utilisateur/{id}/users', [TypeUtilisateurController::class, 'showUsers']);
 
 
 /* -------------------------------------------------------------------------- */
@@ -143,13 +100,10 @@ Route::get('/types_utilisateur', [TypeUtilisateurController::class, 'index']);
 /* -------------------------------------------------------------------------- */
 use App\Http\Controllers\UserController;
 
-/**
- * route retournant les informations de tous les utilisateurs sous le format json
- * par exemple : http://localhost:8000/api/users
- */
 Route::get('/users', [UserController::class, 'index']);
-/**
- * route retournant les informations d'un utilisateur en fonction de son id sous le format json
- * par exemple : http://localhost:8000/api/user/1
- */
 Route::get('/users/{id}', [UserController::class,'show']);
+Route::get('/users/{id}/type', [UserController::class,'showType']);
+Route::get('/users/{id}/liberations', [UserController::class,'showLiberations']);
+Route::get('/users/{id}/modifications', [UserController::class,'showModifications']);
+Route::get('/users/{id}/cours', [UserController::class,'showCours']);
+Route::get('/users/{id}/scenarios', [UserController::class,'showScenarios']);

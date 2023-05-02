@@ -20,6 +20,7 @@ class Cours extends Model
         return $this->belongsToMany(User::class, 'enseigner', 'professeur_id', 'cours_id');
     }
     public function departements(){
-        return $this->belongsToMany(Departement::class, 'proposer', 'departement_id', 'cours_id');
+        return $this->belongsToMany(Departement::class, 'proposer', 'departement_id', 'cours_id')
+            ->withPivot("ponderation", "tailleGroupes", "nbGroupes");
     }
 }

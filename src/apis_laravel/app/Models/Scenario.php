@@ -17,11 +17,16 @@ class Scenario extends Model
         'departement_id',
     ];
 
-    public function getProprietaire(){
-        return $this->belongsTo(User::class, "proprietaire_id")->first()->name;
+    public function departement(){
+        return $this->belongsTo(Departement::class, "departement_id");
     }
-
-    public function getDepartement(){
-        return $this->belongsTo(Departement::class, "departement_id")->first()->nom;
+    public function proprietaire(){
+        return $this->belongsTo(User::class, "proprietaire_id");
+    }
+    public function rdvs(){
+        return $this->hasMany(RDV::class, "scenario_id");
+    }
+    public function modifications(){
+        return $this->hasMany(Modification::class, "scenario_id");
     }
 }

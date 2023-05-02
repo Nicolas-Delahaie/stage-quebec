@@ -13,15 +13,9 @@ class RDV extends Model
         'horaire',
         'jour',
         'scenario_id',
-        'utilisateur_id',
     ];
 
-    public function getScenario(){
-        return $this->belongsTo(Scenario::class, "scenario_id")->first()->id;
+    public function scenario(){
+        return $this->belongsTo(Scenario::class, "scenario_id");
     }
-
-    public function getUtilisateur(){
-        return $this->belongsTo(User::class, "utilisateur_id")->first()->id;
-    }
-
 }
