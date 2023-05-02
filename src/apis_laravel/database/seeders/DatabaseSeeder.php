@@ -96,26 +96,26 @@ class DatabaseSeeder extends Seeder
             ["tempsALoue"=>0.23, "annee"=>2023, "utilisateur_id"=>9, "liberation_id"=>1],
         ];
         $departement=[
-            ["nom" => "Biologie", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Education Physique", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Analyses Biomedicales", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "GTEA", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Soins Infirmiers", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Mathémathiques", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Chimie", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Physique", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Architecture", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Genie Mecanique", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Genie Electronique", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Sciences humaines", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Philisophie", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Techniques Travail Social", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Administration", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Informatique", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Arts Visuels", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Design Interieur", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Lettres", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Langues Modernes", "coordonnateur_id"=>$faker->unique()->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Biologie", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Education Physique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Analyses Biomedicales", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "GTEA", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Soins Infirmiers", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Mathémathiques", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Chimie", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Physique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Architecture", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Genie Mecanique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Genie Electronique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Sciences humaines", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Philisophie", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Techniques Travail Social", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Administration", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Informatique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Arts Visuels", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Design Interieur", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Lettres", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Langues Modernes", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
         ];
 
         foreach($enseigner as $val){Enseigner::create($val);}
@@ -152,15 +152,15 @@ class DatabaseSeeder extends Seeder
         }
         $scenario = [];
         foreach (Departement::all() as $departement) {
-            // On attribue a chaque departement entre 0 et 4 scenarios
+            // On attribue a chaque departement entre 1 et 4 scenarios
             
-            $nbScenarios = $faker->numberBetween(1, 6);
+            $nbScenarios = $faker->numberBetween(1, 4);
             for ($i=1; $i < $nbScenarios; $i++) {
                 array_push($scenario, [
                     "aEteValide" => true,
                     "annee" => 2022 - $i,
                     "departement_id" => $departement->id,
-                    "proprietaire_id" => $faker->numberBetween(1, User::count()),
+                    "proprietaire_id" => $departement->coordonnateur_id,
                 ]);
             }
             
@@ -169,7 +169,7 @@ class DatabaseSeeder extends Seeder
                 "aEteValide" => false,
                 "annee" => 2022,
                 "departement_id" => $departement->id,
-                "proprietaire_id" => $faker->numberBetween(1, User::count()),
+                "proprietaire_id" => $departement->coordonnateur_id,
             ]);
         }
 
@@ -181,7 +181,7 @@ class DatabaseSeeder extends Seeder
         $modification = [];
         foreach (Departement::all() as $dept) {
             // On attribue a chaque coordonnateur entre 0 et 4 modifications
-            $coordo = $dept->getCoordonnateur()->get()->first();
+            $coordo = $dept->coordonnateur()->get()->first();
 
             for ($i=0; $i < $faker->numberBetween(0, 4); $i++) {
                 array_push($modification, [
