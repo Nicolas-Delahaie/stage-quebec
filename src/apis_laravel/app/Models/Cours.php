@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\User;
+
 class Cours extends Model
 {
     use HasFactory;
@@ -13,4 +15,12 @@ class Cours extends Model
     protected $fillable = [
         'nom',
     ];
+
+    public function enseignants(){
+        return $this->belongsToMany(User::class, 'enseigner', 'professeur_id', 'cours_id');
+    }
+    public function departements(){
+        return $this->belongsToMany(Departement::class, 'proposer', 'departement_id', 'cours_id')
+            ->withPivot("ponderation", "tailleGroupes", "nbGroupes");
+    }
 }

@@ -15,4 +15,11 @@ class Modification extends Model
         'utilisateur_id',
         'scenario_id',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class, "utilisateur_id");
+    }
+    public function scenario(){
+        return $this->belongsTo(Scenario::class, "scenario_id");
+    }
 }
