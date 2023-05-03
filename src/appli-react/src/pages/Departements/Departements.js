@@ -49,60 +49,7 @@ const DivPageDepartements = styled.div`
     min-height: 80.5vh;
 `;
 
-/* ----------------------------------- DOM ---------------------------------- */
-
-function Departements() {
-
-    const [isLoading, setIsLoading] = useState(false);
-    const [departementsData, setDepartementsData] = useState({});
-    const [nomCoordonateur, setNomCoordonateur] = useState("");
-
-    useEffect(() => {
-        setIsLoading(true);
-        fetch("http://localhost:8000/api/departements")
-            .then((response) => response.json())
-            .then((response) => {
-                setDepartementsData(response);
-                setIsLoading(false);
-            })
-
-            .catch((error) => {
-                console.log(error);
-                setIsLoading(false);
-            });
-    }, []);
-
-
-    return (
-        <DivPageDepartements>
-            <ArticleTitle texte="Départements" />
-            {
-                isLoading ? (
-                    <Loader />
-                )
-                    : (
-                        <StyledDepartements>
-                            {departementsData.map((departement) => (
-                                <CarteHorizontale
-                                    key={departement.id}
-                                    titre={departement.nom}
-                                    texte={departement.description}
-                                    urlImage={rechercheImage(departement.nom)}
-                                    lien={`/departements/${departement.id}`}
-                                >
-                                    <p>Coordonateur : {rechercheCoordonateur(departement.coordonateur_id)}</p>
-                                    <p>Nombre d'étudiant : {departement.nbEleves}</p>
-                                </CarteHorizontale>
-                            ))
-                            }
-                        </StyledDepartements>
-                    )
-            }
-        </DivPageDepartements>
-    )
-}
-
-export default Departements
+/* -------------------- FONCTIONS DE LA PAGE DEPARTEMENTS ------------------- */
 
 function rechercheImage(nomDepartement) {
     switch (nomDepartement) {
@@ -134,10 +81,12 @@ function rechercheImage(nomDepartement) {
             return langues_modernes;
         case "Lettres":
             return lettres;
+            /*fautes à corriger*/
         case "Mathémathiques":
             return maths;
-        case "Philosophie":
+        case "Philisophie":
             return Philosophie;
+            /*  ------------------ */
         case "Physique":
             return physique;
         case "Sciences humaines":
@@ -151,13 +100,74 @@ function rechercheImage(nomDepartement) {
     }
 }
 
-async function rechercheCoordonateur(idCoordonateur) {
-    await fetch("http://localhost:8000/coordonateur/" + idCoordonateur)
+/* ----------------------------------- DOM ---------------------------------- */
+
+function Departements() {
+    
+    const [isLoading, setIsLoading] = useState(false);
+    const [departementsData, setDepartementsData] = useState({});
+    const [coordonnateur, setCoordonnateur] = useState({});
+    const [copieCoordonnateur, setCopieCoordonnateur] = useState({});
+
+
+    const rechercheCoordonnateur = (idCoordonnateur) => {
+        fetch(`http://localhost:8000/api/users/${idCoordonnateur}`)
         .then((response) => response.json())
         .then((response) => {
-            return response;
+            setCoordonnateur(response);
+            setCopieCoordonnateur({...coordonnateur});
         })
         .catch((error) => {
             console.log(error);
-        });
+        }
+        )
+    }
+
+    useEffect(() => { 
+        setIsLoading(true);
+        fetch("http://localhost:8000/api/departements")
+            .then((response) => response.json())
+            .then((response) => {
+                console.log('fetch');
+                setDepartementsData(response);
+            })
+
+            .catch((error) => {
+                console.log(error);
+            });
+            setIsLoading(false);
+    }, [])
+
+    return (
+        <DivPageDepartements>
+            <ArticleTitle texte="Départements" />
+            {
+                isLoading || departementsData.length === undefined ?  (
+                    <Loader />
+                )
+                    : (
+                        <StyledDepartements>
+                            {                               
+                                departementsData.map( (departement) => (
+                                    //rechercheCoordonnateur(departement.coordonnateur_id),
+                                    <CarteHorizontale
+                                        key={departement.id}
+                                        titre={departement.nom}
+                                        texte={departement.description}
+                                        urlImage={rechercheImage(departement.nom)}
+                                        lien={`/departements/${departement.id}`}
+                                    >
+                                        <p>Coordonnateur : {copieCoordonnateur.name}</p>
+                                        <p>Nombre d'étudiant : {departement.nbEleves}</p>
+                                    </CarteHorizontale>
+                                ))
+                        }
+                        </StyledDepartements>
+                    )
+            }
+        </DivPageDepartements>
+    )
 }
+
+export default Departements
+
