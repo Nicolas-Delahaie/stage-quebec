@@ -21,6 +21,7 @@ import Design_interieur from "../../assets/images/Departements/Design_interieur.
 import electronique from "../../assets/images/Departements/electronique.svg"
 import EPS from "../../assets/images/Departements/EPS.svg"
 import GTEA from "../../assets/images/Departements/GTEA.svg"
+import informatique from "../../assets/images/Departements/informatique.svg"
 import langues_modernes from "../../assets/images/Departements/langues_modernes.svg"
 import lettres from "../../assets/images/Departements/lettres.svg"
 import maths from "../../assets/images/Departements/maths.svg"
@@ -53,50 +54,110 @@ const DivPageDepartements = styled.div`
 function Departements() {
 
     const [isLoading, setIsLoading] = useState(false);
-    const [departementsData, setDepartementsData] = useState([]);
+    const [departementsData, setDepartementsData] = useState({});
+    const [nomCoordonateur, setNomCoordonateur] = useState("");
 
     useEffect(() => {
         setIsLoading(true);
-        fetch("http://localhost:8000/departements")
+        fetch("http://localhost:8000/api/departements")
             .then((response) => response.json())
-            .then(({ departementsData }) => {
-                setDepartementsData(departementsData);
+            .then((response) => {
+                setDepartementsData(response);
                 setIsLoading(false);
             })
+
             .catch((error) => {
                 console.log(error);
                 setIsLoading(false);
             });
     }, []);
 
+
     return (
         <DivPageDepartements>
-        <ArticleTitle texte="Départements" />
-        {
-            isLoading ? (
-                <Loader />
+            <ArticleTitle texte="Départements" />
+            {
+                isLoading ? (
+                    <Loader />
                 )
-                : (
-                <StyledDepartements>
-                    {departementsData.map((departement) => (
-                        <CarteHorizontale
-                            key={departement.id}
-                            titre={departement.nom}
-                            texte={departement.description}
-                            image={departement.image}
-                            lien={`/departements/${departement.id}`}
-                        >
-                            <p>Coordonateur : {departement.coordonateur}</p>
-                            <p>Nombre d'étudiant : {departement.nombreEtdiant}</p>
-                            <p>Nombre d'enseignant : {departement.nombreProfesseur}</p>
-                        </CarteHorizontale>
-                    ))
-                    }
-                </StyledDepartements>
-            )
-        }
+                    : (
+                        <StyledDepartements>
+                            {departementsData.map((departement) => (
+                                <CarteHorizontale
+                                    key={departement.id}
+                                    titre={departement.nom}
+                                    texte={departement.description}
+                                    urlImage={rechercheImage(departement.nom)}
+                                    lien={`/departements/${departement.id}`}
+                                >
+                                    <p>Coordonateur : {rechercheCoordonateur(departement.coordonateur_id)}</p>
+                                    <p>Nombre d'étudiant : {departement.nbEleves}</p>
+                                </CarteHorizontale>
+                            ))
+                            }
+                        </StyledDepartements>
+                    )
+            }
         </DivPageDepartements>
     )
 }
 
 export default Departements
+
+function rechercheImage(nomDepartement) {
+    switch (nomDepartement) {
+        case "Administration":
+            return Administation;
+        case "Analyses Biomedicales":
+            return analyses_biomedicales;
+        case "Architecture":
+            return architecture;
+        case "Arts Visuels":
+            return Art;
+        case "Biologie":
+            return Biologie;
+        case "Chimie":
+            return chimie;
+        case "Design Interieur":
+            return Design_interieur;
+        case "Education Physique":
+            return EPS;
+        case "GTEA":
+            return GTEA;
+        case "Genie Mecanique":
+            return mecanique;
+        case "Genie Electronique":
+            return electronique;
+        case "Informatique":
+            return informatique;
+        case "Langues Modernes":
+            return langues_modernes;
+        case "Lettres":
+            return lettres;
+        case "Mathémathiques":
+            return maths;
+        case "Philosophie":
+            return Philosophie;
+        case "Physique":
+            return physique;
+        case "Sciences humaines":
+            return sciences_humaines;
+        case "Soins Infirmiers":
+            return Soins_infirmiers;
+        case "Techniques Travail Social":
+            return techniques_travail_social;
+        default:
+            return null;
+    }
+}
+
+async function rechercheCoordonateur(idCoordonateur) {
+    await fetch("http://localhost:8000/coordonateur/" + idCoordonateur)
+        .then((response) => response.json())
+        .then((response) => {
+            return response;
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}
