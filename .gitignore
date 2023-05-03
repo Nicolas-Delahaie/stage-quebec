@@ -2,6 +2,10 @@ src/apis_laravel/.gitignore
 src/appli-react/.gitignore
 
 src/appli-react/node_modules
+src/apis_laravel/node_modules
+
+src/apis_laravel/vendor
+src/apis_laravel/.env
 
 src/Dockerfile
 src/docker-compose.yml

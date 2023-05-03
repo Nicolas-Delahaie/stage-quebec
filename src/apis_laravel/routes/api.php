@@ -107,3 +107,11 @@ Route::get('/users/{id}/liberations', [UserController::class,'showLiberations'])
 Route::get('/users/{id}/modifications', [UserController::class,'showModifications']);
 Route::get('/users/{id}/cours', [UserController::class,'showCours']);
 Route::get('/users/{id}/scenarios', [UserController::class,'showScenarios']);
+
+/* -------------------------------------------------------------------------- */
+/*                             APIS POUR LES PAGES                            */
+/* -------------------------------------------------------------------------- */
+
+/* ------------------------------ DEPARTEMENTS ------------------------------ */
+
+Route::get('/departementsDetaille', [DepartementController::class, 'showCoordonnateurs']);

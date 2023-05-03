@@ -23,4 +23,9 @@ class DepartementController extends Controller
     public function showScenarios($id){
         return Departement::find($id)->scenarios->toJson();
     }
+
+    public function showCoordonnateurs(){
+        $departements = Departement::with('coordonnateur')->get();
+        return response()->json($departements);
+    }
 }
