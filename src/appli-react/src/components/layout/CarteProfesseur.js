@@ -4,15 +4,15 @@ import { Lien } from "../forms"
 
 /* ---------------------------------- STYLE --------------------------------- */
 
-const DivCarteReduite = styled.div`
+export const DivCarteReduite = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
 
     box-shadow: 0 0 10px ${colors.gris};
     border-radius: 1rem;
-    padding: 0.25rem 2rem;
+    padding: 0.25rem 1.5rem;
     width: auto;
     height: 300px;
 `;
@@ -30,7 +30,7 @@ const LiMatieres = styled.li`
     margin:0rem 0rem 1rem 0.5rem;
 `;
 
-const DivLien = styled.div`
+export const DivLien = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;

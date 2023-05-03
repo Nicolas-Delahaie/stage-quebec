@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { Loader } from "../../utils/styles";
 import ArticleTitle from "../../components/forms/ArticleTitle";
 import CarteProfesseur from "../../components/layout/CarteProfesseur";
+import CarteCours from "../../components/layout/CarteCours";
 
 /* ---------------------------------- STYLE --------------------------------- */
 
@@ -36,22 +37,22 @@ function DetailsDepartement(){
     const {id} = useParams();
 
     const [isLoading, setIsLoading] = useState(false);
-    const [departementDetails, setDepartementDetails] = useState([]);
+    const [departementCours, setdepartementCours] = useState([]);
 
     useEffect(() => {
         setIsLoading(true);
-        fetch(`http://localhost:8000/departements/${id}`)
+        fetch(`http://localhost:8000/api/departements/${id}/cours`)
             .then((response) => response.json())
-            .then((departementDetails) => {
-                setDepartementDetails(departementDetails);
+            .then((departementCours) => {
+                setdepartementCours(departementCours);
                 setIsLoading(false);
             })
             .catch((error) => {
                 console.log(error);
                 setIsLoading(false);
             });
-    }, [id]);
-
+    }, []);
+    console.log(departementCours);
     return(
         <DivPageDetailsDepartement>
             <ArticleTitle texte="Détails du département" />
@@ -64,11 +65,7 @@ function DetailsDepartement(){
                         <h1>Nom du département</h1>
                         <h3>Les professeurs du département </h3>
                         <DivListeProfesseurs>
-                            <CarteProfesseur idProfesseur={1} nomProfesseur={'jean bon'} matieresProfesseur={['français','maths','philo']} nombreEtudiants={45}/>
-                            <CarteProfesseur idProfesseur={2} nomProfesseur={'jean bon'} matieresProfesseur={['français','maths','philo']} nombreEtudiants={45}/>
-                            <CarteProfesseur idProfesseur={3} nomProfesseur={'jean bon'} matieresProfesseur={['français','maths','philo']} nombreEtudiants={45}/>
-                            <CarteProfesseur idProfesseur={4} nomProfesseur={'jean bon'} matieresProfesseur={['français','maths','philo']} nombreEtudiants={45}/>
-                            <CarteProfesseur idProfesseur={5} nomProfesseur={'jean bon'} matieresProfesseur={['français','maths','philo']} nombreEtudiants={45}/>
+                            <CarteCours idCours={1} nomCours={'Maths'} ponderationCours={4} tailleGroupeCours={20} nbGroupesCours={4}/>
                         </DivListeProfesseurs>
                         <h3>Les cours de ce département</h3>
                     </DivDetailsDepartement>
