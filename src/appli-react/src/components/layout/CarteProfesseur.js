@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { colors } from "../../utils/styles";
+import { colors,fonts } from "../../utils/styles";
 import { Lien } from "../forms"
 
 /* ---------------------------------- STYLE --------------------------------- */
@@ -7,7 +7,7 @@ import { Lien } from "../forms"
 export const DivCarteReduite = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
 
     box-shadow: 0 0 10px ${colors.gris};
@@ -15,19 +15,6 @@ export const DivCarteReduite = styled.div`
     padding: 0.25rem 1.5rem;
     width: auto;
     height: 300px;
-`;
-
-const UlMatieres = styled.ul`
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    padding: 0; 
-    margin: 0;
-`;
-
-const LiMatieres = styled.li`
-    list-style-type: none;
-    margin:0rem 0rem 1rem 0.5rem;
 `;
 
 export const DivLien = styled.div`
@@ -38,24 +25,36 @@ export const DivLien = styled.div`
     padding: 0;
 `;
 
+const H1Cours = styled.h1`
+    width: fit-content;
+    margin: 0.25rem 0;
+    font-family: ${fonts.titre};
+    font-size: 1.5rem;
+    color: ${colors.bleuFonce};
+    margin-bottom: 1rem;
+
+    &:after{
+        content: "";
+        display: block;
+        width: 100%;
+        height: 2px;
+        background-color: ${colors.jauneFonce};
+    }
+`;
+
 const H4CarteReduite = styled.h4`
     margin: 0.25rem 0;
+    font-family: ${fonts.titre};
+    font-size: 1.25rem;
+    color: ${colors.bleuFonce};
 `;
 
 function CarteProfesseur({idProfesseur, nomProfesseur, matieresProfesseur,nombreEtudiants}){
     return(
         <DivCarteReduite>
-            <h2>{nomProfesseur}</h2>
-            <H4CarteReduite>Matieres</H4CarteReduite>
-            <UlMatieres>
-                {
-                    matieresProfesseur.map((matiere) => {
-                        return <LiMatieres>{matiere}</LiMatieres>
-                    })
-                }
-            </UlMatieres>
-            <H4CarteReduite>Nombre d'étudiants </H4CarteReduite>
-            <H4CarteReduite>{nombreEtudiants}</H4CarteReduite>
+            <H1Cours>{nomProfesseur}</H1Cours>
+            <H4CarteReduite>Matiere</H4CarteReduite>
+            <p>{matieresProfesseur}</p>
             <DivLien>
                 <Lien to={"/professeur/modifier/"+idProfesseur}>Modifier</Lien>
                 <Lien to={"/professeur/supprimer/"+idProfesseur}>Supprimer</Lien>

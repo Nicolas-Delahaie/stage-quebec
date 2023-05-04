@@ -39,6 +39,7 @@ Route::get('/departements/{id}', [DepartementController::class, 'show']);
 Route::get('/departements/{id}/coordonnateur', [DepartementController::class, 'showCoordonnateur']);
 Route::get('/departements/{id}/cours', [DepartementController::class, 'showCours']);
 Route::get('/departements/{id}/scenarios', [DepartementController::class, 'showScenarios']);
+Route::get('/departements/{id}/users', [DepartementController::class, 'showUsers']);
 
 
 /* -------------------------------------------------------------------------- */

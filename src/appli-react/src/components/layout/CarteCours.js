@@ -34,13 +34,13 @@ const H2Cours = styled.h2`
     color: ${colors.bleuFonce};
 `;
 
-function CarteCours({idCours,nomCours, ponderationCours,tailleGroupeCours, nbGroupesCours}){
+function CarteCours({idCours,nomCours, ponderationCours,tailleGroupesCours, nbGroupesCours}){
     return(
         <DivCarteReduite>
             <H1Cours>{nomCours}</H1Cours>
             <DivH2>
                 <H2Cours>Pondération : {ponderationCours}</H2Cours>
-                <H2Cours>Taille du groupe : {tailleGroupeCours}</H2Cours>
+                <H2Cours>Taille du groupe : {tailleGroupesCours}</H2Cours>
                 <H2Cours>Nombre de groupes : {nbGroupesCours}</H2Cours>
             </DivH2>
             <DivLien>
