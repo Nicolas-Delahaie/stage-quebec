@@ -6,7 +6,7 @@
 import styled from "styled-components"
 
 /* import des variables de style */
-import { colors } from "../../utils/styles"
+import { colors,fonts } from "../../utils/styles"
 
 /* import du composant Lien */
 import Lien from "../forms/Lien"
@@ -20,8 +20,8 @@ const Carte = styled.div`
     height: 40vh;
     border-radius: 1rem;
     box-shadow: 0px 10px 10px 0px ${colors.gris};
-    padding : 1rem;
-    margin: 1rem;
+    padding : 2rem;
+    margin: 1rem 4rem;
     `;
 
 const ImageCarte = styled.img`
@@ -36,6 +36,24 @@ const ContenuCarte = styled.div`
     justify-content: space-between;
 `;
 
+const H2Carte = styled.h2`
+    font-size: 2rem;
+    margin: 0rem 0rem 2rem 1rem;
+    font-family: ${fonts.titre};
+    color: ${colors.bleuFonce};
+    width: fit-content;
+
+    &:after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 0.25rem;
+        background-color: ${colors.jauneFonce};
+        border-radius: 1rem;
+    }
+`;
+
+
 /**
  * 
  * @param {string} urlImage Prend en paramètre l'url de l'image à afficher
@@ -49,7 +67,7 @@ function CarteHorizontale({urlImage, titre, texteBouton, lien, children:enfants}
     return(
         <Carte>
             <ContenuCarte>
-                <h2>{titre}</h2>
+                <H2Carte>{titre}</H2Carte>
                 {enfants}
                 <Lien to={lien}>
                     {texteBouton}

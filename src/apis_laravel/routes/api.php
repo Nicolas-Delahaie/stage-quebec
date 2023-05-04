@@ -116,3 +116,7 @@ Route::get('/users/{id}/scenarios', [UserController::class,'showScenarios']);
 /* ------------------------------ DEPARTEMENTS ------------------------------ */
 
 Route::get('/departementsDetaille', [DepartementController::class, 'showCoordonnateurs']);
+
+/* -------------------------------- SCENARIOS ------------------------------- */
+
+Route::get('/users/{id}/scenariosDetailles', [UserController::class,'showScenariosDetailles']);
