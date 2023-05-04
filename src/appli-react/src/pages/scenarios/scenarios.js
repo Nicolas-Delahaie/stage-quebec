@@ -82,7 +82,7 @@ function Scenarios() {
                                 key={scenario.id}
                                 {...scenario.aEteValide ? urlImage = Valider : urlImage = Calendrier}
                                 urlImage={urlImage}
-                                titre={scenario.departement.nom}
+                                titre={"Département " + scenario.departement.nom}
                                 texteBouton="Voir le scénario"
                                 lien={`/scenarios/${scenario.id}`}
                             >
