@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Scenario;
+use App\Models\Modification;
 
 class ScenarioController extends Controller
 {
@@ -25,7 +26,17 @@ class ScenarioController extends Controller
         return Scenario::findOrFail($id)->rdvs->toJson();
     }
     public function showModifications($id){
-        return Scenario::findOrFail($id)->modifications->toJson();
+        return Modification::where('scenario_id', $id)
+        ->with('user')
+        ->get()
+        ->map(function ($modification) {
+            return [
+                'id' => $modification->id,
+                'date_modif' => $modification->date_modif,
+                'utilisateur_name' => $modification->user->name,
+            ];
+        })
+        ->toJson();    
     }
     public function showDetails($id){
         $scenario = Scenario::with('proprietaire', 'departement')->findOrFail($id);

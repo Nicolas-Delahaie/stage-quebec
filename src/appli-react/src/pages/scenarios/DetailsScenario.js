@@ -3,7 +3,7 @@ import { ArticleTitle } from "../../components/forms";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import { Loader,colors,fonts } from "../../utils/styles";
+import { Loader, colors, fonts } from "../../utils/styles";
 
 import styled from "styled-components";
 
@@ -48,30 +48,49 @@ const H2Scenario = styled.h2`
     color: ${colors.bleuFonce};
 `;
 
-function DetailsScenario(){
+function DetailsScenario() {
     const id = useParams().id;
     const [scenario, setScenario] = useState({});
+    const [modification, setModification] = useState({});
     const [loading, setLoading] = useState(false);
 
+
+    /**
+     * Récupération des données détaillées du scénario
+     */
     useEffect(() => {
         setLoading(true);
         fetch(`http://localhost:8000/api/scenarios/${id}/detaille`)
-        .then((response) => {
-            return response.json();
-        })
-        .then((data) => {
-            setScenario(data);
-            setLoading(false);
-        })
-        .catch((error) => {
-            console.log(error);
-            setLoading(false);
-        });
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                setScenario(data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                setLoading(false);
+            });
     }, []);
 
-console.log(scenario);
+    useEffect(() => {
+        setLoading(true);
+        fetch(`http://localhost:8000/api/scenarios/${id}/modifications`)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                setModification(data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                setLoading(false);
+            });
+    }, []);
 
-    return(
+    return (
         <DivPageDetailsScenario>
             <ArticleTitle texte="Détails du scénario" />
             {loading || scenario.id === undefined ? (
@@ -83,6 +102,23 @@ console.log(scenario);
                     <p>Date de création : {scenario.created_at}</p>
                     <p>Dernière modification : {scenario.updated_at}</p>
                     <H2Scenario>Propriétaire : {scenario.proprietaire.nom}</H2Scenario>
+                    <H1Scenario>Historique des modifications : </H1Scenario>
+                    {
+                        modification[0] === undefined ? (
+                            <p>Aucune modification n'a été apportée</p>
+                        ) : (
+                            <div>
+                                {
+                                    modification.map((modif) => (
+                                        <div key={modif.id}>
+                                            <p>Date de dernière modification : {modif.date_modif}</p>
+                                            <p>Utilisateur aillant fait la modification : {modif.utilisateur_name}</p>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        )
+                    }
                 </DivDetailsScenario>
             )}
         </DivPageDetailsScenario>
