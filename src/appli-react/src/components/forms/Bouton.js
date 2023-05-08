@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { colors, fonts } from "../../utils/styles";
 
-const BoutonStyle = styled.button`
+export const BoutonStyle = styled.button`
     background-color: ${colors.jauneFonce};
     color: ${colors.bleuFonce};
     text-decoration: none;

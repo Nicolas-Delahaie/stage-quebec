@@ -18,6 +18,7 @@ import DetailsScenario from "./pages/scenarios/DetailsScenario";
 import Departements from "./pages/Departements/Departements";
 import DetailsDepartement from "./pages/Departements/DetailsDepartement";
 import ProfesseurModification from "./pages/Professeur/ProfesseurModification";
+import Contraintes from "./pages/users/Contraintes";
 
 /* Import des Layout */
 import Header from "./components/layout/Header";
@@ -41,6 +42,7 @@ function App() {
             <Route exact path="/departements" element={<Departements />} />
             <Route exact path="/departements/:id" element={<DetailsDepartement />} />
             <Route exact path="/professeur/modifier/:id" element={<ProfesseurModification />} />
+            <Route exact path='/users/:id/contraintes' element={<Contraintes />} />
           </Routes>
           <Footer />
         </AppProvider>

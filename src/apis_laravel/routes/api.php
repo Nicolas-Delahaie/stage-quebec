@@ -103,6 +103,7 @@ use App\Http\Controllers\UserController;
 
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/users/{id}', [UserController::class,'show']);
+Route::put('/users/{id}', [UserController::class,'updateContraintes']);
 Route::get('/users/{id}/type', [UserController::class,'showType']);
 Route::get('/users/{id}/liberations', [UserController::class,'showLiberations']);
 Route::get('/users/{id}/modifications', [UserController::class,'showModifications']);

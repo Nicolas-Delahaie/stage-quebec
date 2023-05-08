@@ -75,4 +75,15 @@ class UserController extends Controller
 
         return response()->json($data);
     }
+
+    public function updateContraintes(Request $request, $id)
+    {
+        $scenario = User::findOrFail($id);
+    
+        $scenario->contraintes = $request->input('contraintes');
+    
+        $scenario->save();
+    
+        return User::findOrFail($id);
+    }
 }
