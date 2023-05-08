@@ -27,4 +27,25 @@ class ScenarioController extends Controller
     public function showModifications($id){
         return Scenario::findOrFail($id)->modifications->toJson();
     }
+    public function showDetails($id){
+        $scenario = Scenario::with('proprietaire', 'departement')->findOrFail($id);
+        $data = [
+            'id' => $scenario->id,
+            'aEteValide' => $scenario->aEteValide,
+            'annee' => $scenario->annee,
+            'created_at' => $scenario->created_at->format('Y-m-d'),
+            'updated_at' => $scenario->updated_at->format('Y-m-d'),
+            'departement' => [
+                'id' => $scenario->departement->id,
+                'nom' => $scenario->departement->nom,
+            ],
+            'proprietaire' => [
+                'id' => $scenario->proprietaire->id,
+                'nom' => $scenario->proprietaire->name,
+                'email' => $scenario->proprietaire->email,
+            ],
+        ];
+
+        return response()->json($data);
+    }
 }

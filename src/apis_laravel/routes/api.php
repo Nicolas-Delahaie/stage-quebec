@@ -120,3 +120,4 @@ Route::get('/departementsDetaille', [DepartementController::class, 'showCoordonn
 /* -------------------------------- SCENARIOS ------------------------------- */
 
 Route::get('/users/{id}/scenariosDetailles', [UserController::class,'showScenariosDetailles']);
+Route::get('/scenarios/{id}/detaille', [ScenarioController::class, 'showDetails']);
