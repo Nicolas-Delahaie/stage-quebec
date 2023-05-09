@@ -27,6 +27,8 @@ Route::get('/cours', [CoursController::class, 'index']);
 Route::get('/cours/{id}', [CoursController::class, 'show']);
 Route::get('/cours/{id}/enseignants', [CoursController::class, 'showEnseignants']);
 Route::get('/cours/{id}/departements', [CoursController::class, 'showDepartements']);
+Route::delete('/cours/{id}', [CoursController::class, 'delete']);
+Route::put('/cours/{id}', [CoursController::class, 'update']);
 
 
 /* -------------------------------------------------------------------------- */

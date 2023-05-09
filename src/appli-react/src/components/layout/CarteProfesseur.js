@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { colors,fonts } from "../../utils/styles";
-import { Lien } from "../forms"
+import { Bouton } from "../forms"
 
 /* ---------------------------------- STYLE --------------------------------- */
 
@@ -12,12 +12,11 @@ export const DivCarteReduite = styled.div`
 
     box-shadow: 0 0 10px ${colors.gris};
     border-radius: 1rem;
-    padding: 0.25rem 1.5rem;
+    padding: 2rem 1.5rem;
     width: auto;
-    height: 300px;
 `;
 
-export const DivLien = styled.div`
+export const DivBouton = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -28,7 +27,7 @@ export const DivLien = styled.div`
 const H1Cours = styled.h1`
     width: fit-content;
     margin: 0.25rem 0;
-    font-family: ${fonts.titre};
+    font-family: ${fonts.sousTitre};
     font-size: 1.5rem;
     color: ${colors.bleuFonce};
     margin-bottom: 1rem;
@@ -44,9 +43,9 @@ const H1Cours = styled.h1`
 
 const H4CarteReduite = styled.h4`
     margin: 0.25rem 0;
-    font-family: ${fonts.titre};
+    font-family: ${fonts.sousTitre};
     font-size: 1.25rem;
-    color: ${colors.bleuFonce};
+    color: ${colors.bleuMoyen};
 `;
 
 function CarteProfesseur({idProfesseur, nomProfesseur, matieresProfesseur,nombreEtudiants}){
@@ -55,10 +54,10 @@ function CarteProfesseur({idProfesseur, nomProfesseur, matieresProfesseur,nombre
             <H1Cours>{nomProfesseur}</H1Cours>
             <H4CarteReduite>Matiere</H4CarteReduite>
             <p>{matieresProfesseur}</p>
-            <DivLien>
-                <Lien to={"/professeur/modifier/"+idProfesseur}>Modifier</Lien>
-                <Lien to={"/professeur/supprimer/"+idProfesseur}>Supprimer</Lien>
-            </DivLien>
+            <DivBouton>
+                <Bouton>Modifier</Bouton>
+                <Bouton>Supprimer</Bouton>
+            </DivBouton>
         </DivCarteReduite>
     )
 }

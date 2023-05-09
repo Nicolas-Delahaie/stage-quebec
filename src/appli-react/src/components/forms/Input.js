@@ -13,13 +13,23 @@ const StyledInput = styled.input`
     cursor: text;
     border: none;
     box-shadow: 0px 5px 10px 0px ${colors.gris};
-    margin: 1rem;
     border-radius: 0.5rem;
     font-family: ${fonts.texte};
     padding: 0rem 0.25rem;
-    margin: 1rem;
+    margin: 0.25rem 0;
+    color: ${colors.bleuMoyen};
     &:focus{
         outline: none;
+    }
+
+    ::placeholder{
+        color: ${colors.gris};
+    }
+
+    ::-webkit-outer-spin-button,
+    ::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
     `;
 
@@ -28,9 +38,9 @@ const StyledInput = styled.input`
  * 
  * @returns un input stylisé
  */
-function Input(){
+function Input({type,placeholder}){
     return(
-        <StyledInput type="text" />
+        <StyledInput type={type} placeholder={placeholder}/>
     )
 }
 

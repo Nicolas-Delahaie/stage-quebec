@@ -31,6 +31,20 @@ const DivListe = styled.div`
     grid-gap: 1rem;
 `;
 
+const H1Departements = styled.h1`
+    font-size: 2.5rem;
+    font-family: ${fonts.titre};
+    color: ${colors.bleuFonce};
+
+    &:after{
+        content: "";
+        display: block;
+        width: 100%;
+        height: 2px;
+        background-color: ${colors.jauneFonce};
+    }
+`;
+
 const H2DetailsDepartement = styled.h3`
     margin: 3rem 0rem;
     font-size: 1.5rem;
@@ -46,6 +60,12 @@ const H2DetailsDepartement = styled.h3`
         height: 2px;
         background-color: ${colors.jauneFonce};
     }
+`;
+
+const H3Coordonnateur = styled.h3`
+    font-size: 1.5rem;
+    font-family: ${fonts.sousTitre};
+    color: ${colors.bleuMoyen};
 `;
 
 /* ----------------------------------- DOM ---------------------------------- */
@@ -122,9 +142,6 @@ function DetailsDepartement(){
             });
             setIsLoading(false);
     }, []);
-
-    console.log(departementProfesseurs);
-
     return(
         <DivPageDetailsDepartement>
             <ArticleTitle texte="Détails du département" />
@@ -134,8 +151,8 @@ function DetailsDepartement(){
                 )
                 : (
                     <DivDetailsDepartement>
-                        <h1>{departement.nom}</h1>
-                        <h3>Coordonnateur du département {departementCoordonnateur.name}</h3>
+                        <H1Departements>{departement.nom}</H1Departements>
+                        <H3Coordonnateur>Coordonnateur du département {departementCoordonnateur.name}</H3Coordonnateur>
                         <H2DetailsDepartement>Les cours du département </H2DetailsDepartement>
                         <DivListe>
                             {

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 
 /* import pour le style */
 import styled from "styled-components"
-import { Loader } from "../../utils/styles"
+import { Loader,fonts,colors } from "../../utils/styles"
 
 /* import des composants */
 import CarteHorizontale from "../../components/layout/CarteHorizontale"

@@ -20,4 +20,18 @@ class CoursController extends Controller
     public function showDepartements($id){
         return Cours::find($id)->departements->toJson();
     }
+    public function delete($id){
+        $cours = Cours::find($id);
+        $cours->delete();
+        return $cours;
+    }
+
+    public function update(Request $request, $id){
+        $cours = Cours::find($id);
+        $cours->ponderation = $request->input('ponderation');
+        $cours->tailleGroupe = $request->input('tailleGroupe');
+        $cours->nbGroupes = $request->input('nbGroupes');
+        $cours->save();
+        return $cours;
+    }
 }

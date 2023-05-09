@@ -59,6 +59,7 @@ const TextareaContraintes = styled.textarea`
 /* ----------------------------------- DOM ---------------------------------- */
 
 function Contraintes() {
+
     const id = useParams().id;
     const [loading, setLoading] = useState(false);
     const [userData, setUserData] = useState({});
@@ -84,6 +85,7 @@ function Contraintes() {
     }
 
     const BoutonEnregistrer = () => {
+        console.log('test');
         if (contraintes !== "") {
             setLoading(true);
             fetch(`http://localhost:8000/api/users/${id}`, {
@@ -106,8 +108,6 @@ function Contraintes() {
                 });
         }
     }
-
-    console.log(contraintes)
 
     return (
         <DivPageContraintes>

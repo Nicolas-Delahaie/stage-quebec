@@ -41,8 +41,9 @@ function App() {
             <Route exact path="/scenarios/:id" element={<DetailsScenario />} />
             <Route exact path="/departements" element={<Departements />} />
             <Route exact path="/departements/:id" element={<DetailsDepartement />} />
-            <Route exact path="/professeur/modifier/:id" element={<ProfesseurModification />} />
             <Route exact path='/users/:id/contraintes' element={<Contraintes />} />
+            {/* A faire */}
+            <Route exact path="/professeur/modifier/:id" element={<ProfesseurModification />} />
           </Routes>
           <Footer />
         </AppProvider>
