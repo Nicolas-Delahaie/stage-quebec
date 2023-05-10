@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { useContext } from 'react';
 import { AppContext } from '../utils/context/context';
+import Cookies from 'js-cookie';
 
 function TestApis() {
     const { getToken } = useContext(AppContext);
@@ -24,6 +25,7 @@ function TestApis() {
             .catch(error => console.error(error));
     }
 
+    console.log(getToken())
     return (
         <div>
             <h1>Test des APIs</h1>

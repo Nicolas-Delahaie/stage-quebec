@@ -7,31 +7,40 @@ use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log; /** @todo retirer ça */
+use Illuminate\Support\Facades\Log;
+
+/** @todo retirer ça */
 
 
 class UserController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return User::all();
     }
 
-    public function show($id){
+    public function show($id)
+    {
         return User::findOrFail($id);
     }
-    public function showType($id){
+    public function showType($id)
+    {
         return User::findOrFail($id)->type->toJson();
     }
-    public function showLiberations($id){
+    public function showLiberations($id)
+    {
         return User::findOrFail($id)->liberations->toJson();
     }
-    public function showModifications($id){
+    public function showModifications($id)
+    {
         return User::findOrFail($id)->modifications->toJson();
     }
-    public function showCours($id){
+    public function showCours($id)
+    {
         return User::findOrFail($id)->cours->toJson();
     }
-    public function showScenarios($id){
+    public function showScenarios($id)
+    {
         return User::findOrFail($id)->scenarios->toJson();
     }
 
@@ -44,14 +53,16 @@ class UserController extends Controller
     {
         try {
             //Validated
-            $validateUser = Validator::make($request->all(), 
-            [
-                'name' => 'required',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required'
-            ]);
+            $validateUser = Validator::make(
+                $request->all(),
+                [
+                    'name' => 'required',
+                    'email' => 'required|email|unique:users,email',
+                    'password' => 'required'
+                ]
+            );
 
-            if($validateUser->fails()){
+            if ($validateUser->fails()) {
                 return response()->json([
                     'status' => false,
                     'message' => 'validation error',
@@ -68,8 +79,9 @@ class UserController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'User Created Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                // 'token' => $token
             ], 200);
+
 
         } catch (\Throwable $th) {
             return response()->json([
@@ -88,13 +100,15 @@ class UserController extends Controller
     {
         try {
             // -- Validation des parametres --
-            $validateUser = Validator::make($request->all(), 
-            [
-                'email' => 'required|email',
-                'password' => 'required'
-            ]);
+            $validateUser = Validator::make(
+                $request->all(),
+                [
+                    'email' => 'required|email',
+                    'password' => 'required'
+                ]
+            );
 
-            if($validateUser->fails()){
+            if ($validateUser->fails()) {
                 // Log::info($validateUser->errors());
                 return response()->json([
                     // 'status' => false,
@@ -103,29 +117,32 @@ class UserController extends Controller
                 ], 422);
             }
 
-            
+
             // -- Verification des identifiants --
             $user = User::where('email', $request->email)->first();
-            if(!$user || !Hash::check($request->password, $user->password)){
+            if (!$user || !Hash::check($request->password, $user->password)) {
                 // Mauvais identifiants
                 return response()->json([
                     // 'status' => false,
                     // 'message' => 'Mauvais identifiants',
                 ], 401);
-            }
-            else{
+            } else {
                 // Identifiants bons
-                $token = $user->createToken("userToken");   //Fabrication du token
-                /** @todo Supprimer api_token qui est une copie de personal_access_token */
-                $user->api_token = $token->plainTextToken;  //On met le jeton genere dans personnal_access_tokens dans api_token de l utilisateur
-                $user->save();
+                $token = $user->createToken('userToken')->plainTextToken;
+
+                // $user->tokens()->create([
+                //     'name' => 'userToken',
+                //     'token' => $token = $user->createToken('userToken')->plainTextToken,
+                //     'abilities' => 'test',
+                //     'last_used_at' => now(),
+                //     'expires_at' => now()->addDays(1),
+                // ]);
+
                 return response()->json([
                     'status' => true,
-                    'token' => $token
+                    'token' => $token,
                 ], 200);
             }
-
-
         } catch (\Throwable $th) {
             return response()->json([
                 // 'status' => false,
@@ -134,7 +151,4 @@ class UserController extends Controller
             ], 500);
         }
     }
-
-
 }
-
