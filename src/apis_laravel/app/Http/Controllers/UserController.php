@@ -79,7 +79,6 @@ class UserController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'User Created Successfully',
-                // 'token' => $token
             ], 200);
 
 
@@ -129,14 +128,6 @@ class UserController extends Controller
             } else {
                 // Identifiants bons
                 $token = $user->createToken('userToken')->plainTextToken;
-
-                // $user->tokens()->create([
-                //     'name' => 'userToken',
-                //     'token' => $token = $user->createToken('userToken')->plainTextToken,
-                //     'abilities' => 'test',
-                //     'last_used_at' => now(),
-                //     'expires_at' => now()->addDays(1),
-                // ]);
 
                 return response()->json([
                     'status' => true,
