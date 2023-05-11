@@ -19,6 +19,7 @@ import Departements from "./pages/Departements/Departements";
 import DetailsDepartement from "./pages/Departements/DetailsDepartement";
 import ProfesseurModification from "./pages/Professeur/ProfesseurModification";
 import Contraintes from "./pages/users/Contraintes";
+import NotFound from "./pages/NotFound";
 
 /* Import des Layout */
 import Header from "./components/layout/Header";
@@ -44,6 +45,8 @@ function App() {
             <Route exact path='/users/:id/contraintes' element={<Contraintes />} />
             {/* A faire */}
             <Route exact path="/professeur/modifier/:id" element={<ProfesseurModification />} />
+
+            <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer />
         </AppProvider>
