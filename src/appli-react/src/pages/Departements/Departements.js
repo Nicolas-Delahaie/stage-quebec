@@ -81,12 +81,11 @@ function rechercheImage(nomDepartement) {
             return langues_modernes;
         case "Lettres":
             return lettres;
-            /*fautes à corriger*/
         case "Mathémathiques":
             return maths;
         case "Philisophie":
             return Philosophie;
-            /*  ------------------ */
+        /*  ------------------ */
         case "Physique":
             return physique;
         case "Sciences humaines":
@@ -103,11 +102,11 @@ function rechercheImage(nomDepartement) {
 /* ----------------------------------- DOM ---------------------------------- */
 
 function Departements() {
-    
+
     const [isLoading, setIsLoading] = useState(false);
     const [departementsData, setDepartementsData] = useState({});
 
-    useEffect(() => { 
+    useEffect(() => {
         setIsLoading(true);
         fetch("http://localhost:8000/api/departementsDetaille")
             .then((response) => response.json())
@@ -119,7 +118,7 @@ function Departements() {
             .catch((error) => {
                 console.log(error);
             });
-            setIsLoading(false);
+        setIsLoading(false);
     }, [])
 
     return (
@@ -131,7 +130,7 @@ function Departements() {
                 )
                     : (
                         <StyledDepartements>
-                            {                               
+                            {
                                 departementsData.map( (departement) => (
                                     <CarteHorizontale
                                         key={departement.id}
@@ -144,7 +143,7 @@ function Departements() {
                                         <p>Nombre d'étudiant : {departement.nbEleves}</p>
                                     </CarteHorizontale>
                                 ))
-                        }
+                            }
                         </StyledDepartements>
                     )
             }

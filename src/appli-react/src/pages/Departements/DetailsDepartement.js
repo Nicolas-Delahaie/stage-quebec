@@ -8,6 +8,8 @@ import ArticleTitle from "../../components/forms/ArticleTitle";
 import CarteProfesseur from "../../components/layout/CarteProfesseur";
 import CarteCours from "../../components/layout/CarteCours";
 
+/** @todo Faire en sorte que les donnees se chargent hierarchiquement (actuellement tous les fetchs se font en meme temps de maniere asynchrone) */
+
 /* ---------------------------------- STYLE --------------------------------- */
 
 const DivPageDetailsDepartement = styled.div`
@@ -70,108 +72,158 @@ const H3Coordonnateur = styled.h3`
 
 /* ----------------------------------- DOM ---------------------------------- */
 
-function DetailsDepartement(){
-    const {id} = useParams();
+function DetailsDepartement() {
+    const { id } = useParams();
 
-    const [isLoading, setIsLoading] = useState(false);
+    // const [loadingDepartement, setloadingDepartement] = useState(false);
+
+    // Tous les booleens indiquant si la ressource a ete chargee ou non
+    const [loadingDepartement, setLoadingDepartement] = useState(true);
+    const [loadingCoordo, setLoadingCoordo] = useState(true);
+    const [loadingCours, setLoadingCours] = useState(true);
+    const [loadingProfesseurs, setLoadingProfesseurs] = useState(true);
+
     const [departement, setDepartement] = useState([]);
-    const [departementCours, setdepartementCours] = useState([]);
-    const [departementCoordonnateur, setDepartementCoordonnateur] = useState([]);
-    const [departementProfesseurs, setDepartementProfesseurs] = useState([]);
+    const [cours, setCours] = useState([]);
+    const [coordo, setCoordo] = useState([]);
+    const [professeurs, setProfesseurs] = useState([]);
 
-    /**
-     * Récupération des données générales du département
-     */
+    // Récupération des données
     useEffect(() => {
-        setIsLoading(true);
-        fetch(`http://localhost:8000/api/departements/${id}`)   
-            .then((response) => response.json())
-            .then((departement) => {
-                setDepartement(departement);
+        // Récupération des informations generales du departement
+        fetch(`http://localhost:8000/api/departements/${id}`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw Error('could not fetch the data for that resource');
+                }
+                return res.json();
+            })
+            .then((data) => {
+                console.log(data);
+                setDepartement(data);
+                setLoadingDepartement(false);
             })
             .catch((error) => {
                 console.log(error);
             });
-            setIsLoading(false);
-    }, []);
 
-    /**
-     * Récupération du coordonnateur du département
-     */
-    useEffect(() => {
-        setIsLoading(true);
-        fetch(`http://localhost:8000/api/departements/${id}/coordonnateur`)
-            .then((response) => response.json())
-            .then((departementCoordonnateur) => {
-                setDepartementCoordonnateur(departementCoordonnateur);
+        // Récupération du coordonnateur du département
+        fetch(`http://localhost:8000/api/departements/${id}/coordonnateur`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw Error('could not fetch the data for that resource');
+                }
+                return res.json();
+            })
+            .then((data) => {
+                console.log(data);
+                setCoordo(data);
+                setLoadingCoordo(false);
             })
             .catch((error) => {
                 console.log(error);
             });
-            setIsLoading(false);
-    }, []);
 
-    /**
-     * Récupération des cours du département
-     */
-    useEffect(() => {
-        setIsLoading(true);
-        fetch(`http://localhost:8000/api/departements/${id}/cours`)
-            .then((response) => response.json())
-            .then((departementCours) => {
-                setdepartementCours(departementCours);
+        // Récupération des departements du département
+        fetch(`http://localhost:8000/api/departements/${id}/cours`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw Error('could not fetch the data for that resource');
+                }
+                return res.json();
+            })
+            .then((data) => {
+                console.log(data);
+                setCours(data);
+                setLoadingCours(false);
             })
             .catch((error) => {
                 console.log(error);
             });
-            setIsLoading(false);
-    }, []);
 
-    /**
-     * Récupération des professeurs du département
-     */
-    useEffect(() => {
-        setIsLoading(true);
-        fetch('http://localhost:8000/api/departements/7/users')
-            .then((response) => response.json())
-            .then((departementProfesseurs) => {
-                setDepartementProfesseurs(departementProfesseurs);
+        // Récupération des professeurs du département
+        fetch(`http://localhost:8000/api/departements/${id}/users`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw Error('could not fetch the data for that resource');
+                }
+                return res.json();
+            })
+            .then((data) => {
+                console.log(data);
+                setProfesseurs(data);
+                setLoadingProfesseurs(false);
             })
             .catch((error) => {
                 console.log(error);
             });
-            setIsLoading(false);
     }, []);
-    return(
+
+
+    return (
         <DivPageDetailsDepartement>
             <ArticleTitle texte="Détails du département" />
             {
-                isLoading || departementCours.length === 0 || departementProfesseurs.length === 0 ? (
+                loadingDepartement ?
                     <Loader />
-                )
-                : (
+                    :
                     <DivDetailsDepartement>
                         <H1Departements>{departement.nom}</H1Departements>
-                        <H3Coordonnateur>Coordonnateur du département {departementCoordonnateur.name}</H3Coordonnateur>
+                        {
+                            loadingCoordo ?
+                                <Loader />
+                                :
+                                <H3Coordonnateur>Coordonné par : {coordo.name}</H3Coordonnateur>
+                        }
                         <H2DetailsDepartement>Les cours du département </H2DetailsDepartement>
                         <DivListe>
                             {
-                                departementCours?.map((cours) => (
-                                    <CarteCours key={cours.id} idCours={cours.id} nomCours={cours.nom} ponderationCours={cours.pivot.ponderation} tailleGroupesCours={cours.pivot.tailleGroupes} nbGroupesCours={cours.pivot.nbGroupes}/>
-                                ))
+                                loadingCours ?
+                                    <Loader />
+                                    :
+                                    (
+                                        cours?.map((unCours) => (
+                                            <CarteCours key={unCours.id} cours={unCours} idDepartement={departement.id} allCours={cours} setAllCours={setCours} />
+                                        ))
+                                    )
                             }
-                            <CarteCours idCours={1} nomCours={'Maths'} ponderationCours={4} tailleGroupeCours={20} nbGroupesCours={4}/>
                         </DivListe>
                         <H2DetailsDepartement>Les professeurs de ce département</H2DetailsDepartement>
                         <DivListe>
                             {
-                                departementProfesseurs?.map((professeur) => (
-                                    <CarteProfesseur key={professeur.id} idProfesseur={professeur.id} nomProfesseur={professeur.name} matieresProfesseur={professeur.nom}/>
-                                ))
+                                loadingProfesseurs ?
+                                    <Loader />
+                                    :
+                                    professeurs?.map((professeur) => (
+                                        <CarteProfesseur key={professeur.id} idProfesseur={professeur.id} nomProfesseur={professeur.name} matieresProfesseur={professeur.nom} />
+                                    ))
                             }
                         </DivListe>
                     </DivDetailsDepartement>
-                )
             }
         </DivPageDetailsDepartement>
     )
