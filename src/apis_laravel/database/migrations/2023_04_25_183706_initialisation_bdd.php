@@ -18,8 +18,7 @@ return new class extends Migration
         // ------- CREATION TABLES --------
         Schema::table("users", function (Blueprint $table) {
             // Modification de users
-            $table->string("contraintes", 255)->nullable();
-            $table->unsignedBigInteger("type_utilisateur_id");
+            $table->unsignedBigInteger("type_utilisateur_id")->before("email_verified_at");
         });
         Schema::create("type_utilisateur", function (Blueprint $table) {
             $table->id();

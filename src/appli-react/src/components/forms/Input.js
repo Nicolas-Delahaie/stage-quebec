@@ -6,7 +6,7 @@
 import styled from "styled-components"
 
 /* import des variables de style */
-import { colors,fonts } from "../../utils/styles"
+import { colors, fonts } from "../../utils/styles"
 
 const StyledInput = styled.input`
     height: 1.5rem;
@@ -38,10 +38,17 @@ const StyledInput = styled.input`
  * 
  * @returns un input stylisé
  */
-function Input({type,placeholder}){
-    return(
-        <StyledInput type={type} placeholder={placeholder}/>
-    )
+function Input({ type, placeholder, onChange, required }) {
+    if (required) {
+        return (
+            <StyledInput type={type} placeholder={placeholder} onChange={onChange} required />
+        )
+    }
+    else {
+        return (
+            <StyledInput type={type} placeholder={placeholder} onChange={onChange} />
+        )
+    }
 }
 
 export default Input

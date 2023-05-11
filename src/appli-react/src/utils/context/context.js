@@ -1,25 +1,57 @@
 
-/* import permetant de créer un contexte pour l'application */
-import { createContext } from 'react';
-
-/* import permetant de créer un state pour l'application */
-import { useState } from 'react';
+import { createContext } from 'react';  //Pour generer le contexte
+import Cookies from 'js-cookie';        //Pour récupérer les cookies
+import { useState } from 'react';        //Pour utiliser les variables d'état
 
 /* création du contexte */
 export const AppContext = createContext();
 
-/* création du state */
 export const AppProvider = ({ children }) => {
-    const [isConnected, setIsConnected] = useState(false);
+    /**
+     * @brief UseState a utiliser sur des elements graphiques dynamiques en fonction de si l utilisateur est connecte (header par exemple)
+     * @details Mise à jour a chaque recuperation du token
+     */
+    const [estConnecte, setEstConnecte] = useState(Cookies.get('token') !== undefined);
 
-    /*fonction permetant de changer la valeur de isConnected */
-    const toggleConnexion = () => {
-        setIsConnected(true);
-        console.log(isConnected);
-    };
-    /*retourne le context de l'application */
+    /**
+     * @brief Retourne le token de l'utilisateur, undefined s il n est pas connecté
+     * @details Met egalement a jour la variable estConnecte 
+     * @returns string
+     */
+    const getToken = () => {
+        let token = Cookies.get('token');
+        if (token) {
+            setEstConnecte(true);
+            return JSON.parse(token).plainTextToken;
+        }
+        else {
+            setEstConnecte(false);
+            return undefined;
+        }
+    }
+
+    /**
+     * @brief Connecte l utilsisateur
+     * @details Cree le cookie de tokken et met a jour la variable estConnecte 
+     */
+    const connexion = (token, resterConnecte) => {
+        const expirationEnJ = resterConnecte ? 150 : 1;
+        Cookies.set("token", JSON.stringify(token), { expires: expirationEnJ });
+        setEstConnecte(true);
+    }
+
+    /**
+     * @brief Deconnecte l utilsisateur
+     * @details Supprime le cookie de tokken et met a jour la variable estConnecte 
+     */
+    const deconnexion = () => {
+        Cookies.remove('token');
+        setEstConnecte(false);
+    }
+
+
     return (
-        <AppContext.Provider value={{ isConnected, toggleConnexion }}>
+        <AppContext.Provider value={{ getToken, deconnexion, connexion, estConnecte }}>
             {children}
         </AppContext.Provider>
     );

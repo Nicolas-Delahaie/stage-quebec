@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 
 /* import pour le style */
 import styled from "styled-components"
-import { Loader,fonts,colors } from "../../utils/styles"
+import { Loader, fonts, colors } from "../../utils/styles"
 
 /* import des composants */
 import CarteHorizontale from "../../components/layout/CarteHorizontale"
@@ -125,13 +125,13 @@ function Departements() {
         <DivPageDepartements>
             <ArticleTitle texte="Départements" />
             {
-                isLoading || departementsData.length === undefined ?  (
+                isLoading || departementsData.length === undefined ? (
                     <Loader />
                 )
                     : (
                         <StyledDepartements>
                             {
-                                departementsData.map( (departement) => (
+                                departementsData.map((departement) => (
                                     <CarteHorizontale
                                         key={departement.id}
                                         titre={departement.nom}

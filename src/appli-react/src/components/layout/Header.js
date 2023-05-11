@@ -17,7 +17,7 @@ import home from "../../assets/svg/home.svg"
 import { Link } from "react-router-dom"
 
 /* import du composant Lien de notre application */
-import  Lien  from "../forms/Lien"
+import Lien from "../forms/Lien"
 
 /* import du contexte de notre application contenant les variables globales comme par exemple si l'utilisateur est connecté et sous quelle type */
 import { useContext } from "react"
@@ -56,24 +56,26 @@ const ButtonTexte = styled.div`
  * 
  * @returns Le header de l'application
  */
-function Header(){
-    const { toggleConnexion, isConnected } = useContext(AppContext);
+function Header() {
+    const { estConnecte, deconnexion } = useContext(AppContext);
+
     return (
         <HeaderStyle>
             <Link to="/">
-                <ImgLogo src={home} alt="logo"/>
+                <ImgLogo src={home} alt="logo" />
             </Link>
             {/* Si l'utilisateur est connecté, on affiche le bouton de déconnexion, sinon on affiche le bouton de connexion */}
-            {isConnected ? (
-                <Lien to="/login">
-                    <ButtonTexte onClick={() => toggleConnexion(true) }>Se connecter</ButtonTexte>
-                </Lien>
-                
-            ) : (
-                <Lien to="/logout">
-                    <ButtonTexte onClick={() => toggleConnexion(false) }>Se deconnecter</ButtonTexte>
-                </Lien>
-            )}
+            {estConnecte ?
+                (
+                    <Lien to="/">
+                        <ButtonTexte onClick={() => deconnexion()}>Se deconnecter</ButtonTexte>
+                    </Lien>
+                ) :
+                (
+                    <Lien to="/login">
+                        <ButtonTexte>Se connecter</ButtonTexte>
+                    </Lien>
+                )}
         </HeaderStyle>
     )
 }

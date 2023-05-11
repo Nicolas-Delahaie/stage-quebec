@@ -71,7 +71,7 @@ function Scenarios() {
 
     return (
         <Container>
-            <ArticleTitle texte = " Vos Scénarios" />
+            <ArticleTitle texte=" Vos Scénarios" />
             {
                 isLoading || scenariosData.scenarios === undefined ?
                     (
@@ -92,14 +92,14 @@ function Scenarios() {
                                 <PScenarios>Date de création : {scenario.created_at}</PScenarios>
                                 <DivValidation>
                                     <H3Scenarios>Validé par le responsable : </H3Scenarios>
-                                    <ImgIcon src={scenario.aEteValide ? icon = iconValide : icon = iconNonValide}/>
+                                    <ImgIcon src={scenario.aEteValide ? icon = iconValide : icon = iconNonValide} />
                                 </DivValidation>
 
                             </CarteHorizontale>
 
                         )
+                        )
                     )
-                )
             }
         </Container>
     )

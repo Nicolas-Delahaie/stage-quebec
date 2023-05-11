@@ -23,10 +23,10 @@ use Illuminate\Support\Facades\Route;
 /* -------------------------------------------------------------------------- */
 use App\HTTP\Controllers\CoursController;
 
-Route::get('/cours', [CoursController::class, 'index']);
-Route::get('/cours/{id}', [CoursController::class, 'show']);
-Route::get('/cours/{id}/enseignants', [CoursController::class, 'showEnseignants']);
-Route::get('/cours/{id}/departements', [CoursController::class, 'showDepartements']);
+Route::get('/cours', [CoursController::class, 'index'])->middleware('auth:api');
+Route::get('/cours/{id}', [CoursController::class, 'show'])->middleware('auth:api');
+Route::get('/cours/{id}/enseignants', [CoursController::class, 'showEnseignants'])->middleware('auth:api');
+Route::get('/cours/{id}/departements', [CoursController::class, 'showDepartements'])->middleware('auth:api');
 
 
 /* -------------------------------------------------------------------------- */
@@ -34,12 +34,12 @@ Route::get('/cours/{id}/departements', [CoursController::class, 'showDepartement
 /* -------------------------------------------------------------------------- */
 use App\HTTP\Controllers\DepartementController;
 
-Route::get('/departements', [DepartementController::class, 'index']);
-Route::get('/departements/{id}', [DepartementController::class, 'show']);
-Route::get('/departements/{id}/coordonnateur', [DepartementController::class, 'showCoordonnateur']);
-Route::get('/departements/{id}/cours', [DepartementController::class, 'showCours']);
-Route::get('/departements/{id}/scenarios', [DepartementController::class, 'showScenarios']);
-Route::get('/departements/{id}/users', [DepartementController::class, 'showUsers']);
+Route::get('/departements', [DepartementController::class, 'index'])->middleware('auth:api');
+Route::get('/departementsDetaille', [DepartementController::class, 'showCoordonnateurs'])->middleware('auth:api');
+Route::get('/departements/{id}', [DepartementController::class, 'show'])->middleware('auth:api');
+Route::get('/departements/{id}/coordonnateur', [DepartementController::class, 'showCoordonnateur'])->middleware('auth:api');
+Route::get('/departements/{id}/cours', [DepartementController::class, 'showCours'])->middleware('auth:api');
+Route::get('/departements/{id}/scenarios', [DepartementController::class, 'showScenarios'])->middleware('auth:api');
 
 
 /* -------------------------------------------------------------------------- */
@@ -47,9 +47,9 @@ Route::get('/departements/{id}/users', [DepartementController::class, 'showUsers
 /* -------------------------------------------------------------------------- */
 use App\HTTP\Controllers\LiberationController;
 
-Route::get('/liberations', [LiberationController::class, 'index']);
-Route::get('/liberations/{id}', [LiberationController::class, 'show']);
-Route::get('/liberations/{id}/users', [LiberationController::class, 'showUsers']);
+Route::get('/liberations', [LiberationController::class, 'index'])->middleware('auth:api');
+Route::get('/liberations/{id}', [LiberationController::class, 'show'])->middleware('auth:api');
+Route::get('/liberations/{id}/users', [LiberationController::class, 'showUsers'])->middleware('auth:api');
 
 
 /* -------------------------------------------------------------------------- */
@@ -57,10 +57,10 @@ Route::get('/liberations/{id}/users', [LiberationController::class, 'showUsers']
 /* -------------------------------------------------------------------------- */
 use App\HTTP\Controllers\ModificationController;
 
-Route::get('modifications', [ModificationController::class, 'index']);
-Route::get('modifications/{id}', [ModificationController::class, 'show']);
-Route::get('modifications/{id}/user', [ModificationController::class, 'showUser']);
-Route::get('modifications/{id}/scenario', [ModificationController::class, 'showScenario']);
+Route::get('modifications', [ModificationController::class, 'index'])->middleware('auth:api');
+Route::get('modifications/{id}', [ModificationController::class, 'show'])->middleware('auth:api');
+Route::get('modifications/{id}/user', [ModificationController::class, 'showUser'])->middleware('auth:api');
+Route::get('modifications/{id}/scenario', [ModificationController::class, 'showScenario'])->middleware('auth:api');
 
 
 /* -------------------------------------------------------------------------- */
@@ -68,9 +68,9 @@ Route::get('modifications/{id}/scenario', [ModificationController::class, 'showS
 /* -------------------------------------------------------------------------- */
 use App\HTTP\Controllers\RDVController;
 
-Route::get('rdvs', [RDVController::class, 'index']);
-Route::get('rdvs/{id}', [RDVController::class, 'show']);
-Route::get('rdvs/{id}/scenario', [RDVController::class, 'showScenario']);
+Route::get('rdvs', [RDVController::class, 'index'])->middleware('auth:api');
+Route::get('rdvs/{id}', [RDVController::class, 'show'])->middleware('auth:api');
+Route::get('rdvs/{id}/scenario', [RDVController::class, 'showScenario'])->middleware('auth:api');
 
 
 /* -------------------------------------------------------------------------- */
@@ -78,12 +78,13 @@ Route::get('rdvs/{id}/scenario', [RDVController::class, 'showScenario']);
 /* -------------------------------------------------------------------------- */
 use App\Http\Controllers\ScenarioController;
 
-Route::get('/scenarios', [ScenarioController::class, 'index']);
-Route::get('scenarios/{id}', [ScenarioController::class, 'show']);
-Route::get('scenarios/{id}/departement', [ScenarioController::class, 'showDepartement']);
-Route::get('scenarios/{id}/proprietaire', [ScenarioController::class, 'showProprietaire']);
-Route::get('scenarios/{id}/rdvs', [ScenarioController::class, 'showRDVs']);
-Route::get('scenarios/{id}/modifications', [ScenarioController::class, 'showModifications']);
+Route::get('/scenarios', [ScenarioController::class, 'index'])->middleware('auth:api');
+Route::get('scenarios/{id}', [ScenarioController::class, 'show'])->middleware('auth:api');
+Route::get('/scenarios/{id}/detaille', [ScenarioController::class, 'showDetails'])->middleware('auth:api');
+Route::get('scenarios/{id}/departement', [ScenarioController::class, 'showDepartement'])->middleware('auth:api');
+Route::get('scenarios/{id}/proprietaire', [ScenarioController::class, 'showProprietaire'])->middleware('auth:api');
+Route::get('scenarios/{id}/rdvs', [ScenarioController::class, 'showRDVs'])->middleware('auth:api');
+Route::get('scenarios/{id}/modifications', [ScenarioController::class, 'showModifications'])->middleware('auth:api');
 
 
 /* -------------------------------------------------------------------------- */
@@ -91,9 +92,9 @@ Route::get('scenarios/{id}/modifications', [ScenarioController::class, 'showModi
 /* -------------------------------------------------------------------------- */
 use App\Http\Controllers\TypeUtilisateurController;
 
-Route::get('/types_utilisateur', [TypeUtilisateurController::class, 'index']);
-Route::get('/types_utilisateur/{id}', [TypeUtilisateurController::class, 'show']);
-Route::get('/types_utilisateur/{id}/users', [TypeUtilisateurController::class, 'showUsers']);
+Route::get('/types_utilisateur', [TypeUtilisateurController::class, 'index'])->middleware('auth:api');
+Route::get('/types_utilisateur/{id}', [TypeUtilisateurController::class, 'show'])->middleware('auth:api');
+Route::get('/types_utilisateur/{id}/users', [TypeUtilisateurController::class, 'showUsers'])->middleware('auth:api');
 
 
 /* -------------------------------------------------------------------------- */
@@ -101,24 +102,18 @@ Route::get('/types_utilisateur/{id}/users', [TypeUtilisateurController::class, '
 /* -------------------------------------------------------------------------- */
 use App\Http\Controllers\UserController;
 
-Route::get('/users', [UserController::class, 'index']);
-Route::get('/users/{id}', [UserController::class,'show']);
-Route::put('/users/{id}', [UserController::class,'updateContraintes']);
-Route::get('/users/{id}/type', [UserController::class,'showType']);
-Route::get('/users/{id}/liberations', [UserController::class,'showLiberations']);
-Route::get('/users/{id}/modifications', [UserController::class,'showModifications']);
-Route::get('/users/{id}/cours', [UserController::class,'showCours']);
-Route::get('/users/{id}/scenarios', [UserController::class,'showScenarios']);
+Route::get('/users', [UserController::class, 'index'])->middleware('auth:api');
+Route::get('/users/{id}', [UserController::class,'show'])->middleware('auth:api');
+Route::get('/users/{id}/type', [UserController::class,'showType'])->middleware('auth:api');
+Route::get('/users/{id}/liberations', [UserController::class,'showLiberations'])->middleware('auth:api');
+Route::get('/users/{id}/modifications', [UserController::class,'showModifications'])->middleware('auth:api');
+Route::get('/users/{id}/cours', [UserController::class,'showCours'])->middleware('auth:api');
+Route::get('/users/{id}/scenarios', [UserController::class,'showScenarios'])->middleware('auth:api');
 
-
-/* -------------------------------------------------------------------------- */
-/*                                  PROPOSER                                  */
-/* -------------------------------------------------------------------------- */
-use App\Http\Controllers\ProposerController;
-Route::delete('/proposer', [ProposerController::class, 'delete']);
-Route::put('/proposer', [ProposerController::class, 'update']);
-
-
+/**
+ * @warning A supprimer : On recopie manuelleement la meme fonction que scenarioDetaille
+ */
+Route::get('/users/{id}/scenariosDetailles', [UserController::class,'showScenariosDetailles'])->middleware('auth:api');;
 
 
 /* -------------------------------------------------------------------------- */
@@ -126,9 +121,12 @@ Route::put('/proposer', [ProposerController::class, 'update']);
 /* -------------------------------------------------------------------------- */
 /* ------------------------------ DEPARTEMENTS ------------------------------ */
 
-Route::get('/departementsDetaille', [DepartementController::class, 'showCoordonnateurs']);
 
 /* -------------------------------- SCENARIOS ------------------------------- */
 
-Route::get('/users/{id}/scenariosDetailles', [UserController::class,'showScenariosDetailles']);
-Route::get('/scenarios/{id}/detaille', [ScenarioController::class, 'showDetails']);
+
+
+/* -------------------------------------------------------------------------- */
+/*                                    AUTRE                                   */
+/* -------------------------------------------------------------------------- */
+Route::post('/login', [UserController::class, 'login']);
