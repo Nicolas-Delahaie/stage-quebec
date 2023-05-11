@@ -6,18 +6,18 @@ import Cookies from 'js-cookie';
 function TestApis() {
     const { getToken } = useContext(AppContext);
     const token = getToken();             //Initialise le token
-    console.log(token);
 
     var chemin;
-
+    
     const envoi = (e) => {
+        console.log(chemin);
         e.preventDefault();         //Pour empecher le comportement normal du formulaire
-
         fetch(`http://localhost:8000/api/${chemin}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${token.slice(1, -1)}`,
+                'Content-type': 'application/json'
             },
         })
             .then(response => response.json())
@@ -25,7 +25,6 @@ function TestApis() {
             .catch(error => console.error(error));
     }
 
-    console.log(getToken())
     return (
         <div>
             <h1>Test des APIs</h1>

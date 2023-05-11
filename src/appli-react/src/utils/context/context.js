@@ -22,6 +22,8 @@ export const AppProvider = ({ children }) => {
         let token = Cookies.get('token');
         if (token) {
             setEstConnecte(true);
+            
+            console.log(typeof token);
             return token;
         }
         else {
