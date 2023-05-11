@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use Dotenv\Util\Str;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
@@ -126,8 +128,19 @@ class UserController extends Controller
                     // 'message' => 'Mauvais identifiants',
                 ], 401);
             } else {
-                // Identifiants bons
+                //suppression des anciens tokens
+                $user->tokens()->delete();
+
+                // Création du token
                 $token = $user->createToken('userToken')->plainTextToken;
+
+                //Récupération de la date de création du token
+                $created_at = $user->tokens()->where('tokenable_id', $user->id)->latest()->first()->created_at;
+                
+                //Ajout dans la base de donneés la date d'expiration
+                $user->tokens()->where('tokenable_id', $user->id)->update([
+                    'expires_at' => $created_at->addHours(24)
+                ]);
 
                 return response()->json([
                     'status' => true,

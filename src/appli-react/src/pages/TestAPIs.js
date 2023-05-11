@@ -10,7 +10,7 @@ function TestApis() {
     var chemin;
     
     const envoi = (e) => {
-        console.log(chemin);
+
         e.preventDefault();         //Pour empecher le comportement normal du formulaire
         fetch(`http://localhost:8000/api/${chemin}`, {
             method: 'GET',
