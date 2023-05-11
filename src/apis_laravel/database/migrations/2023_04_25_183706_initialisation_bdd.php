@@ -61,6 +61,7 @@ return new class extends Migration
             $table->unsignedBigInteger("scenario_id");
         });
         Schema::create("proposer", function (Blueprint $table){
+            $table->id();
             $table->unsignedBigInteger("cours_id");
             $table->unsignedBigInteger("departement_id");
             $table->unique(["cours_id", "departement_id"]);
@@ -69,16 +70,18 @@ return new class extends Migration
             $table->unsignedSmallInteger("nbGroupes")->default(0);
         });
         Schema::create("enseigner", function(Blueprint $table){
+            $table->id();
             $table->unsignedBigInteger("cours_id");
             $table->unsignedBigInteger("professeur_id");
             $table->unique(["cours_id", "professeur_id"]);
         });
         Schema::create("alouer", function(Blueprint $table){
+            $table->id();
             $table->unsignedBigInteger("utilisateur_id");
             $table->unsignedBigInteger("liberation_id");
             $table->unsignedSmallInteger("annee")->nullable();
             $table->unsignedTinyInteger("semestre")->nullable();
-            $table->unique(["utilisateur_id", "liberation_id", "annee", "semestre"]);	
+            $table->unique(["utilisateur_id", "liberation_id", "annee", "semestre"]);
             $table->unsignedDecimal("tempsAloue", 5, 5);
             $table->timestamps();
         });
