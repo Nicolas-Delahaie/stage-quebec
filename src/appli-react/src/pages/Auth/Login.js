@@ -58,7 +58,7 @@ function Login() {
                 }
             })
             .then(data => {
-                connexion(data.token, resterConnecte);
+                connexion(data.token, resterConnecte, data.expired_at);
                 navigate(-1);
             })
             .catch((err) => {

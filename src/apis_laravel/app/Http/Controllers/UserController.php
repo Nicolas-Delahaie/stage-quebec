@@ -145,6 +145,7 @@ class UserController extends Controller
                 return response()->json([
                     'status' => true,
                     'token' => $token,
+                    'expires_at' => $created_at->addHours(24),
                 ], 200);
             }
         } catch (\Throwable $th) {

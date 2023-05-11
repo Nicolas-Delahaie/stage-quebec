@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { AppContext } from '../utils/context/context';
 import Cookies from 'js-cookie';
 
+
 function TestApis() {
     const { getToken } = useContext(AppContext);
     const token = getToken();             //Initialise le token

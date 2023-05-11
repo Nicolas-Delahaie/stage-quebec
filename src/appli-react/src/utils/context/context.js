@@ -36,9 +36,9 @@ export const AppProvider = ({ children }) => {
      * @brief Connecte l utilsisateur
      * @details Cree le cookie de tokken et met a jour la variable estConnecte 
      */
-    const connexion = (token, resterConnecte) => {
-        const expirationEnJ = resterConnecte ? 150 : 1;
-        Cookies.set("token", JSON.stringify(token), { expires: expirationEnJ });
+    const connexion = (token, resterConnecte, expired_at) => {
+        Cookies.set("token", JSON.stringify(token), { expires: expired_at });
+
         setEstConnecte(true);
     }
 
