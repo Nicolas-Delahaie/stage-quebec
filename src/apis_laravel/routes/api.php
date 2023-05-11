@@ -27,8 +27,6 @@ Route::get('/cours', [CoursController::class, 'index']);
 Route::get('/cours/{id}', [CoursController::class, 'show']);
 Route::get('/cours/{id}/enseignants', [CoursController::class, 'showEnseignants']);
 Route::get('/cours/{id}/departements', [CoursController::class, 'showDepartements']);
-Route::delete('/cours/{id}', [CoursController::class, 'delete']);
-Route::put('/cours/{id}', [CoursController::class, 'update']);
 
 
 /* -------------------------------------------------------------------------- */
@@ -112,10 +110,20 @@ Route::get('/users/{id}/modifications', [UserController::class,'showModification
 Route::get('/users/{id}/cours', [UserController::class,'showCours']);
 Route::get('/users/{id}/scenarios', [UserController::class,'showScenarios']);
 
+
+/* -------------------------------------------------------------------------- */
+/*                                  PROPOSER                                  */
+/* -------------------------------------------------------------------------- */
+use App\Http\Controllers\ProposerController;
+Route::delete('/proposer', [ProposerController::class, 'delete']);
+Route::put('/proposer', [ProposerController::class, 'update']);
+
+
+
+
 /* -------------------------------------------------------------------------- */
 /*                             APIS POUR LES PAGES                            */
 /* -------------------------------------------------------------------------- */
-
 /* ------------------------------ DEPARTEMENTS ------------------------------ */
 
 Route::get('/departementsDetaille', [DepartementController::class, 'showCoordonnateurs']);
