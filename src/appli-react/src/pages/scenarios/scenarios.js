@@ -47,59 +47,53 @@ const ImgIcon = styled.img`
 function Scenarios() {
 
     const [isLoading, setLoading] = useState(false);
-    const [scenariosData, setScenariosData] = useState({});
-    let urlImage = Calendrier
-    let icon = iconValide
+    const [scenarios, setScenarios] = useState([]);
+    let urlImage = Calendrier;
+    let icon = iconValide;
 
     useEffect(() => {
         setLoading(true)
-        fetch('http://localhost:8000/api/users/2/scenariosDetailles')
-            .then(res => {
-                return res.json()
-            })
-            .then(res => {
-                setScenariosData(res)
-                setLoading(false)
+        fetch('http://localhost:8000/api/users/2/scenariosDetailles', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                setScenarios(data.scenarios);
+                setLoading(false);
             })
             .catch(err => {
-                console.log(err)
-            }
-            )
+                console.log(err);
+            })
     }, [])
-
-    console.log(icon)
 
     return (
         <Container>
             <ArticleTitle texte=" Vos Scénarios" />
             {
-                isLoading || scenariosData.scenarios === undefined ?
-                    (
-                        <Loader />
-                    ) : (
-                        scenariosData.scenarios.map(scenario => (
-                            <CarteHorizontale
-                                key={scenario.id}
-                                {...scenario.aEteValide ? urlImage = Valider : urlImage = Calendrier}
-                                urlImage={urlImage}
-                                titre={"Département " + scenario.departement.nom}
-                                texteBouton="Voir le scénario"
-                                lien={`/scenarios/${scenario.id}`}
-                            >
-                                <PScenarios>Propriétaire : {scenario.proprietaire.nom}</PScenarios>
-                                <PScenarios>Année :{scenario.annee}</PScenarios>
-                                <PScenarios>Dernière modification : {scenario.updated_at}</PScenarios>
-                                <PScenarios>Date de création : {scenario.created_at}</PScenarios>
-                                <DivValidation>
-                                    <H3Scenarios>Validé par le responsable : </H3Scenarios>
-                                    <ImgIcon src={scenario.aEteValide ? icon = iconValide : icon = iconNonValide} />
-                                </DivValidation>
-
-                            </CarteHorizontale>
-
-                        )
-                        )
-                    )
+                isLoading ?
+                    <Loader />
+                    :
+                    scenarios.map(scenario => (
+                        <CarteHorizontale
+                            key={scenario.id}
+                            urlImage={scenario.aEteValide ? Valider : Calendrier}
+                            titre={"Département " + scenario.departement.nom}
+                            texteBouton="Voir le scénario"
+                            lien={`/scenarios/${scenario.id}`}>
+                            <PScenarios>Propriétaire : {scenario.proprietaire.nom}</PScenarios>
+                            <PScenarios>Année :{scenario.annee}</PScenarios>
+                            <PScenarios>Dernière modification : {scenario.updated_at}</PScenarios>
+                            <PScenarios>Date de création : {scenario.created_at}</PScenarios>
+                            <DivValidation>
+                                <H3Scenarios>Validé par le responsable : </H3Scenarios>
+                                <ImgIcon src={scenario.aEteValide ? icon = iconValide : icon = iconNonValide} />
+                            </DivValidation>
+                        </CarteHorizontale>
+                    ))
             }
         </Container>
     )

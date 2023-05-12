@@ -2,39 +2,50 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use Dotenv\Util\Str;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log; /** @todo retirer ça */
+use Illuminate\Support\Facades\Log;
+
+/** @todo retirer ça */
 
 class UserController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return User::all();
     }
 
-    public function show($id){
+    public function show($id)
+    {
         return User::findOrFail($id);
     }
-    public function showType($id){
+    public function showType($id)
+    {
         return User::findOrFail($id)->type->toJson();
     }
-    public function showLiberations($id){
+    public function showLiberations($id)
+    {
         return User::findOrFail($id)->liberations->toJson();
     }
-    public function showModifications($id){
+    public function showModifications($id)
+    {
         return User::findOrFail($id)->modifications->toJson();
     }
-    public function showCours($id){
+    public function showCours($id)
+    {
         return User::findOrFail($id)->cours->toJson();
     }
-    public function showScenarios($id){
+    public function showScenarios($id)
+    {
         return User::findOrFail($id)->scenarios->toJson();
     }
-    public function showScenarioDetailles($id){
+    public function showScenariosDetailles($id){
         $user = User::findOrFail($id);
 
         $scenarios = $user->scenarios()
@@ -80,54 +91,16 @@ class UserController extends Controller
         return User::findOrFail($id);
     }
 
-    /**
-     * Create User
-     * @param Request $request
-     * @return User 
-     */
-    public function store(Request $request)
-    {
-        try {
-            //Validated
-            $validateUser = Validator::make($request->all(), 
-            [
-                'name' => 'required',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required'
-            ]);
-
-            if($validateUser->fails()){
-                return response()->json([
-                    'status' => false,
-                    'message' => 'validation error',
-                    'errors' => $validateUser->errors()
-                ], 401);
-            }
-
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password)
-            ]);
-
-            return response()->json([
-                'status' => true,
-                'message' => 'User Created Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
-            ], 200);
-
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
-        }
-    }
 
     /**
-     * Login The User
-     * @param Request $request
-     * @return User
+     * @brief Identifie l utilisateur. Identifiants corrects : cree un token et lui renvoie
+     * 
+     * @param email string Email de l'utilisateur
+     * @param password string Mot de passe en clair
+     * @param duration float Duree du token en heures (entre 1 minute et 100 jours)
+     * 
+     * @return Response (Voir le code pour les differents cas)
+     * @return token string Token de l'utilisateur
      */
     public function login(Request $request)
     {
@@ -135,25 +108,28 @@ class UserController extends Controller
             // -- Validation des parametres --
             $request->validate([
                 'email' => 'required|email',
-                'password' => 'required'
+                'password' => 'required',
+                'duration' => 'required|numeric|between:1/60,2400'       //Entre 1 minute et 100 jours
             ]);
 
             // -- Verification des identifiants --
             $user = User::where('email', $request->email)->first();
             if($user && Hash::check($request->password, $user->password)){
-                // Identifiants bons
-                $token = $user->createToken("userToken");   //Fabrication du token
-                /** @todo Supprimer api_token qui est une copie de personal_access_token */
-                $user->api_token = $token->plainTextToken;  //On met le jeton genere dans personnal_access_tokens dans api_token de l utilisateur
-                $user->save();
-                return response(['token' => $token], 299);
+                // -- Identifiants bons --
+                // Création du token
+                $token = $user->createToken('userToken');
+
+                // //Ajout de la date d'expiration
+                $date_expiration = now()->addHours($request->duration);
+                $token->accessToken->expires_at = $date_expiration;
+                $token->accessToken->save();
+
+                return response(['token' => $token->plainTextToken, 'message' => 'Utilisateur bien créé'], 299);
             }
             else{
                 // Mauvais identifiants
-                return response(['message' => 'Mauvais identifiants'], 401);    
+                return response(['message' => 'Mot de passe ou mail incorrect'], 401);    
             }
-
-
         } 
         catch (\Illuminate\Validation\ValidationException $e) {
             //Recupère l erreur de validation des champs

@@ -4,9 +4,10 @@
 
 /* import pour créer le style */
 import styled from "styled-components"
+import { Link } from "react-router-dom"
 
 /* import des variables de style */
-import { colors,fonts } from "../../utils/styles"
+import { colors, fonts } from "../../utils/styles"
 
 /* import du composant Lien */
 import Lien from "../forms/Lien"
@@ -63,8 +64,8 @@ const H2Carte = styled.h2`
  * @param enfants Prend en paramètre les enfants à afficher
  * @returns Carte avec une image à gauche et du texte à droite sur la longueur
  */
-function CarteHorizontale({urlImage, titre, texteBouton, lien, children:enfants}){
-    return(
+function CarteHorizontale({ urlImage, titre, texteBouton, lien, children: enfants }) {
+    return (
         <Carte>
             <ContenuCarte>
                 <H2Carte>{titre}</H2Carte>
@@ -73,7 +74,7 @@ function CarteHorizontale({urlImage, titre, texteBouton, lien, children:enfants}
                     {texteBouton}
                 </Lien>
             </ContenuCarte>
-            <ImageCarte src={urlImage} alt={titre}/>
+            <ImageCarte src={urlImage} alt={titre} />
         </Carte>
     )
 }

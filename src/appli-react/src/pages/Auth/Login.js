@@ -82,6 +82,8 @@ function Login() {
             setErreur("Adresse mail invalide");
         }
         else {
+            const duree = resterConnecte ? 24 * 100 : 1 / 60;    //Si on coche la case, on reste connecte pour 100 jours, sinon pour 24h
+
             fetch('http://localhost:8000/api/login', {
                 method: "POST",
                 headers: {
@@ -90,14 +92,14 @@ function Login() {
                 },
                 body: JSON.stringify({
                     email: mail,
-                    password: mdp
+                    password: mdp,
+                    duration: duree
                 })
             })
                 .then((res) => {
-                    console.log(res);
                     if (!res.ok) {
                         if (res.status === 401) {
-                            throw Error("Mauvais identifiants");
+                            throw Error("Mot de passe ou mail incorrect");
                         }
                         else if (res.status === 422) {
                             throw Error("Mauvais format de reponse");
@@ -111,7 +113,8 @@ function Login() {
                     }
                 })
                 .then(data => {
-                    connexion(data.token, resterConnecte);
+                    //Connexion pour 100 jours si on coche la case, sinon pour 24h
+                    connexion(data.token, duree);
                     navigate(-1);
                 })
                 .catch((err) => {
@@ -152,5 +155,4 @@ function Login() {
         </DivAuthentification>
     )
 }
-
 export default Login

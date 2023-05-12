@@ -51,8 +51,6 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        /** @todo Supprimer api_token qui est une copie de personal_access_token */
-        'api_token',
         'remember_token',
     ];
 

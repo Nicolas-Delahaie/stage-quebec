@@ -22,7 +22,9 @@ export const AppProvider = ({ children }) => {
         let token = Cookies.get('token');
         if (token) {
             setEstConnecte(true);
-            return JSON.parse(token).plainTextToken;
+
+            console.log(typeof token);
+            return token;
         }
         else {
             setEstConnecte(false);
@@ -34,9 +36,9 @@ export const AppProvider = ({ children }) => {
      * @brief Connecte l utilsisateur
      * @details Cree le cookie de tokken et met a jour la variable estConnecte 
      */
-    const connexion = (token, resterConnecte) => {
-        const expirationEnJ = resterConnecte ? 150 : 1;
-        Cookies.set("token", JSON.stringify(token), { expires: expirationEnJ });
+    const connexion = (token, dureeTokenEnH) => {
+        Cookies.set("token", JSON.stringify(token), { expires: dureeTokenEnH });
+
         setEstConnecte(true);
     }
 
