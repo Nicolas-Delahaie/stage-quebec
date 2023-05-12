@@ -1,29 +1,34 @@
-import styled from 'styled-components'
 import { useContext } from 'react';
 import { AppContext } from '../utils/context/context';
-import Cookies from 'js-cookie';
+import { useState } from 'react';
 
 
 function TestApis() {
     const { getToken } = useContext(AppContext);
-    const token = getToken();             //Initialise le token
+    const [token, setToken] = useState(getToken());             //Initialise le token
 
     var chemin;
-    
-    const envoi = (e) => {
 
+    const envoi = async (e) => {
         e.preventDefault();         //Pour empecher le comportement normal du formulaire
-        fetch(`http://localhost:8000/api/${chemin}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                "Authorization": `Bearer ${token.slice(1, -1)}`,
-                'Content-type': 'application/json'
-            },
-        })
-            .then(response => response.json())
-            .then(datas => console.log(datas))
-            .catch(error => console.error(error));
+
+        //Verification de la validite du token
+        const tokenRecupere = await getToken();
+        setToken(tokenRecupere);
+
+        if (tokenRecupere !== undefined) {
+            fetch(`http://localhost:8000/api/${chemin}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    "Authorization": `Bearer ${token.slice(1, -1)}`,
+                    'Content-type': 'application/json'
+                },
+            })
+                .then(response => response.json())
+                .then(datas => console.log(datas))
+                .catch(error => console.error(error));
+        }
     }
 
     return (

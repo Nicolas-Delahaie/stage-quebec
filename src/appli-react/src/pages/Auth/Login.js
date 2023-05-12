@@ -82,7 +82,7 @@ function Login() {
             setErreur("Adresse mail invalide");
         }
         else {
-            const duree = resterConnecte ? 24 * 100 : 1 / 60;    //Si on coche la case, on reste connecte pour 100 jours, sinon pour 24h
+            const dureeTokenEnMin = resterConnecte ? 60 * 24 * 100 : 60 * 12;    //Si on coche la case, on reste connecte pour 100 jours, sinon pour 12h
 
             fetch('http://localhost:8000/api/login', {
                 method: "POST",
@@ -93,7 +93,7 @@ function Login() {
                 body: JSON.stringify({
                     email: mail,
                     password: mdp,
-                    duration: duree
+                    duration: dureeTokenEnMin
                 })
             })
                 .then((res) => {
@@ -114,7 +114,7 @@ function Login() {
                 })
                 .then(data => {
                     //Connexion pour 100 jours si on coche la case, sinon pour 24h
-                    connexion(data.token, duree);
+                    connexion(data.token, dureeTokenEnMin);
                     navigate(-1);
                 })
                 .catch((err) => {

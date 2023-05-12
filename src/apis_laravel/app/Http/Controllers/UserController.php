@@ -97,7 +97,7 @@ class UserController extends Controller
      * 
      * @param email string Email de l'utilisateur
      * @param password string Mot de passe en clair
-     * @param duration float Duree du token en heures (entre 1 minute et 100 jours)
+     * @param duration float Duree du token en minutes (entre 1 minute et 100 jours)
      * 
      * @return Response (Voir le code pour les differents cas)
      * @return token string Token de l'utilisateur
@@ -109,7 +109,7 @@ class UserController extends Controller
             $request->validate([
                 'email' => 'required|email',
                 'password' => 'required',
-                'duration' => 'required|numeric|between:1/60,2400'       //Entre 1 minute et 100 jours
+                'duration' => 'required|numeric|between:1,144000'       //Entre 1 minute et 100 jours
             ]);
 
             // -- Verification des identifiants --
@@ -120,11 +120,11 @@ class UserController extends Controller
                 $token = $user->createToken('userToken');
 
                 // //Ajout de la date d'expiration
-                $date_expiration = now()->addHours($request->duration);
+                $date_expiration = now()->addMinutes($request->duration);
                 $token->accessToken->expires_at = $date_expiration;
                 $token->accessToken->save();
 
-                return response(['token' => $token->plainTextToken, 'message' => 'Utilisateur bien créé'], 299);
+                return response(['token' => $token->plainTextToken, 'message' => 'Utilisateur bien authentifié'], 299);
             }
             else{
                 // Mauvais identifiants

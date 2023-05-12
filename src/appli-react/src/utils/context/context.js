@@ -16,14 +16,12 @@ export const AppProvider = ({ children }) => {
     /**
      * @brief Retourne le token de l'utilisateur, undefined s il n est pas connecté
      * @details Met egalement a jour la variable estConnecte 
-     * @returns string
+     * @returns string, undefined
      */
     const getToken = () => {
         let token = Cookies.get('token');
         if (token) {
             setEstConnecte(true);
-
-            console.log(typeof token);
             return token;
         }
         else {
@@ -36,9 +34,10 @@ export const AppProvider = ({ children }) => {
      * @brief Connecte l utilsisateur
      * @details Cree le cookie de tokken et met a jour la variable estConnecte 
      */
-    const connexion = (token, dureeTokenEnH) => {
-        Cookies.set("token", JSON.stringify(token), { expires: dureeTokenEnH });
-
+    const connexion = (token, dureeTokenEnMin) => {
+        const dureeTokenEnH = dureeTokenEnMin / 60;
+        const dureeTokenEnJ = dureeTokenEnH / 24;
+        Cookies.set("token", JSON.stringify(token), { expires: dureeTokenEnJ });
         setEstConnecte(true);
     }
 
