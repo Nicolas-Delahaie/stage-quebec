@@ -130,3 +130,5 @@ Route::get('/users/{id}/scenariosDetailles', [UserController::class,'showScenari
 /*                                    AUTRE                                   */
 /* -------------------------------------------------------------------------- */
 Route::post('/login', [UserController::class, 'login']);
+Route::post('/disconnection', [UserController::class, 'disconnection'])->middleware('auth:sanctum');
+

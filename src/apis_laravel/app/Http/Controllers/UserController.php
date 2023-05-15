@@ -102,8 +102,7 @@ class UserController extends Controller
      * @return Response (Voir le code pour les differents cas)
      * @return token string Token de l'utilisateur
      */
-    public function login(Request $request)
-    {
+    public function login(Request $request){
         try {
             // -- Validation des parametres --
             $request->validate([
@@ -116,6 +115,9 @@ class UserController extends Controller
             $user = User::where('email', $request->email)->first();
             if($user && Hash::check($request->password, $user->password)){
                 // -- Identifiants bons --
+                // Revocation des autres tokens
+                $user->tokens()->delete();
+
                 // Création du token
                 $token = $user->createToken('userToken');
 
@@ -138,5 +140,11 @@ class UserController extends Controller
         catch (\Throwable $th) {
             return response(['message' => "Erreur inattendue", 'error' => $th->getMessage()], 500);
         }
+    }
+
+    public function disconnection(){
+        $user = Auth::user();
+        $user->tokens()->delete();
+        return response(['message' => 'Utilisateur bien déconnecté'], 299);
     }
 }

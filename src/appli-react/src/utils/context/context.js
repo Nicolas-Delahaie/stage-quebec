@@ -1,4 +1,6 @@
-
+/**
+ * @todo Ajouter le script de deconnexion laravel au front
+ */
 import { createContext } from 'react';  //Pour generer le contexte
 import Cookies from 'js-cookie';        //Pour récupérer les cookies
 import { useState } from 'react';        //Pour utiliser les variables d'état
@@ -40,7 +42,7 @@ export const AppProvider = ({ children }) => {
         Cookies.set("token", JSON.stringify(token), { expires: dureeTokenEnJ });
         setEstConnecte(true);
     }
-
+    
     /**
      * @brief Deconnecte l utilsisateur
      * @details Supprime le cookie de tokken et met a jour la variable estConnecte 
