@@ -22,6 +22,7 @@ const LinkStyle = styled(Link)`
     border-radius: 1rem;
     margin: 1rem;
     transition: all 0.1s ease-in-out;
+    width: fit-content;
 `;
 
 /**

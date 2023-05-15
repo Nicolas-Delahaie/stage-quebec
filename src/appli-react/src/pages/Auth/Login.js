@@ -11,7 +11,7 @@ import { colors, fonts } from "../../utils/styles"
 
 //Autre
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { redirect, useNavigate } from "react-router-dom"
 import { useContext } from "react"
 import { AppContext } from "../../utils/context/context"
 
@@ -114,8 +114,8 @@ function Login() {
                 })
                 .then(data => {
                     //Connexion pour 100 jours si on coche la case, sinon pour 24h
-                    connexion(data.token, dureeTokenEnMin);
-                    navigate(-1);
+                    connexion(data.token, dureeTokenEnMin, data.type.nom);
+                    navigate('/authentifie')  //Redirection vers la page d accueil authentifiee
                 })
                 .catch((err) => {
                     setErreur(err.message)
