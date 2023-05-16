@@ -70,12 +70,8 @@ export const AppProvider = ({ children }) => {
         method = "get",
         body = undefined,
     }) => {
-        // -- VERIFICATIONS --
-        // Validite des parametres
-        if (body !== undefined && (method === "get" || method === "delete")) {
-            throw Error("Impossible d'envoyer une requete get ou delete avec un body");
-        }
-        // Authentification
+        // -- PRE-TRAITEMENTS --
+        // Verificaton de l authentification
         const token = getToken();
         if (token === undefined) {
             // Aucun utilisateur connecte
@@ -86,27 +82,27 @@ export const AppProvider = ({ children }) => {
                 erreur: "Authentification necessaire"
             };
         }
-
-        console.log("url : " + url + "\nmethod : " + method + "\nbody : " + body + "\ntoken : " + token.slice(1, -1));
-
-
-
-        // -- CONVERSIONS --
+        // Conversion du body en string
         if (body) {
             // On convertit le body en string s il y en a un
             body = JSON.stringify(body);
         }
+        console.log("url : " + url + "\nmethod : " + method + "\nbody : " + body + "\ntoken : " + token.slice(1, -1));
 
 
-        // -- VARIABLES DE RETOUR --
-        var isSuccess = false;
-        var status = undefined;
-        var datas = undefined;
-        var erreur = undefined;
+        // -- VARIABLES --
+        const errorMessages = {
+            400: "Requete mal formée",
+            401: "Mot de passe ou mail incorrect",
+            403: "Accès refusé",
+            404: "La ressource n'existe pas",
+            422: "Mauvais format de reponse",
+            503: "Service indisponible (surcharge ou maintenance)",
+            default: "Erreur de serveur"
+        }
 
-
-        // -- FETCH --
-        await fetch(url, {
+        // -- TRAITEMENT --
+        const res = await fetch(url, {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
@@ -115,47 +111,35 @@ export const AppProvider = ({ children }) => {
             },
             body: body
         })
-            .then(res => {
-                // -- Gestion des erreurs --
-                status = res.status;
-                if (!res.ok) {
-                    // -- Requete non ok --
-                    // Fabrication du message d erreur
-                    switch (res.status) {
-                        case 400:
-                            throw Error("Requete mal formée");
-                        case 401:
-                            throw Error("Mot de passe ou mail incorrect");
-                        case 403:
-                            deconnexion();
-                            throw Error("Accès refusé");
-                        case 404:
-                            throw Error("La ressource n'existe pas");
-                        case 422:
-                            throw Error("Mauvais format de reponse");
-                        case 503:
-                            throw Error("Service indisponible (surcharge ou maintenance)");
-                        default:
-                            throw Error("Erreur de serveur");
-                    }
+            .catch(err => {
+                return {
+                    success: false,
+                    erreur: err
                 }
-
-                return res.json()
             })
-            .then(data => {
-                isSuccess = true;
-                datas = data;
-            })
-            .catch(err => erreur = err.message)
-
 
         // -- RETOUR --
-        return {
-            success: isSuccess,
-            statusCode: status,
-            datas: datas,
-            erreur: erreur
-        };
+        if (res.ok) {
+            // La requete a reussi
+            return {
+                success: true,
+                statusCode: res.status,
+                datas: await res.json(),
+            }
+        }
+        else {
+            // La requete a echoue
+            if (res.status === 403) {
+                // Deconnexion de l interface utilisateur
+                deconnexion();
+            }
+
+            return {
+                success: false,
+                statusCode: res.status,
+                erreur: errorMessages[res.status] || errorMessages.default
+            }
+        }
     }
 
 
