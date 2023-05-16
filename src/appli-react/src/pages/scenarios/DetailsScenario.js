@@ -34,9 +34,7 @@ const DivDetailsScenario = styled.div`
 const DivTableau = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: flex-start;
-    width: 100%;
     overflow: auto;
 
     ::-webkit-scrollbar {
@@ -88,6 +86,13 @@ const ThScenario = styled.th`
     padding: 0.5rem;
     background-color: ${colors.jauneFonce};
     border: 1px solid ${colors.bleuFonce};
+
+    &:nth-child(n+5) {
+        text-orientation: mixed;
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        width: 2rem;
+    }
 `;
 
 const TrScenario = styled.tr`
@@ -201,6 +206,7 @@ function DetailsScenario() {
             });
     }, []);
 
+    console.log(repartition);
 
     return (
         <DivPageDetailsScenario>
@@ -240,40 +246,31 @@ function DetailsScenario() {
                                     <ThScenario>Pondération</ThScenario>
                                     <ThScenario>Nombre d'élèves</ThScenario>
                                     <ThScenario>Nombre de groupes</ThScenario>
-                                    <ThScenario>Professeur 1</ThScenario>
-                                    <ThScenario>Professeur 2</ThScenario>
-                                    <ThScenario>Professeur 3</ThScenario>
-                                    <ThScenario>Professeur 4</ThScenario>
-                                    <ThScenario>Professeur 5</ThScenario>
-                                    <ThScenario>Professeur 6</ThScenario>
-                                    <ThScenario>Professeur 7</ThScenario>
-                                    <ThScenario>Professeur 8</ThScenario>
-                                    <ThScenario>Professeur 9</ThScenario>
-                                    <ThScenario>Professeur 10</ThScenario>
-                                    <ThScenario>Professeur 11</ThScenario>
+                                    {
+                                        repartition.aEteValide === undefined ? (
+                                            <ThScenario></ThScenario>
+                                        ) : (
+                                            repartition.departement.enseignants.map((enseignant) => (
+                                                <ThScenario key={enseignant.id}>{enseignant.nom}</ThScenario>
+                                            ))
+                                        )
+                                    }
                                 </TrScenario>
                             </thead>
                             <tbody>
                                 {
                                     repartition.aEteValide === undefined ? (
                                         <TrScenario>
-                                        <TdScenario>Le scénario n'a pas été chargée</TdScenario>
+                                            <TdScenario>Le scénario n'a pas été chargée</TdScenario>
                                         </TrScenario>
                                     ) : (
+                                        console.log(getToken()),
                                         repartition.departement.cours.map((cours) => (
                                             <TrScenario key={cours.id}>
                                                 <TdScenario>{cours.nom}</TdScenario>
                                                 <TdScenario>{cours.pivot.ponderation}</TdScenario>
                                                 <TdScenario>{cours.pivot.tailleGroupes}</TdScenario>
                                                 <TdScenario>{cours.pivot.nbGroupes}</TdScenario>
-                                                <TdScenario></TdScenario>
-                                                <TdScenario></TdScenario>
-                                                <TdScenario></TdScenario>
-                                                <TdScenario>2</TdScenario>
-                                                <TdScenario>2</TdScenario>
-                                                <TdScenario></TdScenario>
-                                                <TdScenario></TdScenario>
-                                                <TdScenario></TdScenario>
                                                 <TdScenario></TdScenario>
                                                 <TdScenario></TdScenario>
                                                 <TdScenario></TdScenario>

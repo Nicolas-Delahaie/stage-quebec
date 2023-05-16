@@ -62,6 +62,15 @@ class ScenarioController extends Controller
 
     public function showRepartition($id){
         $scenario = Scenario::with('departement')->findOrFail($id);
+        $enseignants = $scenario->departement->cours->map(function ($cours) {
+            return $cours->enseignants->map(function ($enseignant) {
+                return [
+                    'id' => $enseignant->id,
+                    'nom' => $enseignant->name,
+                    'email' => $enseignant->email,
+                ];
+            });
+        })->flatten(1)->unique('id')->values();
 
         $data = [
             'id' => $scenario->id,
@@ -70,7 +79,7 @@ class ScenarioController extends Controller
                 'id' => $scenario->departement->id,
                 'nom' => $scenario->departement->nom,
                 'cours'=> $scenario->departement->cours,
-            
+                'enseignants'=> $enseignants,
             ]
 
         ];
