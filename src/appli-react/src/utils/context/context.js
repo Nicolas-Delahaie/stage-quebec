@@ -14,6 +14,15 @@ export const AppProvider = ({ children }) => {
      * @details Mise à jour a chaque recuperation du token
      */
     const [estConnecte, setEstConnecte] = useState(Cookies.get('token') !== undefined);
+    const errorMessages = {
+        400: "Requete mal formée",
+        401: "Authentification necessaire",
+        403: "Accès refusé",
+        404: "La ressource n'existe pas",
+        422: "Mauvais format de reponse",
+        503: "Service indisponible (surcharge ou maintenance)",
+        default: "Erreur de serveur"
+    }
 
     /**
      * @brief Retourne le token de l'utilisateur, undefined s il n est pas connecté
@@ -79,7 +88,7 @@ export const AppProvider = ({ children }) => {
                 success: false,
                 statusCode: 401,
                 datas: undefined,
-                erreur: "Authentification necessaire"
+                erreur: errorMessages[401]
             };
         }
         // Conversion du body en string
@@ -89,17 +98,6 @@ export const AppProvider = ({ children }) => {
         }
         console.log("url : " + url + "\nmethod : " + method + "\nbody : " + body + "\ntoken : " + token.slice(1, -1));
 
-
-        // -- VARIABLES --
-        const errorMessages = {
-            400: "Requete mal formée",
-            401: "Mot de passe ou mail incorrect",
-            403: "Accès refusé",
-            404: "La ressource n'existe pas",
-            422: "Mauvais format de reponse",
-            503: "Service indisponible (surcharge ou maintenance)",
-            default: "Erreur de serveur"
-        }
 
         // -- TRAITEMENT --
         const res = await fetch(url, {
@@ -130,7 +128,7 @@ export const AppProvider = ({ children }) => {
         else {
             // La requete a echoue
             if (res.status === 403) {
-                // Deconnexion de l interface utilisateur
+                // Le tokken n est plus valide mais existe encore en local
                 deconnexion();
             }
 
