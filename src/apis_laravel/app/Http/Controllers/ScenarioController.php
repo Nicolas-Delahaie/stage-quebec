@@ -61,17 +61,46 @@ class ScenarioController extends Controller
     }
 
     public function showRepartition($id){
+        /*récupération du scénario*/
         $scenario = Scenario::with('departement')->findOrFail($id);
+
+        /*récupération des enseignants liés au scénario*/
         $enseignants = $scenario->departement->cours->map(function ($cours) {
             return $cours->enseignants->map(function ($enseignant) {
                 return [
                     'id' => $enseignant->id,
                     'nom' => $enseignant->name,
                     'email' => $enseignant->email,
+                    'liberations' => $enseignant->liberations->map(function ($liberation) {
+                        return [
+                            'id' => $liberation->id,
+                            'nom' => $liberation->motif,
+                            'tempsAloue' => $liberation->pivot->tempsAloue,
+                        ];
+                    }),
                 ];
             });
         })->flatten(1)->unique('id')->values();
 
+        // /*récupération des libérations liées au scénario*/
+        // $liberations = $scenario->departement->cours->map(function ($cours){
+        //     return $cours->enseignants->map(function($enseignant){
+        //         return $enseignant->liberations->map(function($liberation){
+        //             return [
+        //                 'id' => $liberation->id,
+        //                 'date_debut' => $liberation->date_debut,
+        //                 'date_fin' => $liberation->date_fin,
+        //                 'enseignant' => [
+        //                     'id' => $liberation->enseignant->id,
+        //                     'nom' => $liberation->enseignant->name,
+        //                     'email' => $liberation->enseignant->email,
+        //                 ],
+        //             ];
+        //         });
+        //     });
+        // });
+
+        /*mise en forme des données*/
         $data = [
             'id' => $scenario->id,
             'aEteValide' => $scenario->aEteValide,

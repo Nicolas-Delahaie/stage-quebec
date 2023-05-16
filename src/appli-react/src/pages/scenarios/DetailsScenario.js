@@ -127,6 +127,13 @@ const TdScenario = styled.td`
     }
 `;
 
+const TrTitreScenario = styled(TrScenario)`
+    font-family: ${fonts.titre};
+    background-color: ${colors.gris};
+`;
+
+/* ----------------------------------- DOM ---------------------------------- */
+
 function DetailsScenario() {
     const id = useParams().id;
     const [scenario, setScenario] = useState({});
@@ -134,6 +141,19 @@ function DetailsScenario() {
     const [repartition, setRepartition] = useState({});
     const [loading, setLoading] = useState(false);
     const { getToken } = useContext(AppContext);
+
+    var liberations = [];
+
+    /**
+     * 
+     * @param {*} liberation liberation à ajouter au tableau
+     * @returns un tableau avec les libérations
+     */
+    const addLiberation = (liberation) => {
+        if (!liberations.includes(liberation)) {
+            liberations.push(liberation); 
+        }
+    }
 
     /**
      * Récupération des données détaillées du scénario
@@ -206,8 +226,6 @@ function DetailsScenario() {
             });
     }, []);
 
-    console.log(repartition);
-
     return (
         <DivPageDetailsScenario>
             <ArticleTitle texte="Détails du scénario" />
@@ -238,6 +256,7 @@ function DetailsScenario() {
                         )
                     }
                     <H1Scenario>Le scénario </H1Scenario>
+                    <H2Scenario>Répartition des cours</H2Scenario>
                     <DivTableau>
                         <TableScenario>
                             <thead>
@@ -264,7 +283,6 @@ function DetailsScenario() {
                                             <TdScenario>Le scénario n'a pas été chargée</TdScenario>
                                         </TrScenario>
                                     ) : (
-                                        console.log(getToken()),
                                         repartition.departement.cours.map((cours) => (
                                             <TrScenario key={cours.id}>
                                                 <TdScenario>{cours.nom}</TdScenario>
@@ -278,9 +296,46 @@ function DetailsScenario() {
                                         ))
                                     )
                                 }
+                                <TrTitreScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario>Libération / Conge</TdScenario>
+                                    <TdScenario>ETC</TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                </TrTitreScenario>
+
+                                {
+                                    repartition.aEteValide === undefined ? (
+                                        <TrScenario>
+                                            <TdScenario>Le scénario n'a pas été chargée</TdScenario>
+                                        </TrScenario>
+                                    ) : (
+
+                                        repartition.departement.enseignants.map((enseignant) => (
+                                            enseignant.liberations.map((liberation) => (
+                                                addLiberation(liberation)
+                                            ))
+                                        )),
+                                        console.log(liberations),
+                                        liberations.map((liberation) => (
+                                            <TrScenario key={liberation.id}>
+                                                <TdScenario></TdScenario>
+                                                <TdScenario></TdScenario>
+                                                <TdScenario>{liberation.nom}</TdScenario>
+                                                <TdScenario>{liberation.tempsAloue}</TdScenario>
+                                            </TrScenario>
+                                        ))
+
+
+                                    )
+                                }
+
                             </tbody>
                         </TableScenario>
                     </DivTableau>
+
                 </DivDetailsScenario>
             )}
         </DivPageDetailsScenario>
