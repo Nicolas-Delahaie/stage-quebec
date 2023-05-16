@@ -1,6 +1,7 @@
 /* --------------------------------- IMPORT --------------------------------- */
 /*import pour les fonctionnalités*/
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
+import { AppContext } from '../../utils/context/context';
 
 /* import pour le style */
 import styled from "styled-components"
@@ -50,88 +51,76 @@ const DivPageDepartements = styled.div`
 `;
 
 /* -------------------- FONCTIONS DE LA PAGE DEPARTEMENTS ------------------- */
-
 function rechercheImage(nomDepartement) {
-    switch (nomDepartement) {
-        case "Administration":
-            return Administation;
-        case "Analyses Biomedicales":
-            return analyses_biomedicales;
-        case "Architecture":
-            return architecture;
-        case "Arts Visuels":
-            return Art;
-        case "Biologie":
-            return Biologie;
-        case "Chimie":
-            return chimie;
-        case "Design Interieur":
-            return Design_interieur;
-        case "Education Physique":
-            return EPS;
-        case "GTEA":
-            return GTEA;
-        case "Genie Mecanique":
-            return mecanique;
-        case "Genie Electronique":
-            return electronique;
-        case "Informatique":
-            return informatique;
-        case "Langues Modernes":
-            return langues_modernes;
-        case "Lettres":
-            return lettres;
-        case "Mathémathiques":
-            return maths;
-        case "Philisophie":
-            return Philosophie;
-        /*  ------------------ */
-        case "Physique":
-            return physique;
-        case "Sciences humaines":
-            return sciences_humaines;
-        case "Soins Infirmiers":
-            return Soins_infirmiers;
-        case "Techniques Travail Social":
-            return techniques_travail_social;
-        default:
-            return null;
+    const imagesDepartement = {
+        "Administration": Administation,
+        "Analyses Biomedicales": analyses_biomedicales,
+        "Architecture": architecture,
+        "Arts Visuels": Art,
+        "Biologie": Biologie,
+        "Chimie": chimie,
+        "Design Interieur": Design_interieur,
+        "Education Physique": EPS,
+        "GTEA": GTEA,
+        "Genie Mecanique": mecanique,
+        "Genie Electronique": electronique,
+        "Informatique": informatique,
+        "Langues Modernes": langues_modernes,
+        "Lettres": lettres,
+        "Mathémathiques": maths,
+        "Philisophie": Philosophie,
+        "Physique": physique,
+        "Sciences humaines": sciences_humaines,
+        "Soins Infirmiers": Soins_infirmiers,
+        "Techniques Travail Social": techniques_travail_social,
     }
+
+    return imagesDepartement[nomDepartement] || null;
 }
 
 /* ----------------------------------- DOM ---------------------------------- */
 
 function Departements() {
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [departementsData, setDepartementsData] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
+    const [departement, setDepartement] = useState({});
+    const { apiAccess } = useContext(AppContext);
+
+    const fetchDepartements = async () => {
+        // -- Recuperation --
+        const resultat = await apiAccess({
+            url: `http://localhost:8000/api/departementsDetaille`,
+            method: "get",
+        });
+
+        // -- Analyse --
+        if (resultat.success) {
+            setDepartement(resultat.datas);
+        }
+        else {
+            /**
+             * @todo Gerer l erreur
+             */
+        }
+        setIsLoading(false);
+
+    }
 
     useEffect(() => {
-        setIsLoading(true);
-        fetch("http://localhost:8000/api/departementsDetaille")
-            .then((response) => response.json())
-            .then((response) => {
-                console.log('fetch');
-                setDepartementsData(response);
-            })
-
-            .catch((error) => {
-                console.log(error);
-            });
-        setIsLoading(false);
+        fetchDepartements();
     }, [])
 
     return (
         <DivPageDepartements>
             <ArticleTitle texte="Départements" />
             {
-                isLoading || departementsData.length === undefined ? (
+                isLoading || departement.length === undefined ? (
                     <Loader />
                 )
                     : (
                         <StyledDepartements>
                             {
-                                departementsData.map((departement) => (
+                                departement.map((departement) => (
                                     <CarteHorizontale
                                         key={departement.id}
                                         titre={departement.nom}

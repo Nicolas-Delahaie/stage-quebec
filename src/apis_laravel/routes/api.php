@@ -116,14 +116,14 @@ Route::get('/users/{id}/scenarios', [UserController::class,'showScenarios'])->mi
 Route::get('/users/{id}/scenariosDetailles', [UserController::class,'showScenariosDetailles']);
 
 
+
 /* -------------------------------------------------------------------------- */
-/*                             APIS POUR LES PAGES                            */
+/*                                  PROPOSER                                  */
 /* -------------------------------------------------------------------------- */
-/* ------------------------------ DEPARTEMENTS ------------------------------ */
+use App\Http\Controllers\ProposerController;
 
-
-/* -------------------------------- SCENARIOS ------------------------------- */
-
+Route::delete('/proposer', [ProposerController::class, 'delete'])->middleware(['auth:sanctum']);
+Route::put('/proposer', [ProposerController::class, 'update'])->middleware(['auth:sanctum']);
 
 
 /* -------------------------------------------------------------------------- */
