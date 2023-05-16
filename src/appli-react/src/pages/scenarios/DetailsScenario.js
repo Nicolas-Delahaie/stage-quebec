@@ -126,9 +126,9 @@ function DetailsScenario() {
     const id = useParams().id;
     const [scenario, setScenario] = useState({});
     const [modification, setModification] = useState({});
+    const [repartition, setRepartition] = useState({});
     const [loading, setLoading] = useState(false);
     const { getToken } = useContext(AppContext);
-
 
     /**
      * Récupération des données détaillées du scénario
@@ -179,6 +179,29 @@ function DetailsScenario() {
             });
     }, []);
 
+    useEffect(() => {
+        setLoading(true);
+        fetch(`http://localhost:8000/api/scenarios/${id}/repartition`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + getToken().slice(1, -1),
+            }
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                setRepartition(data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                setLoading(false);
+            });
+    }, []);
+
+
     return (
         <DivPageDetailsScenario>
             <ArticleTitle texte="Détails du scénario" />
@@ -210,80 +233,56 @@ function DetailsScenario() {
                     }
                     <H1Scenario>Le scénario </H1Scenario>
                     <DivTableau>
-                    <TableScenario>
-                        <thead>
-                            <TrScenario>
-                                <ThScenario>Titre du cours</ThScenario>
-                                <ThScenario>Pondération</ThScenario>
-                                <ThScenario>Nombre d'élèves</ThScenario>
-                                <ThScenario>Nombre de groupes</ThScenario>
-                                <ThScenario>Professeur 1</ThScenario>
-                                <ThScenario>Professeur 2</ThScenario>
-                                <ThScenario>Professeur 3</ThScenario>
-                                <ThScenario>Professeur 4</ThScenario>
-                                <ThScenario>Professeur 5</ThScenario>
-                                <ThScenario>Professeur 6</ThScenario>
-                                <ThScenario>Professeur 7</ThScenario>
-                                <ThScenario>Professeur 8</ThScenario>
-                                <ThScenario>Professeur 9</ThScenario>
-                                <ThScenario>Professeur 10</ThScenario>
-                                <ThScenario>Professeur 11</ThScenario>
-                            </TrScenario>
-                        </thead>
-                        <tbody>
-                            <TrScenario>
-                                <TdScenario>cours 1</TdScenario>
-                                <TdScenario>3</TdScenario>
-                                <TdScenario>30</TdScenario>
-                                <TdScenario>1</TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario>2</TdScenario>
-                                <TdScenario>2</TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                            </TrScenario>
-                            <TrScenario>
-                                <TdScenario>cours 2</TdScenario>
-                                <TdScenario>2</TdScenario>
-                                <TdScenario>28</TdScenario>
-                                <TdScenario>3</TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario>2</TdScenario>
-                                <TdScenario></TdScenario>
-                            </TrScenario>
-                            <TrScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario>Calcul de la CI</TdScenario>
-                                <TdScenario>2</TdScenario>
-                                <TdScenario>2</TdScenario>
-                                <TdScenario>2</TdScenario>
-                                <TdScenario>2</TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario></TdScenario>
-                                <TdScenario>2</TdScenario>
-                                <TdScenario>2</TdScenario>
-                                <TdScenario>2</TdScenario>
-                                <TdScenario>2</TdScenario>
-                                <TdScenario></TdScenario>
-                            </TrScenario>
-                        </tbody>
-                    </TableScenario>
+                        <TableScenario>
+                            <thead>
+                                <TrScenario>
+                                    <ThScenario>Titre du cours</ThScenario>
+                                    <ThScenario>Pondération</ThScenario>
+                                    <ThScenario>Nombre d'élèves</ThScenario>
+                                    <ThScenario>Nombre de groupes</ThScenario>
+                                    <ThScenario>Professeur 1</ThScenario>
+                                    <ThScenario>Professeur 2</ThScenario>
+                                    <ThScenario>Professeur 3</ThScenario>
+                                    <ThScenario>Professeur 4</ThScenario>
+                                    <ThScenario>Professeur 5</ThScenario>
+                                    <ThScenario>Professeur 6</ThScenario>
+                                    <ThScenario>Professeur 7</ThScenario>
+                                    <ThScenario>Professeur 8</ThScenario>
+                                    <ThScenario>Professeur 9</ThScenario>
+                                    <ThScenario>Professeur 10</ThScenario>
+                                    <ThScenario>Professeur 11</ThScenario>
+                                </TrScenario>
+                            </thead>
+                            <tbody>
+                                {
+                                    repartition.aEteValide === undefined ? (
+                                        <TrScenario>
+                                        <TdScenario>Le scénario n'a pas été chargée</TdScenario>
+                                        </TrScenario>
+                                    ) : (
+                                        repartition.departement.cours.map((cours) => (
+                                            <TrScenario key={cours.id}>
+                                                <TdScenario>{cours.nom}</TdScenario>
+                                                <TdScenario>{cours.pivot.ponderation}</TdScenario>
+                                                <TdScenario>{cours.pivot.tailleGroupes}</TdScenario>
+                                                <TdScenario>{cours.pivot.nbGroupes}</TdScenario>
+                                                <TdScenario></TdScenario>
+                                                <TdScenario></TdScenario>
+                                                <TdScenario></TdScenario>
+                                                <TdScenario>2</TdScenario>
+                                                <TdScenario>2</TdScenario>
+                                                <TdScenario></TdScenario>
+                                                <TdScenario></TdScenario>
+                                                <TdScenario></TdScenario>
+                                                <TdScenario></TdScenario>
+                                                <TdScenario></TdScenario>
+                                                <TdScenario></TdScenario>
+                                            </TrScenario>
+                                        ))
+                                    )
+                                }
+                            </tbody>
+                        </TableScenario>
                     </DivTableau>
                 </DivDetailsScenario>
             )}

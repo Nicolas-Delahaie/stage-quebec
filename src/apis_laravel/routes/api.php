@@ -85,7 +85,7 @@ Route::get('scenarios/{id}/departement', [ScenarioController::class, 'showDepart
 Route::get('scenarios/{id}/proprietaire', [ScenarioController::class, 'showProprietaire'])->middleware(['auth:sanctum', 'responsable']);
 Route::get('scenarios/{id}/rdvs', [ScenarioController::class, 'showRDVs'])->middleware(['auth:sanctum', 'responsable']);
 Route::get('scenarios/{id}/modifications', [ScenarioController::class, 'showModifications'])->middleware(['auth:sanctum', 'responsable']);
-
+Route::get('scenarios/{id}/repartition', [ScenarioController::class, 'showRepartition'])->middleware(['auth:sanctum', 'responsable']);
 
 /* -------------------------------------------------------------------------- */
 /*                              TYPE_UTILISATEUR                              */

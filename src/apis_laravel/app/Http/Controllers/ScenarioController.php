@@ -59,4 +59,21 @@ class ScenarioController extends Controller
 
         return response()->json($data);
     }
+
+    public function showRepartition($id){
+        $scenario = Scenario::with('departement')->findOrFail($id);
+
+        $data = [
+            'id' => $scenario->id,
+            'aEteValide' => $scenario->aEteValide,
+            'departement'=> [
+                'id' => $scenario->departement->id,
+                'nom' => $scenario->departement->nom,
+                'cours'=> $scenario->departement->cours,
+            
+            ]
+
+        ];
+        return response()->json($data);
+    }
 }
