@@ -95,13 +95,12 @@ function Login() {
                 },
                 needAuth: false
             });
-            console.log(rep);
 
             // -- Traitement de la reponse --
             if (rep.success) {
                 // Connexion
                 console.log(rep);
-                connexion(rep.datas, dureeTokenEnMin);
+                connexion(rep.datas.token, dureeTokenEnMin);
                 navigate(-1);
             }
             else {
