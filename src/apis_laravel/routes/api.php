@@ -110,12 +110,6 @@ Route::get('/users/{id}/modifications', [UserController::class,'showModification
 Route::get('/users/{id}/cours', [UserController::class,'showCours'])->middleware('auth:sanctum');
 Route::get('/users/{id}/scenarios', [UserController::class,'showScenarios'])->middleware('auth:sanctum');
 
-/**
- * @warning A supprimer : On recopie manuelleement la meme fonction que scenarioDetaille
- */
-Route::get('/users/{id}/scenariosDetailles', [UserController::class,'showScenariosDetailles']);
-
-
 
 /* -------------------------------------------------------------------------- */
 /*                                  PROPOSER                                  */

@@ -44,16 +44,16 @@ class ScenarioController extends Controller
             'id' => $scenario->id,
             'aEteValide' => $scenario->aEteValide,
             'annee' => $scenario->annee,
-            'created_at' => $scenario->created_at->format('Y-m-d'),
-            'updated_at' => $scenario->updated_at->format('Y-m-d'),
-            'departement' => [
-                'id' => $scenario->departement->id,
-                'nom' => $scenario->departement->nom,
-            ],
+            'created_at' => $scenario->created_at->format('Y-m-d H:i'),
+            'updated_at' => $scenario->updated_at->format('Y-m-d H:i'),
             'proprietaire' => [
                 'id' => $scenario->proprietaire->id,
                 'nom' => $scenario->proprietaire->name,
                 'email' => $scenario->proprietaire->email,
+            ],
+            'departement' => [
+                'id' => $scenario->departement->id,
+                'nom' => $scenario->departement->nom,
             ],
         ];
 

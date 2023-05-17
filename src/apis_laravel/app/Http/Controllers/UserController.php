@@ -68,19 +68,10 @@ class UserController extends Controller
                         'nom' => $scenario->departement->nom,
                     ],
                 ];
-            })->sortBy('aEteValide')->values()
-            ;
+            })->sortBy('aEteValide')->values();
+        
 
-        $data = [
-            'user' => [
-                'id' => $user->id,
-                'nom' => $user->name,
-                'email' => $user->email,
-            ],
-            'scenarios' => $scenarios,
-        ];
-
-        return response()->json($data);
+        return response()->json($scenarios);
     }
 
     public function updateContraintes(Request $request, $id){
