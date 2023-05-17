@@ -82,7 +82,7 @@ function Login() {
             setErreur("Adresse mail invalide");
         }
         else {
-            const dureeTokenEnMin = resterConnecte ? 60 * 24 * 100 : 60 * 12;    //Si on coche la case, on reste connecte pour 100 jours, sinon pour 12h
+            const dureeSessionEnMin = resterConnecte ? 60 * 24 * 100 : 60 * 12;    //Si on coche la case, on reste connecte pour 100 jours, sinon pour 12h
 
             // -- Envoi de la requete --
             const rep = await apiAccess({
@@ -91,16 +91,15 @@ function Login() {
                 body: {
                     email: mail,
                     password: mdp,
-                    duration: dureeTokenEnMin,
+                    duration: dureeSessionEnMin,
                 },
                 needAuth: false
             });
 
             // -- Traitement de la reponse --
             if (rep.success) {
-                // Connexion
-                console.log(rep);
-                connexion(rep.datas.token, dureeTokenEnMin);
+                //Connexion pour 100 jours si on coche la case, sinon pour 24h
+                connexion(rep.datas.token, dureeSessionEnMin, 8);
                 navigate(-1);
             }
             else {

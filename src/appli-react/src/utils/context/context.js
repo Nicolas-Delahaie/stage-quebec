@@ -29,24 +29,22 @@ export const AppProvider = ({ children }) => {
      * @details Met egalement a jour la variable estConnecte 
      * @returns string, undefined
      */
-    const getToken = () => {
-        let token = Cookies.get('token');
-        if (token) {
-            return token;
-        }
-        else {
-            return undefined;
-        }
+    const getUserToken = () => {
+        return Cookies.get('token');
+    }
+    const getUserId = () => {
+        return Cookies.get('userId');
     }
 
     /**
      * @brief Connecte l utilsisateur
      * @details Cree le cookie de tokken et met a jour la variable estConnecte 
      */
-    const connexion = (token, dureeTokenEnMin) => {
-        const dureeTokenEnH = dureeTokenEnMin / 60;
-        const dureeTokenEnJ = dureeTokenEnH / 24;
-        Cookies.set("token", JSON.stringify(token), { expires: dureeTokenEnJ });
+    const connexion = (token, dureeSessionEnMin, userId) => {
+        const dureeSessionEnH = dureeSessionEnMin / 60;
+        const dureeSessionEnJ = dureeSessionEnH / 24;
+        Cookies.set("token", token, { expires: dureeSessionEnJ });
+        Cookies.set("userId", userId, { expires: dureeSessionEnJ });
         setEstConnecte(true);
     }
     /**
@@ -80,19 +78,18 @@ export const AppProvider = ({ children }) => {
     }) => {
         // -- PRE-TRAITEMENTS --
         // Verificaton de l authentification
-        const token = getToken();
-        if (needAuth) {
-            if (token === undefined) {
-                // Aucun cookie utilisateur
-                setEstConnecte(false);
-                return {
-                    success: false,
-                    statusCode: 401,
-                    datas: undefined,
-                    erreur: errorMessages[401]
-                };
-            }
+        const token = getUserToken();
+        if (needAuth && !token) {
+            // Aucun utilisateur connecte
+            setEstConnecte(false);
+            return {
+                success: false,
+                statusCode: 401,
+                datas: undefined,
+                erreur: errorMessages[401]
+            };
         }
+
         // Conversion du body en string
         if (body) {
             // On convertit le body en string s il y en a un
@@ -101,12 +98,13 @@ export const AppProvider = ({ children }) => {
 
 
         // -- TRAITEMENT --
+        console.log(url);
         const res = await fetch(url, {
             method: method,
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                "Authorization": needAuth ? `Bearer ${token.slice(1, -1)}` : undefined,
+                "Authorization": needAuth ? `Bearer ${token}` : undefined,
             },
             body: body
         })
@@ -144,7 +142,7 @@ export const AppProvider = ({ children }) => {
 
 
     return (
-        <AppContext.Provider value={{ deconnexion, connexion, estConnecte, apiAccess }}>
+        <AppContext.Provider value={{ deconnexion, connexion, estConnecte, apiAccess, getUserId }}>
             {children}
         </AppContext.Provider>
     );
