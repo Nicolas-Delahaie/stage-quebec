@@ -79,13 +79,13 @@ Route::get('rdvs/{id}/scenario', [RDVController::class, 'showScenario'])->middle
 use App\Http\Controllers\ScenarioController;
 
 Route::get('scenarios', [ScenarioController::class, 'index'])->middleware(['auth:sanctum', 'responsable']);
-Route::get('scenarios/{id}', [ScenarioController::class, 'show'])->middleware(['auth:sanctum', 'responsable']);
-Route::get('scenarios/{id}/detaille', [ScenarioController::class, 'showDetails'])->middleware(['auth:sanctum', 'responsable']);
-Route::get('scenarios/{id}/departement', [ScenarioController::class, 'showDepartement'])->middleware(['auth:sanctum', 'responsable']);
-Route::get('scenarios/{id}/proprietaire', [ScenarioController::class, 'showProprietaire'])->middleware(['auth:sanctum', 'responsable']);
-Route::get('scenarios/{id}/rdvs', [ScenarioController::class, 'showRDVs'])->middleware(['auth:sanctum', 'responsable']);
-Route::get('scenarios/{id}/modifications', [ScenarioController::class, 'showModifications'])->middleware(['auth:sanctum', 'responsable']);
-Route::get('scenarios/{id}/repartition', [ScenarioController::class, 'showRepartition'])->middleware(['auth:sanctum', 'responsable']);
+Route::get('scenarios/{id}', [ScenarioController::class, 'show'])->middleware('auth:sanctum');
+Route::get('scenarios/{id}/detaille', [ScenarioController::class, 'showDetails'])->middleware('auth:sanctum');
+Route::get('scenarios/{id}/departement', [ScenarioController::class, 'showDepartement'])->middleware('auth:sanctum');
+Route::get('scenarios/{id}/proprietaire', [ScenarioController::class, 'showProprietaire'])->middleware('auth:sanctum');
+Route::get('scenarios/{id}/rdvs', [ScenarioController::class, 'showRDVs'])->middleware('auth:sanctum');
+Route::get('scenarios/{id}/modifications', [ScenarioController::class, 'showModifications'])->middleware('auth:sanctum');
+Route::get('scenarios/{id}/repartition', [ScenarioController::class, 'showRepartition'])->middleware('auth:sanctum');
 
 /* -------------------------------------------------------------------------- */
 /*                              TYPE_UTILISATEUR                              */

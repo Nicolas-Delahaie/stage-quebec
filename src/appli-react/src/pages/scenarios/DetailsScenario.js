@@ -129,6 +129,7 @@ const TdScenario = styled.td`
 
 const TrTitreScenario = styled(TrScenario)`
     font-family: ${fonts.titre};
+    font-size: 1rem;
     background-color: ${colors.gris};
 `;
 
@@ -143,6 +144,7 @@ function DetailsScenario() {
     const { getToken } = useContext(AppContext);
 
     var liberations = [];
+    var professeurs = [];
 
     /**
      * 
@@ -151,7 +153,13 @@ function DetailsScenario() {
      */
     const addLiberation = (liberation) => {
         if (!liberations.includes(liberation)) {
-            liberations.push(liberation); 
+            liberations.push(liberation);
+        }
+    }
+
+    const addProfesseur = (professeur) => {
+        if (!professeurs.includes(professeur)) {
+            professeurs.push(professeur);
         }
     }
 
@@ -270,6 +278,7 @@ function DetailsScenario() {
                                             <ThScenario></ThScenario>
                                         ) : (
                                             repartition.departement.enseignants.map((enseignant) => (
+                                                addProfesseur(enseignant),
                                                 <ThScenario key={enseignant.id}>{enseignant.nom}</ThScenario>
                                             ))
                                         )
@@ -301,36 +310,43 @@ function DetailsScenario() {
                                     <TdScenario></TdScenario>
                                     <TdScenario>Libération / Conge</TdScenario>
                                     <TdScenario>ETC</TdScenario>
-                                    <TdScenario></TdScenario>
-                                    <TdScenario></TdScenario>
-                                    <TdScenario></TdScenario>
                                 </TrTitreScenario>
 
                                 {
                                     repartition.aEteValide === undefined ? (
                                         <TrScenario>
-                                            <TdScenario>Le scénario n'a pas été chargée</TdScenario>
+                                            <TdScenario>Le scénario n'a pas été chargé</TdScenario>
                                         </TrScenario>
                                     ) : (
+                                        <>
+                                            {repartition.departement.enseignants.map((enseignant) =>
+                                                enseignant.liberations.map((liberation) => addLiberation(liberation))
+                                            )}
 
-                                        repartition.departement.enseignants.map((enseignant) => (
-                                            enseignant.liberations.map((liberation) => (
-                                                addLiberation(liberation)
-                                            ))
-                                        )),
-                                        console.log(liberations),
-                                        liberations.map((liberation) => (
-                                            <TrScenario key={liberation.id}>
-                                                <TdScenario></TdScenario>
-                                                <TdScenario></TdScenario>
-                                                <TdScenario>{liberation.nom}</TdScenario>
-                                                <TdScenario>{liberation.tempsAloue}</TdScenario>
-                                            </TrScenario>
-                                        ))
-
-
+                                            {liberations.map((liberation) => (
+                                                <TrScenario key={liberation.id}>
+                                                    <TdScenario></TdScenario>
+                                                    <TdScenario></TdScenario>
+                                                    <TdScenario>{liberation.nom}</TdScenario>
+                                                    <TdScenario>{liberation.tempsAloue}</TdScenario>
+                                                    {professeurs.map((professeur) => (
+                                                        <TdScenario key={professeur.id}></TdScenario>
+                                                    ))}
+                                                </TrScenario>
+                                            ))}
+                                        </>
                                     )
                                 }
+
+                                <TrScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario>Calcul de CI</TdScenario>
+                                    {professeurs.map((professeur) => (
+                                        <TdScenario key={professeur.id}></TdScenario>
+                                    ))}
+                                </TrScenario>
 
                             </tbody>
                         </TableScenario>
