@@ -145,6 +145,7 @@ function DetailsScenario() {
 
     var liberations = [];
     var professeurs = [];
+    var enseignantMatch = false;
 
     /**
      * 
@@ -301,8 +302,26 @@ function DetailsScenario() {
                                                 <TdScenario>{cours.pivot.tailleGroupes}</TdScenario>
                                                 <TdScenario>{cours.pivot.nbGroupes}</TdScenario>
                                                 {
-                                                    professeurs.map((enseignant) => (
-                                                        <TdScenario key={enseignant.id}></TdScenario>
+                                                    professeurs.map((professeur) => (
+                                                        console.log('voici le professeur'),
+                                                        console.log(professeur),
+                                                        cours.enseignants.length === 0 ? (
+                                                            console.log('j\'affiche pas'),
+                                                            <TdScenario key={professeur.id}></TdScenario>
+                                                        ) : (
+                                                            console.log('voici la liste des enseignants dans cours'),
+                                                            console.log(cours.enseignants),
+
+                                                            enseignantMatch = cours.enseignants.find(enseignant => enseignant.id_enseignant === professeur.id_enseignant),
+                                                            enseignantMatch ? (
+                                                                console.log('j\'affiche'),
+                                                                <TdScenario key={professeur.id}>X</TdScenario>
+                                                            ) : (
+                                                                console.log('j\'affiche pas'),
+                                                                <TdScenario key={professeur.id}></TdScenario>
+                                                            )
+
+                                                        )
                                                     ))
                                                 }
                                             </TrScenario>
@@ -324,13 +343,13 @@ function DetailsScenario() {
                                     ) : (
                                         <>
                                             {
-                                            scenarioRepartition.departement.repartition.map((cours) =>
-                                                cours.enseignants.map((enseignant) => (
-                                                    enseignant.liberations.map((liberation) => (
-                                                        addLiberation(liberation)
+                                                scenarioRepartition.departement.repartition.map((cours) =>
+                                                    cours.enseignants.map((enseignant) => (
+                                                        enseignant.liberations.map((liberation) => (
+                                                            addLiberation(liberation)
+                                                        ))
                                                     ))
-                                                ))
-                                            )}
+                                                )}
 
                                             {liberations.map((liberation) => (
                                                 <TrScenario key={liberation.id}>
