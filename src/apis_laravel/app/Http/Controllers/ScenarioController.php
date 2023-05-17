@@ -65,40 +65,21 @@ class ScenarioController extends Controller
         $scenario = Scenario::with('departement')->findOrFail($id);
 
         /*récupération des enseignants liés au scénario*/
-        $enseignants = $scenario->departement->cours->map(function ($cours) {
-            return $cours->enseignants->map(function ($enseignant) {
-                return [
-                    'id' => $enseignant->id,
-                    'nom' => $enseignant->name,
-                    'email' => $enseignant->email,
-                    'liberations' => $enseignant->liberations->map(function ($liberation) {
-                        return [
-                            'id' => $liberation->id,
-                            'nom' => $liberation->motif,
-                            'tempsAloue' => $liberation->pivot->tempsAloue,
-                        ];
-                    }),
-                ];
-            });
-        })->flatten(1)->unique('id')->values();
-
-        // /*récupération des libérations liées au scénario*/
-        // $liberations = $scenario->departement->cours->map(function ($cours){
-        //     return $cours->enseignants->map(function($enseignant){
-        //         return $enseignant->liberations->map(function($liberation){
-        //             return [
-        //                 'id' => $liberation->id,
-        //                 'date_debut' => $liberation->date_debut,
-        //                 'date_fin' => $liberation->date_fin,
-        //                 'enseignant' => [
-        //                     'id' => $liberation->enseignant->id,
-        //                     'nom' => $liberation->enseignant->name,
-        //                     'email' => $liberation->enseignant->email,
-        //                 ],
-        //             ];
-        //         });
-        //     });
-        // });
+        $repartition = $scenario->departement->cours->map(function ($cours) {
+            return [
+                'id_cours' => $cours->id,
+                'nom_cours' => $cours->nom,
+                'pivot' => $cours->pivot,
+                'enseignants' => $cours->enseignants->map(function ($enseignant) {
+                    return [
+                        'id_enseignant' => $enseignant->id,
+                        'nom_enseignant' => $enseignant->name,
+                        'email' => $enseignant->email,
+                        'liberations' => $enseignant->liberations,
+                    ];
+                }),
+            ];
+        });
 
         /*mise en forme des données*/
         $data = [
@@ -107,8 +88,7 @@ class ScenarioController extends Controller
             'departement'=> [
                 'id' => $scenario->departement->id,
                 'nom' => $scenario->departement->nom,
-                'cours'=> $scenario->departement->cours,
-                'enseignants'=> $enseignants,
+                'repartition' => $repartition,
             ]
 
         ];

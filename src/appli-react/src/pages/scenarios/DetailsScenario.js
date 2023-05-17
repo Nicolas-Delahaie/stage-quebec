@@ -139,7 +139,7 @@ function DetailsScenario() {
     const id = useParams().id;
     const [scenario, setScenario] = useState({});
     const [modification, setModification] = useState({});
-    const [repartition, setRepartition] = useState({});
+    const [scenarioRepartition, setscenarioRepartition] = useState({});
     const [loading, setLoading] = useState(false);
     const { getToken } = useContext(AppContext);
 
@@ -179,8 +179,8 @@ function DetailsScenario() {
             .then((response) => {
                 return response.json();
             })
-            .then((data) => {
-                setScenario(data);
+            .then((scenarioRepartition) => {
+                setScenario(scenarioRepartition);
                 setLoading(false);
             })
             .catch((error) => {
@@ -202,8 +202,8 @@ function DetailsScenario() {
             .then((response) => {
                 return response.json();
             })
-            .then((data) => {
-                setModification(data);
+            .then((scenarioRepartition) => {
+                setModification(scenarioRepartition);
                 setLoading(false);
             })
             .catch((error) => {
@@ -224,8 +224,8 @@ function DetailsScenario() {
             .then((response) => {
                 return response.json();
             })
-            .then((data) => {
-                setRepartition(data);
+            .then((scenarioRepartition) => {
+                setscenarioRepartition(scenarioRepartition);
                 setLoading(false);
             })
             .catch((error) => {
@@ -274,12 +274,14 @@ function DetailsScenario() {
                                     <ThScenario>Nombre d'élèves</ThScenario>
                                     <ThScenario>Nombre de groupes</ThScenario>
                                     {
-                                        repartition.aEteValide === undefined ? (
+                                        scenarioRepartition.aEteValide === undefined ? (
                                             <ThScenario></ThScenario>
                                         ) : (
-                                            repartition.departement.enseignants.map((enseignant) => (
-                                                addProfesseur(enseignant),
-                                                <ThScenario key={enseignant.id}>{enseignant.nom}</ThScenario>
+                                            scenarioRepartition.departement.repartition.map((cours) => (
+                                                cours.enseignants.map((enseignant) => (
+                                                    addProfesseur(enseignant),
+                                                    <ThScenario key={enseignant.id}>{enseignant.nom_enseignant}</ThScenario>
+                                                ))
                                             ))
                                         )
                                     }
@@ -287,20 +289,22 @@ function DetailsScenario() {
                             </thead>
                             <tbody>
                                 {
-                                    repartition.aEteValide === undefined ? (
+                                    scenarioRepartition.aEteValide === undefined ? (
                                         <TrScenario>
                                             <TdScenario>Le scénario n'a pas été chargée</TdScenario>
                                         </TrScenario>
                                     ) : (
-                                        repartition.departement.cours.map((cours) => (
-                                            <TrScenario key={cours.id}>
-                                                <TdScenario>{cours.nom}</TdScenario>
+                                        scenarioRepartition.departement.repartition.map((cours) => (
+                                            <TrScenario key={cours.id_cours}>
+                                                <TdScenario>{cours.nom_cours}</TdScenario>
                                                 <TdScenario>{cours.pivot.ponderation}</TdScenario>
                                                 <TdScenario>{cours.pivot.tailleGroupes}</TdScenario>
                                                 <TdScenario>{cours.pivot.nbGroupes}</TdScenario>
-                                                <TdScenario></TdScenario>
-                                                <TdScenario></TdScenario>
-                                                <TdScenario></TdScenario>
+                                                {
+                                                    professeurs.map((enseignant) => (
+                                                        <TdScenario key={enseignant.id}></TdScenario>
+                                                    ))
+                                                }
                                             </TrScenario>
                                         ))
                                     )
@@ -313,24 +317,33 @@ function DetailsScenario() {
                                 </TrTitreScenario>
 
                                 {
-                                    repartition.aEteValide === undefined ? (
+                                    scenarioRepartition.aEteValide === undefined ? (
                                         <TrScenario>
                                             <TdScenario>Le scénario n'a pas été chargé</TdScenario>
                                         </TrScenario>
                                     ) : (
                                         <>
-                                            {repartition.departement.enseignants.map((enseignant) =>
-                                                enseignant.liberations.map((liberation) => addLiberation(liberation))
+                                            {
+                                            scenarioRepartition.departement.repartition.map((cours) =>
+                                                cours.enseignants.map((enseignant) => (
+                                                    enseignant.liberations.map((liberation) => (
+                                                        addLiberation(liberation)
+                                                    ))
+                                                ))
                                             )}
 
                                             {liberations.map((liberation) => (
                                                 <TrScenario key={liberation.id}>
                                                     <TdScenario></TdScenario>
                                                     <TdScenario></TdScenario>
-                                                    <TdScenario>{liberation.nom}</TdScenario>
-                                                    <TdScenario>{liberation.tempsAloue}</TdScenario>
+                                                    <TdScenario>{liberation.motif}</TdScenario>
+                                                    <TdScenario>{liberation.pivot.tempsAloue}</TdScenario>
                                                     {professeurs.map((professeur) => (
-                                                        <TdScenario key={professeur.id}></TdScenario>
+                                                        professeur.id_enseignant === liberation.pivot.utilisateur_id ? (
+                                                            <TdScenario key={professeur.id}>{liberation.pivot.tempsAloue}</TdScenario>
+                                                        ) : (
+                                                            <TdScenario key={professeur.id}></TdScenario>
+                                                        )
                                                     ))}
                                                 </TrScenario>
                                             ))}
