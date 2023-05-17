@@ -1,7 +1,8 @@
 import { ArticleTitle } from "../../components/forms";
 
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AppContext } from '../../utils/context/context';
 
 import { Loader, colors, fonts } from "../../utils/styles";
 
@@ -50,66 +51,75 @@ const H2Scenario = styled.h2`
 
 function DetailsScenario() {
     const id = useParams().id;
+    const { apiAccess } = useContext(AppContext);
+
     const [scenario, setScenario] = useState({});
-    const [modification, setModification] = useState({});
-    const [loading, setLoading] = useState(false);
+    const [modifications, setModifications] = useState({});
+    const [isLoadingScenario, setIsLoadingScenario] = useState(null);
+    const [isLoadingModifications, setIsLoadingModifications] = useState(null);
+
+    const getScenarioDetaille = async () => {
+        setIsLoadingScenario(true);
+        const rep = await apiAccess({
+            url: `http://localhost:8000/api/scenarios/${id}/detaille`,
+            method: "get",
+        });
+        setIsLoadingScenario(false);
+
+        // -- Analyse du coordo --
+        if (rep.success) {
+            setScenario(rep.datas);
+        }
+        else {
+            /** @todo Gerer l erreur */
+        }
+    }
+    const getModifications = async () => {
+        setIsLoadingModifications(true);
+        const rep = await apiAccess({
+            url: `http://localhost:8000/api/scenarios/${id}/modifications`,
+            method: "get",
+        });
+        setIsLoadingModifications(true);
+        console.log(rep);
+
+        // -- Analyse du coordo --
+        if (rep.success) {
+            setModifications(rep.datas);
+        }
+        else {
+            /** @todo Gerer l erreur */
+        }
+    }
 
 
-    /**
-     * Récupération des données détaillées du scénario
-     */
     useEffect(() => {
-        setLoading(true);
-        fetch(`http://localhost:8000/api/scenarios/${id}/detaille`)
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                setScenario(data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                setLoading(false);
-            });
+        getScenarioDetaille();
+        getModifications()
     }, []);
 
-    useEffect(() => {
-        setLoading(true);
-        fetch(`http://localhost:8000/api/scenarios/${id}/modifications`)
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                setModification(data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                setLoading(false);
-            });
-    }, []);
 
     return (
         <DivPageDetailsScenario>
             <ArticleTitle texte="Détails du scénario" />
-            {loading || scenario.id === undefined ? (
+            {isLoadingScenario || scenario.id === undefined ? (
                 <Loader />
             ) : (
                 <DivDetailsScenario>
-                    <H1Scenario>Département : {scenario.departement.nom}</H1Scenario>
-                    <H2Scenario>Annee : {scenario.annee}</H2Scenario>
+                    <H1Scenario>Informations</H1Scenario>
+                    <H2Scenario>Département : {scenario.departement.nom}</H2Scenario>
+                    <H2Scenario>Pour l'année {scenario.annee}</H2Scenario>
                     <p>Date de création : {scenario.created_at}</p>
                     <p>Dernière modification : {scenario.updated_at}</p>
                     <H2Scenario>Propriétaire : {scenario.proprietaire.nom}</H2Scenario>
                     <H1Scenario>Historique des modifications : </H1Scenario>
                     {
-                        modification[0] === undefined ? (
+                        modifications[0] === undefined ? (
                             <p>Aucune modification n'a été apportée</p>
                         ) : (
                             <div>
                                 {
-                                    modification.map((modif) => (
+                                    modifications.map((modif) => (
                                         <div key={modif.id}>
                                             <p>Date de dernière modification : {modif.date_modif}</p>
                                             <p>Utilisateur aillant fait la modification : {modif.utilisateur_name}</p>
