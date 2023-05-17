@@ -9,12 +9,12 @@ function TestApis() {
 
     // -- TEST --
     const ESSAI = async () => {
-        const resultat = await apiAccess({
-            url: `http://localhost:8000/api/login`,
-            method: "post",
-            body: { email: "root@root.root", password: "root", duration: 100 }
-        });
-        console.log(resultat);
+        // const resultat = await apiAccess({
+        //     url: `http://localhost:8000/api/login`,
+        //     method: "post",
+        //     body: { email: "root@root.root", password: "root", duration: 100 }
+        // });
+        // console.log(resultat);
     }
     ESSAI();
 

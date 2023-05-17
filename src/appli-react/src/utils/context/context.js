@@ -32,11 +32,9 @@ export const AppProvider = ({ children }) => {
     const getToken = () => {
         let token = Cookies.get('token');
         if (token) {
-            setEstConnecte(true);
             return token;
         }
         else {
-            setEstConnecte(false);
             return undefined;
         }
     }
@@ -78,25 +76,31 @@ export const AppProvider = ({ children }) => {
         url,
         method = "get",
         body = undefined,
+        needAuth = true
     }) => {
+        console.log("url : " + url + "\nmethod : " + method + "\nbody : " + body + "\nneedAuth : " + needAuth);
+
         // -- PRE-TRAITEMENTS --
         // Verificaton de l authentification
         const token = getToken();
-        if (token === undefined) {
-            // Aucun utilisateur connecte
-            return {
-                success: false,
-                statusCode: 401,
-                datas: undefined,
-                erreur: errorMessages[401]
-            };
+        if (needAuth) {
+            // console.log("a besoins d identification");
+            if (token === undefined) {
+                // Aucun cookie utilisateur
+                setEstConnecte(false);
+                return {
+                    success: false,
+                    statusCode: 401,
+                    datas: undefined,
+                    erreur: errorMessages[401]
+                };
+            }
         }
         // Conversion du body en string
         if (body) {
             // On convertit le body en string s il y en a un
             body = JSON.stringify(body);
         }
-        console.log("url : " + url + "\nmethod : " + method + "\nbody : " + body + "\ntoken : " + token.slice(1, -1));
 
 
         // -- TRAITEMENT --
@@ -105,11 +109,12 @@ export const AppProvider = ({ children }) => {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                "Authorization": `Bearer ${token.slice(1, -1)}`,
+                "Authorization": needAuth ? `Bearer ${token.slice(1, -1)}` : undefined,
             },
             body: body
         })
             .catch(err => {
+                console.log(err);
                 return {
                     success: false,
                     erreur: err
