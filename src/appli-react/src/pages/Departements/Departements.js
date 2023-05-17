@@ -86,7 +86,7 @@ function Departements() {
     const [departement, setDepartement] = useState({});
     const { apiAccess } = useContext(AppContext);
 
-    const fetchDepartements = async () => {
+    const getDepartements = async () => {
         // -- Recuperation --
         const resultat = await apiAccess({
             url: `http://localhost:8000/api/departementsDetaille`,
@@ -107,7 +107,7 @@ function Departements() {
     }
 
     useEffect(() => {
-        fetchDepartements();
+        getDepartements();
     }, [])
 
     return (

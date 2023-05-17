@@ -9,7 +9,6 @@ import ArticleTitle from "../../components/forms/ArticleTitle";
 import CarteProfesseur from "../../components/layout/CarteProfesseur";
 import CarteCours from "../../components/layout/CarteCours";
 
-/** @todo Faire en sorte que les donnees se chargent hierarchiquement (actuellement tous les fetchs se font en meme temps de maniere asynchrone) */
 
 /* ---------------------------------- STYLE --------------------------------- */
 
@@ -89,7 +88,7 @@ function DetailsDepartement() {
     const [professeurs, setProfesseurs] = useState([]);
 
 
-    const fetchInfos = async () => {
+    const getInfos = async () => {
         // ---- RECUPERATION DES INFORMATIONS DU DEPARTEMENT ---- //
         const resultatDepartement = await apiAccess({
             url: `http://localhost:8000/api/departements/${id}`,
@@ -161,7 +160,7 @@ function DetailsDepartement() {
 
     // Récupération des données
     useEffect(() => {
-        fetchInfos();
+        getInfos();
     }, []);
 
 

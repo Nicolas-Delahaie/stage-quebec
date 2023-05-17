@@ -78,13 +78,10 @@ export const AppProvider = ({ children }) => {
         body = undefined,
         needAuth = true
     }) => {
-        console.log("url : " + url + "\nmethod : " + method + "\nbody : " + body + "\nneedAuth : " + needAuth);
-
         // -- PRE-TRAITEMENTS --
         // Verificaton de l authentification
         const token = getToken();
         if (needAuth) {
-            // console.log("a besoins d identification");
             if (token === undefined) {
                 // Aucun cookie utilisateur
                 setEstConnecte(false);
@@ -114,7 +111,6 @@ export const AppProvider = ({ children }) => {
             body: body
         })
             .catch(err => {
-                console.log(err);
                 return {
                     success: false,
                     erreur: err
@@ -132,7 +128,7 @@ export const AppProvider = ({ children }) => {
         }
         else {
             // La requete a echoue
-            if (res.status === 403) {
+            if (res.status === 401) {
                 // Le tokken n est plus valide mais existe encore en local
                 deconnexion();
             }

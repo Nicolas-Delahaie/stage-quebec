@@ -42,7 +42,7 @@ function App() {
             <Route exact path="/departements" element={<Departements />} />
             <Route exact path="/departements/:id" element={<DetailsDepartement />} />
             <Route exact path='/users/:id/contraintes' element={<Contraintes />} />
-            <Route exact path="/professeur/modifier/:id" element={<ProfesseurModification />} />
+            <Route exact path="/professeurs/modifier/:id" element={<ProfesseurModification />} />
             <Route exact path="/api" element={<TestAPIs />} />
 
             <Route path="*" element={<NotFound />} />
