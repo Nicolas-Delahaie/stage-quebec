@@ -75,11 +75,11 @@ class UserController extends Controller
     }
 
     public function updateContraintes(Request $request, $id){
-        $scenario = User::findOrFail($id);
-        $scenario->contraintes = $request->input('contraintes');
-        $scenario->save();
+        $user = User::findOrFail($id);
+        $user->contraintes = $request->input('contraintes');
+        $user->save();
 
-        return User::findOrFail($id);
+        return response(['message'=>'Contraintes bien modifiées'], 200);
     }
 
 

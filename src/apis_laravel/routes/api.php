@@ -110,6 +110,8 @@ Route::get('/users/{id}/modifications', [UserController::class,'showModification
 Route::get('/users/{id}/cours', [UserController::class,'showCours'])->middleware('auth:sanctum');
 Route::get('/users/{id}/scenarios', [UserController::class,'showScenarios'])->middleware('auth:sanctum');
 
+Route::put('/users/{id}/contraintes', [UserController::class, 'updateContraintes'])->middleware('auth:sanctum');
+
 
 /* -------------------------------------------------------------------------- */
 /*                                  PROPOSER                                  */

@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { AppContext } from '../../utils/context/context';
 import { useParams } from "react-router-dom";
 import { Loader, colors, fonts } from "../../utils/styles";
 import { ArticleTitle } from "../../components/forms";
@@ -59,83 +60,90 @@ const TextareaContraintes = styled.textarea`
 /* ----------------------------------- DOM ---------------------------------- */
 
 function Contraintes() {
+    const { apiAccess, getUserId } = useContext(AppContext);
+    const userId = getUserId();
 
-    const id = useParams().id;
-    const [loading, setLoading] = useState(false);
-    const [userData, setUserData] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
     const [veutModifier, setVeutModifier] = useState(false);
+
     const [contraintes, setContraintes] = useState("");
+    const [newContraintes, setNewContraintes] = useState("");
 
-    useEffect(() => {
-        setLoading(true);
-        fetch(`http://localhost:8000/api/users/${id}`)
-            .then((response) => response.json())
-            .then((data) => {
-                setUserData(data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                setLoading(false);
-            });
-    }, []);
 
-    const TextAreaChangement = (event) => {
-        setContraintes(event.target.value);
+    const getcontraintess = async () => {
+        setIsLoading(true);
+        const rep = await apiAccess({
+            url: `http://localhost:8000/api/users/${userId}`,
+            method: "get",
+        });
+
+        // -- Analyse du coordo --
+        if (rep.success) {
+            setContraintes(rep.datas.contraintes);
+        }
+        else {
+            /** @todo Gerer l erreur */
+            console.log(rep.erreur)
+        }
+        setIsLoading(false);
     }
 
-    const BoutonEnregistrer = () => {
-        console.log('test');
-        if (contraintes !== "") {
-            setLoading(true);
-            fetch(`http://localhost:8000/api/users/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
+    useEffect(() => {
+        getcontraintess();
+    }, []);
+
+
+    const clicEnregistrer = async () => {
+        if (newContraintes !== "") {
+            // -- Enregistrement des données --
+            setIsLoading(true);
+            const rep = await apiAccess({
+                url: `http://localhost:8000/api/users/${userId}/contraintes`,
+                method: "put",
+                body: {
+                    contraintes: newContraintes,
                 },
-                body: JSON.stringify({
-                    contraintes: contraintes,
-                }),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    setUserData(data);
-                    setLoading(false);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    setLoading(false);
-                });
+            });
+
+            if (rep.success) {
+                setContraintes(newContraintes);
+            }
+            else {
+                /** @todo Gerer l erreur */
+                console.log(rep.erreur)
+            }
+            setIsLoading(false);
         }
     }
 
     return (
         <DivPageContraintes>
             <ArticleTitle texte="Contraintes" />
-            {loading ? (
+            {isLoading ? (
                 <Loader />
             ) : (
                 <DivGrille>
                     <DivP>
-                        <H2Scenario>Voici vos contraintes</H2Scenario>
+                        <H2Scenario>Vos contraintes</H2Scenario>
                         {
-                            userData.contraintes === null && veutModifier === false ? (
+                            contraintes === null && veutModifier === false ?
                                 <p>Vous n'avez pas de contraintes</p>
-                            ) : (
-
-                                veutModifier ? (
-                                    <TextareaContraintes placeholder={userData.contraintes} onChange={TextAreaChangement} />
-                                ) : (
-                                    <p>{userData.contraintes}</p>
-                                )
-                            )
+                                :
+                                veutModifier ?
+                                    <TextareaContraintes value={newContraintes} onChange={(e) => setNewContraintes(e.target.value)} />
+                                    :
+                                    <p>{contraintes}</p>
                         }
                         {
-                            veutModifier ? (
-                                <BoutonStyle onClick={() => [setVeutModifier(false), BoutonEnregistrer()]}>Enregistrer</BoutonStyle>
-                            ) : (
+                            veutModifier ?
+                                <>
+                                    <BoutonStyle onClick={() => { setVeutModifier(false); clicEnregistrer(); }}>Enregistrer</BoutonStyle>
+                                    <BoutonStyle onClick={() => setVeutModifier(false)}>Annuler</BoutonStyle>
+                                </>
+
+                                :
                                 <BoutonStyle onClick={() => setVeutModifier(true)}>Modifier</BoutonStyle>
-                            )
+
                         }
                     </DivP>
                     <ImgContraintes src={ContraintesSVG} alt="Contraintes image" />

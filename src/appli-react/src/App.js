@@ -41,7 +41,7 @@ function App() {
             <Route exact path="/scenarios/:id" element={<DetailsScenario />} />
             <Route exact path="/departements" element={<Departements />} />
             <Route exact path="/departements/:id" element={<DetailsDepartement />} />
-            <Route exact path='/users/:id/contraintes' element={<Contraintes />} />
+            <Route exact path='/contraintes' element={<Contraintes />} />
             <Route exact path="/professeurs/modifier/:id" element={<ProfesseurModification />} />
             <Route exact path="/api" element={<TestAPIs />} />
 
