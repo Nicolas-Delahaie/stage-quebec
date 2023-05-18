@@ -144,9 +144,11 @@ function DetailsScenario() {
     const { getToken } = useContext(AppContext);                        // Récupération du token dans le contexte
 
     var liberations = [];                                    // Tableau des libérations
-    var professeurs = [];                                 // Tableau des professeurs    
+    var professeurs = [];                                 // Tableau des professeurs   
+    var TbCours = [];                                         // Tableau des cours
     var enseignantMatch = null;                            // Variable de comparaison pour les professeurs
     var coursMatch = null;                               // Variable de comparaison pour les cours
+    var CITotal = 0;                                    // Variable pour le calcul de CI
 
     /* ---------------------------- FONCTION D'AJOUT ---------------------------- */
 
@@ -170,6 +172,71 @@ function DetailsScenario() {
         if (!professeurs.includes(professeur)) {
             professeurs.push(professeur);
         }
+    }
+
+    /**
+     * 
+     * @param {*} cours cours à ajouter au tableau
+     * @returns un tableau avec les cours
+     */
+    const addCours = (cours) => {
+        if (!TbCours.includes(cours)) {
+            TbCours.push(cours);
+        }
+    }
+
+    /* ----------------------- FONCTIONS POUR LES CALCULS ----------------------- */
+
+    /**
+     * 
+     * @param {*} nbGroupes nombre de groupe du cours
+     * @param {*} ponderation ponderation du professeur
+     * @param {*} nbEtudiantsTotal nombre d'étudiants total
+     * @param {*} nbEtudiantsDifferents nombre d'étudiants différents
+     * @param {*} nbPreparation nombre de préparation du cours
+     * @returns 
+     */
+    const calculCI = (nbGroupes, ponderation, nbEtudiantsTotal, nbEtudiantsDifferents, nbPreparation) => {
+        var CIP = 0;
+        var facteurPreparation = 0;
+
+        //Calcul du facteur de préparation
+        switch (nbPreparation) {
+            case 1 || 2:
+                facteurPreparation = 0.9;
+                break;
+            case 3:
+                facteurPreparation = 1.1;
+                break;
+            default:
+                facteurPreparation = 1.75;
+        }
+
+        CIP = facteurPreparation * ponderation
+
+        CIP += (1.2 * ponderation * nbGroupes)
+
+        if (ponderation * nbEtudiantsTotal > 415) {
+            CIP += 0.04 * 415
+        }
+        else {
+            CIP += 0.04 * (ponderation * nbEtudiantsTotal)
+        }
+
+        if (ponderation * nbEtudiantsTotal > 415) {
+            CIP += 0.07 * (ponderation * nbEtudiantsTotal - 415)
+
+        }
+        if (nbEtudiantsDifferents > 74 && ponderation > 2) {
+            CIP += 0.01 * nbEtudiantsDifferents
+
+        }
+
+        if (nbEtudiantsDifferents > 160 && ponderation > 2) {
+            CIP += 0.1 * ((nbEtudiantsDifferents - 160) ** 2)
+        }
+
+        return CIP.toFixed(2);
     }
 
     /* -------------------------------- USEEFFECT ------------------------------- */
@@ -298,6 +365,8 @@ function DetailsScenario() {
                                             <ThScenario></ThScenario>
                                         ) : (
                                             scenarioRepartition.departement.repartition.map((cours) => (
+                                                /*on stocke les cours dans un tableau afin de stocker le nombre de colonne*/
+                                                addCours(cours),
                                                 cours.enseignants.map((enseignant) => (
                                                     /*on stocke les professeurs dans un tableau afin de stocker le nombre de colonne*/
                                                     addProfesseur(enseignant),
@@ -385,24 +454,24 @@ function DetailsScenario() {
 
                                             {
                                                 /*on affiche les libérations*/
-                                            liberations.map((liberation) => (
-                                                <TrScenario key={liberation.id}>
-                                                    <TdScenario></TdScenario>
-                                                    <TdScenario></TdScenario>
-                                                    <TdScenario>{liberation.motif}</TdScenario>
-                                                    <TdScenario>{liberation.pivot.tempsAloue}</TdScenario>
+                                                liberations.map((liberation) => (
+                                                    <TrScenario key={liberation.id}>
+                                                        <TdScenario></TdScenario>
+                                                        <TdScenario></TdScenario>
+                                                        <TdScenario>{liberation.motif}</TdScenario>
+                                                        <TdScenario>{liberation.pivot.tempsAloue}</TdScenario>
 
-                                                    {
-                                                        /*pour chaque professeur, on cherche les libérations*/
-                                                    professeurs.map((professeur) => (
-                                                        professeur.id_enseignant === liberation.pivot.utilisateur_id ? (
-                                                            <TdScenario key={professeur.id}>{liberation.pivot.tempsAloue}</TdScenario>
-                                                        ) : (
-                                                            <TdScenario key={professeur.id}></TdScenario>
-                                                        )
-                                                    ))}
-                                                </TrScenario>
-                                            ))}
+                                                        {
+                                                            /*pour chaque professeur, on cherche les libérations*/
+                                                            professeurs.map((professeur) => (
+                                                                professeur.id_enseignant === liberation.pivot.utilisateur_id ? (
+                                                                    <TdScenario key={professeur.id}>{liberation.pivot.tempsAloue}</TdScenario>
+                                                                ) : (
+                                                                    <TdScenario key={professeur.id}></TdScenario>
+                                                                )
+                                                            ))}
+                                                    </TrScenario>
+                                                ))}
                                         </>
                                     )
                                 }
@@ -413,9 +482,18 @@ function DetailsScenario() {
                                     <TdScenario></TdScenario>
                                     <TdScenario></TdScenario>
                                     <TdScenario>Calcul de CI</TdScenario>
-                                    {professeurs.map((professeur) => (
-                                        <TdScenario key={professeur.id}></TdScenario>
-                                    ))}
+                                    {
+                                        professeurs.map((professeur) => (
+                                            professeur.cours.map((cours) => (
+                                                coursMatch = TbCours.find(UnCours => UnCours.id_cours === cours.id),
+                                                coursMatch ? (
+                                                    CITotal = calculCI(coursMatch.pivot.ponderation, cours.pivot.ponderation, coursMatch.pivot.tailleGroupes, coursMatch.pivot.tailleGroupes, 1)
+                                                ) : (
+                                                    null
+                                                )
+                                            )),
+                                            <TdScenario key={professeur.id}>{CITotal}</TdScenario>
+                                        ))}
                                 </TrScenario>
 
                             </tbody>
