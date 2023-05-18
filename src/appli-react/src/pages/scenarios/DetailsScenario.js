@@ -136,17 +136,19 @@ const TrTitreScenario = styled(TrScenario)`
 /* ----------------------------------- DOM ---------------------------------- */
 
 function DetailsScenario() {
-    const id = useParams().id;
-    const [scenario, setScenario] = useState({});
-    const [modification, setModification] = useState({});
-    const [scenarioRepartition, setscenarioRepartition] = useState({});
-    const [loading, setLoading] = useState(false);
-    const { getToken } = useContext(AppContext);
+    const id = useParams().id;                                          // Récupération de l'id du scénario dans l'url
+    const [scenario, setScenario] = useState({});                       // State des données générales du scénario
+    const [modification, setModification] = useState({});               // State des modifications du scénario
+    const [scenarioRepartition, setscenarioRepartition] = useState({}); // State de la répartition du scénario
+    const [loading, setLoading] = useState(false);                      // State du chargement de la page
+    const { getToken } = useContext(AppContext);                        // Récupération du token dans le contexte
 
-    var liberations = [];
-    var professeurs = [];
-    var enseignantMatch = null;
-    var coursMatch = null;
+    var liberations = [];                                    // Tableau des libérations
+    var professeurs = [];                                 // Tableau des professeurs    
+    var enseignantMatch = null;                            // Variable de comparaison pour les professeurs
+    var coursMatch = null;                               // Variable de comparaison pour les cours
+
+    /* ---------------------------- FONCTION D'AJOUT ---------------------------- */
 
     /**
      * 
@@ -159,11 +161,18 @@ function DetailsScenario() {
         }
     }
 
+    /**
+     * 
+     * @param {*} professeur professeur à ajouter au tableau
+     * @returns un tableau avec les professeurs
+     */
     const addProfesseur = (professeur) => {
         if (!professeurs.includes(professeur)) {
             professeurs.push(professeur);
         }
     }
+
+    /* -------------------------------- USEEFFECT ------------------------------- */
 
     /**
      * Récupération des données détaillées du scénario
@@ -191,6 +200,9 @@ function DetailsScenario() {
             });
     }, []);
 
+    /**
+     * Récupération des modifications du scénario
+     */
     useEffect(() => {
         setLoading(true);
         fetch(`http://localhost:8000/api/scenarios/${id}/modifications`, {
@@ -214,6 +226,9 @@ function DetailsScenario() {
             });
     }, []);
 
+    /**
+     * Récupération de la répartition du scénario
+     */
     useEffect(() => {
         setLoading(true);
         fetch(`http://localhost:8000/api/scenarios/${id}/repartition`, {
@@ -239,6 +254,7 @@ function DetailsScenario() {
     return (
         <DivPageDetailsScenario>
             <ArticleTitle texte="Détails du scénario" />
+
             {loading || scenario.id === undefined ? (
                 <Loader />
             ) : (
@@ -255,6 +271,7 @@ function DetailsScenario() {
                         ) : (
                             <div>
                                 {
+                                    /*Pour chaque modification, on affiche la date de modification et l'utilisateur qui a fait la modification*/
                                     modification.map((modif) => (
                                         <div key={modif.id}>
                                             <p>Date de dernière modification : {modif.date_modif}</p>
@@ -269,6 +286,7 @@ function DetailsScenario() {
                     <H2Scenario>Répartition des cours</H2Scenario>
                     <DivTableau>
                         <TableScenario>
+                            {/*Première ligne du tableau, on affiche les noms des professeurs*/}
                             <thead>
                                 <TrScenario>
                                     <ThScenario>Titre du cours</ThScenario>
@@ -281,6 +299,7 @@ function DetailsScenario() {
                                         ) : (
                                             scenarioRepartition.departement.repartition.map((cours) => (
                                                 cours.enseignants.map((enseignant) => (
+                                                    /*on stocke les professeurs dans un tableau afin de stocker le nombre de colonne*/
                                                     addProfesseur(enseignant),
                                                     <ThScenario key={enseignant.id}>{enseignant.nom_enseignant}</ThScenario>
                                                 ))
@@ -296,6 +315,7 @@ function DetailsScenario() {
                                             <TdScenario>Le scénario n'a pas été chargée</TdScenario>
                                         </TrScenario>
                                     ) : (
+                                        /* On affiche toutes les informations du cours du département */
                                         scenarioRepartition.departement.repartition.map((cours) => (
                                             <TrScenario key={cours.id_cours}>
                                                 <TdScenario>{cours.nom_cours}</TdScenario>
@@ -303,21 +323,26 @@ function DetailsScenario() {
                                                 <TdScenario>{cours.pivot.tailleGroupes}</TdScenario>
                                                 <TdScenario>{cours.pivot.nbGroupes}</TdScenario>
                                                 {
+                                                    /* Pour chaque professeur, on affiche la pondération du cours en utilisant le tableau professeurs */
                                                     professeurs.map((professeur) => (
+                                                        /*si le cours n'a pas de professeur, on affiche une case vide*/
                                                         cours.enseignants.length === 0 ? (
                                                             <TdScenario key={professeur.id}></TdScenario>
                                                         ) : (
-
+                                                            /*sinon */
+                                                            /*on cherche le professeur enseignant le cours*/
                                                             enseignantMatch = cours.enseignants.find(enseignant => enseignant.id_enseignant === professeur.id_enseignant),
-                                                            enseignantMatch ? (   
+                                                            enseignantMatch ? (
+                                                                /*si le professeur enseigne le cours, on va cherche le cours afin de stocker et afficher la pondération*/
                                                                 coursMatch = enseignantMatch.cours.find(cours => cours.id_cours === cours.id_cours),
-                                                                coursMatch ?(
-                                                                    console.log(coursMatch.pivot),
+                                                                coursMatch ? (
                                                                     <TdScenario key={professeur.id}>{coursMatch.pivot.ponderation}</TdScenario>
-                                                                ):(
+                                                                ) : (
+                                                                    /*si le professeur enseigne le cours mais la pondération n'existe pas, on affiche 0*/
                                                                     <TdScenario key={professeur.id}>0</TdScenario>
                                                                 )
                                                             ) : (
+                                                                /*si le professeur enseigne le cours avec un pondération, on affiche celle-ci*/
                                                                 <TdScenario key={professeur.id}></TdScenario>
                                                             )
 
@@ -328,6 +353,7 @@ function DetailsScenario() {
                                         ))
                                     )
                                 }
+                                {/*Partie pour les libérations */}
                                 <TrTitreScenario>
                                     <TdScenario></TdScenario>
                                     <TdScenario></TdScenario>
@@ -343,21 +369,32 @@ function DetailsScenario() {
                                     ) : (
                                         <>
                                             {
-                                                scenarioRepartition.departement.repartition.map((cours) =>
-                                                    cours.enseignants.map((enseignant) => (
-                                                        enseignant.liberations.map((liberation) => (
+                                                professeurs.map((professeur) => (
+                                                    /*pour chaque professeur, on cherche les libérations*/
+                                                    professeur.liberations.map((liberation) => (
+                                                        /*si le professeur a une libération, on l'ajoute au tableau*/
+                                                        liberation.pivot.utilisateur_id === professeur.id_enseignant ? (
                                                             addLiberation(liberation)
-                                                        ))
+                                                        ) : (
+                                                            /*sinon on ne fait rien*/
+                                                            null
+                                                        )
                                                     ))
-                                                )}
+                                                ))
+                                            }
 
-                                            {liberations.map((liberation) => (
+                                            {
+                                                /*on affiche les libérations*/
+                                            liberations.map((liberation) => (
                                                 <TrScenario key={liberation.id}>
                                                     <TdScenario></TdScenario>
                                                     <TdScenario></TdScenario>
                                                     <TdScenario>{liberation.motif}</TdScenario>
                                                     <TdScenario>{liberation.pivot.tempsAloue}</TdScenario>
-                                                    {professeurs.map((professeur) => (
+
+                                                    {
+                                                        /*pour chaque professeur, on cherche les libérations*/
+                                                    professeurs.map((professeur) => (
                                                         professeur.id_enseignant === liberation.pivot.utilisateur_id ? (
                                                             <TdScenario key={professeur.id}>{liberation.pivot.tempsAloue}</TdScenario>
                                                         ) : (
@@ -370,6 +407,7 @@ function DetailsScenario() {
                                     )
                                 }
 
+                                {/*Partie pour les totaux*/}
                                 <TrScenario>
                                     <TdScenario></TdScenario>
                                     <TdScenario></TdScenario>
