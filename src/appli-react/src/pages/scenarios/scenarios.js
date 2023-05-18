@@ -13,6 +13,9 @@ import { iconNonValide } from '../../assets/svg/iconNonValide.js'
 
 import { colors, fonts, Loader } from '../../utils/styles';
 
+import { AppContext } from '../../utils/context/context';
+import { useContext } from 'react';
+
 const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -48,12 +51,15 @@ function Scenarios() {
 
     const [isLoading, setLoading] = useState(false);
     const [scenarios, setScenarios] = useState([]);
+    const { getID } = useContext(AppContext);
     let urlImage = Calendrier;
     let icon = iconValide;
 
+    console.log(getID());
+
     useEffect(() => {
         setLoading(true)
-        fetch('http://localhost:8000/api/users/2/scenariosDetailles', {
+        fetch(`http://localhost:8000/api/users/${getID()}/scenariosDetailles`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

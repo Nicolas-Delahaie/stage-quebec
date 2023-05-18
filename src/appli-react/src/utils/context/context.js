@@ -40,15 +40,27 @@ export const AppProvider = ({ children }) => {
         }
     }
 
+    const getID = () => {
+        let id = Cookies.get('idUser');
+        if (id) {
+            return id;
+        }
+        else {
+            return undefined;
+        }
+    }
+
     /**
      * @brief Connecte l utilsisateur
      * @details Cree le cookie de tokken et met a jour la variable estConnecte 
      */
-    const connexion = (token, dureeTokenEnMin,type) => {
+    const connexion = (token, dureeTokenEnMin,type,idUser) => {
         const dureeTokenEnH = dureeTokenEnMin / 60;
         const dureeTokenEnJ = dureeTokenEnH / 24;
         Cookies.set("token", JSON.stringify(token), { expires: dureeTokenEnJ });
         Cookies.set("type", JSON.stringify(type), { expires: dureeTokenEnJ });
+        Cookies.set("idUser", JSON.stringify(idUser), { expires: dureeTokenEnJ });
+        console.log(Cookies.get('idUser'));
         setEstConnecte(true);
     }
 
@@ -63,7 +75,7 @@ export const AppProvider = ({ children }) => {
 
 
     return (
-        <AppContext.Provider value={{ getToken, getType, deconnexion, connexion, estConnecte }}>
+        <AppContext.Provider value={{ getToken, getType, getID, deconnexion, connexion, estConnecte }}>
             {children}
         </AppContext.Provider>
     );

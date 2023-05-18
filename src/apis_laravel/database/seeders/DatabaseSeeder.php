@@ -62,12 +62,27 @@ class DatabaseSeeder extends Seeder
             ["nom" => "Droit"],
             ["nom" => "Médecine"],
             ["nom" => "Ingénierie"],
-            ["nom" => "Commerce"]
+            ["nom" => "Commerce"],
+            ["nom" => "Introduction à l'informatique"],
+            ["nom" => "Introduction au développement web"],
+            ["nom" => "Algorithmie et programmation structurée"],
+            ["nom" => "Outils logiciels"],
+            ["nom" => "Introduction à la réseautique"],
+            ["nom" => "Structure de données et algorithmie avancée"],
+            ["nom" => "Programmation système"],
+            ["nom" => "Développement web côté client"],
+            ["nom" => "Développement mobile"],
+
         ];
         $liberation = [
             ["motif" => "PVRTT"],
             ["motif" => "Congé"],
-            ["motif" => "Gestion staiaires"],
+            ["motif" => "Coord. Dept"],
+            ["motif" => "Coord Programme"],
+            ["motif" => "ESR"],
+            ["motif" => "Club sécurité"],
+            ["motif" => "Élaboration SCIM"],
+            ["motif" => "Gestion stagiaires"],
         ];
         foreach($type_utilisateur as $val){TypeUtilisateur::create($val);}
         foreach($cours as $val){Cours::create($val);}
@@ -79,28 +94,51 @@ class DatabaseSeeder extends Seeder
             ["name" => "Root","email" => "root@root.root","password" => bcrypt("root"),"type_utilisateur_id" => 1],
             ["name" => "Root2","email" => "root2@root.root","password" => bcrypt("root"),"type_utilisateur_id" => 2],
             ["name" => "Root3","email" => "root3@root.root","password" => bcrypt("root"),"type_utilisateur_id" => 3],
-            ] as $val){User::create($val);}
+            ] as $val){User::factory()->create($val);}
         User::factory(20)->create();
 
         
-        // TABLES AVEC 2 DEPENDANCES
-        $enseigner=[];
-        foreach(Cours::all() as $cours){
-            //Chaque cours a un prof
-            array_push($enseigner, ["cours_id" => $cours->id, "professeur_id"=>$faker->numberBetween(1, User::count()), "ponderation"=>$faker->numberBetween(1, 3)]);
-        }
+         // TABLES AVEC 2 DEPENDANCES
+        $enseigner=[
+            [ "cours_id" => 25, "professeur_id" => 4, "ponderation" => 2],
+            [ "cours_id" => 25, "professeur_id" => 10, "ponderation" => 2],
+
+            [ "cours_id" => 26, "professeur_id" => 4, "ponderation" => 1],
+            [ "cours_id" => 26, "professeur_id" => 9, "ponderation" => 1],
+            [ "cours_id" => 26, "professeur_id" => 12, "ponderation" => 1],
+            [ "cours_id" => 26, "professeur_id" => 13, "ponderation" => 1],
+            
+            [ "cours_id" => 27, "professeur_id" => 6, "ponderation" => 2],
+            [ "cours_id" => 27, "professeur_id" => 11, "ponderation" => 1],
+            [ "cours_id" => 27, "professeur_id" => 12, "ponderation" => 1],
+            
+            [ "cours_id" => 28, "professeur_id" => 11, "ponderation" => 1],
+            
+            [ "cours_id" => 29, "professeur_id" => 5, "ponderation" => 2],
+            
+            [ "cours_id" => 30, "professeur_id" => 8, "ponderation" => 1],
+
+            [ "cours_id" => 31, "professeur_id" => 8, "ponderation" => 2],
+            
+            [ "cours_id" => 32, "professeur_id" => 8, "ponderation" => 2],
+            
+            [ "cours_id" => 33, "professeur_id" => 9, "ponderation" => 2],
+        
+            
+        ];
+        // foreach(Cours::all() as $cours){
+        //     //Chaque cours a un prof
+        //     array_push($enseigner, ["cours_id" => $cours->id, "professeur_id"=>$faker->numberBetween(1, User::count()), "ponderation"=>$faker->numberBetween(1, 3)]);
+        // }
 
         $alouer=[
-            ["tempsALoue"=>0.5125, "utilisateur_id"=>1, "liberation_id"=>3],
-            ["tempsALoue"=>0.823, "semestre"=>1, "utilisateur_id"=>3, "liberation_id"=>3],
-            ["tempsALoue"=>0.732, "annee"=>2023, "semestre"=>1, "utilisateur_id"=>6, "liberation_id"=>3],
-            ["tempsALoue"=>0.9, "annee"=>2023, "semestre"=>2, "utilisateur_id"=>7, "liberation_id"=>3],
-            ["tempsALoue"=>0.3, "annee"=>2024, "semestre"=>2, "utilisateur_id"=>2, "liberation_id"=>2],
-            ["tempsALoue"=>0.005, "annee"=>2024, "utilisateur_id"=>4, "liberation_id"=>2],
-            ["tempsALoue"=>0.2, "annee"=>2023, "semestre"=>2, "utilisateur_id"=>5, "liberation_id"=>2],
-            ["tempsALoue"=>0.125, "annee"=>2023, "semestre"=>1, "utilisateur_id"=>10, "liberation_id"=>2],
-            ["tempsALoue"=>0.19, "semestre"=>1, "utilisateur_id"=>8, "liberation_id"=>1],
-            ["tempsALoue"=>0.23, "annee"=>2023, "utilisateur_id"=>9, "liberation_id"=>1],
+            ["tempsALoue"=>0.355, "utilisateur_id"=>10, "liberation_id"=>3],
+            ["tempsALoue"=>0.100, "utilisateur_id"=>10, "liberation_id"=>4],
+            ["tempsALoue"=>0.205, "utilisateur_id"=>10, "liberation_id"=>5],
+            ["tempsALoue"=>0.100, "utilisateur_id"=>7, "liberation_id"=>6],
+            ["tempsALoue"=>0.255, "utilisateur_id"=>6, "liberation_id"=>7],
+            ["tempsALoue"=>0.100, "utilisateur_id"=>5, "liberation_id"=>8],
+            
         ];
         $departement=[
             ["nom" => "Biologie", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
@@ -118,14 +156,14 @@ class DatabaseSeeder extends Seeder
             ["nom" => "Philisophie", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
             ["nom" => "Techniques Travail Social", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
             ["nom" => "Administration", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ["nom" => "Informatique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            ["nom" => "Informatique", "coordonnateur_id"=>10, "nbEleves"=>250],
             ["nom" => "Arts Visuels", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
             ["nom" => "Design Interieur", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
             ["nom" => "Lettres", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
             ["nom" => "Langues Modernes", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
         ];
         
-
+        
         foreach($enseigner as $val){Enseigner::create($val);}
         foreach($alouer as $val){Alouer::create($val);}
         foreach($departement as $val){Departement::create($val);}
@@ -136,7 +174,18 @@ class DatabaseSeeder extends Seeder
         foreach (Departement::all() as $departement) {
             // On attribue a chaque departement entre 3 et 8 cours
             
-            $coursProposes = [];
+            $coursProposes = [
+                // ['cours_id' => 25, "departement_id" => 16, "ponderation" =>3, "tailleGroupe" => 20, "nbGroupes" => 4],
+                // ['cours_id' => 26, "departement_id" => 16, "ponderation" =>4, "tailleGroupe" => 22, "nbGroupes" => 4],
+                // ['cours_id' => 27, "departement_id" => 16, "ponderation" =>6, "tailleGroupe" => 20, "nbGroupes" => 4],
+                // ['cours_id' => 28, "departement_id" => 16, "ponderation" =>3, "tailleGroupe" => 12, "nbGroupes" => 1],
+                // ['cours_id' => 29, "departement_id" => 16, "ponderation" =>3, "tailleGroupe" => 16, "nbGroupes" => 2],
+                // ['cours_id' => 30, "departement_id" => 16, "ponderation" =>4, "tailleGroupe" => 26, "nbGroupes" => 1],
+                // ['cours_id' => 31, "departement_id" => 16, "ponderation" =>6, "tailleGroupe" => 16, "nbGroupes" => 2],
+                // ['cours_id' => 32, "departement_id" => 16, "ponderation" =>4, "tailleGroupe" => 14, "nbGroupes" => 2],
+                // ['cours_id' => 33, "departement_id" => 16, "ponderation" =>4, "tailleGroupe" => 25, "nbGroupes" => 1],
+                // ['cours_id' => 34, "departement_id" => 16, "ponderation" =>4, "tailleGroupe" => 22, "nbGroupes" => 1],
+            ];
             $nbCours = $faker->numberBetween(3, 8);
             // On s'assure que les cours soient uniques
             while (count($coursProposes) < $nbCours) {
@@ -158,7 +207,14 @@ class DatabaseSeeder extends Seeder
             }
             
         }
-        $scenario = [];
+        $scenario = [
+            [
+                "aEteValide" => false,
+                "annee" => 2022,
+                "departement_id" => 16,
+                "proprietaire_id" => 10,
+            ]
+        ];
         foreach (Departement::all() as $departement) {
             // On attribue a chaque departement entre 1 et 4 scenarios
             
@@ -180,39 +236,39 @@ class DatabaseSeeder extends Seeder
                 "proprietaire_id" => $departement->coordonnateur_id,
             ]);
         }
-
+        
         
         foreach($proposer as $val){Proposer::create($val);}
         foreach($scenario as $val){Scenario::create($val);}
         
-        // TABLES AVEC 4 DEPENDANCES
-        $modification = [];
-        foreach (Departement::all() as $dept) {
-            // On attribue a chaque coordonnateur entre 0 et 4 modifications
-            $coordo = $dept->coordonnateur()->get()->first();
+        // // TABLES AVEC 4 DEPENDANCES
+        // $modification = [];
+        // foreach (Departement::all() as $dept) {
+        //     // On attribue a chaque coordonnateur entre 0 et 4 modifications
+        //     $coordo = $dept->coordonnateur()->get()->first();
 
-            for ($i=0; $i < $faker->numberBetween(0, 4); $i++) {
-                array_push($modification, [
-                    "scenario_id" => $faker->numberBetween(1, Scenario::count()),
-                    "utilisateur_id" => $coordo->id,
-                    "date_modif" => $faker->dateTimeBetween($startDate = '2010-01-01', $endDate = 'now'),
-                ]);
-            }
-        }
-        $rdv = [];
-        foreach (Scenario::all() as $scenario){
-            // On attribue a chaque scenario entre 0 et 4 rendez-vous
-            for ($i=0; $i < $faker->numberBetween(0, 4); $i++) {
-                array_push($rdv, [
-                    "scenario_id" => $scenario->id,
-                    "jour" => $faker->dateTimeBetween($startDate = '20-04-'.$scenario->annee, $endDate = '20-09-'.$scenario->annee),
-                    "horaire" => $faker->numberBetween(8, 16).":".$faker->numberBetween(0,3)*15
-                ]);
-            }
-        }
+        //     for ($i=0; $i < $faker->numberBetween(0, 4); $i++) {
+        //         array_push($modification, [
+        //             "scenario_id" => $faker->numberBetween(1, Scenario::count()),
+        //             "utilisateur_id" => $coordo->id,
+        //             "date_modif" => $faker->dateTimeBetween($startDate = '2010-01-01', $endDate = 'now'),
+        //         ]);
+        //     }
+        // }
+        // $rdv = [];
+        // foreach (Scenario::all() as $scenario){
+        //     // On attribue a chaque scenario entre 0 et 4 rendez-vous
+        //     for ($i=0; $i < $faker->numberBetween(0, 4); $i++) {
+        //         array_push($rdv, [
+        //             "scenario_id" => $scenario->id,
+        //             "jour" => $faker->dateTimeBetween($startDate = '20-04-'.$scenario->annee, $endDate = '20-09-'.$scenario->annee),
+        //             "horaire" => $faker->numberBetween(8, 16).":".$faker->numberBetween(0,3)*15
+        //         ]);
+        //     }
+        // }
         
         
-        foreach($modification as $val){Modification::create($val);}
-        foreach($rdv as $val){Rdv::create($val);}
+        // foreach($modification as $val){Modification::create($val);}
+        // foreach($rdv as $val){Rdv::create($val);}
     }
 }

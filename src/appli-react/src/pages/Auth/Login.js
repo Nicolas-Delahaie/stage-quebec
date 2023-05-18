@@ -114,7 +114,7 @@ function Login() {
                 })
                 .then(data => {
                     //Connexion pour 100 jours si on coche la case, sinon pour 24h
-                    connexion(data.token, dureeTokenEnMin, data.type.nom);
+                    connexion(data.token, dureeTokenEnMin, data.type.nom, data.idUser);
                     navigate('/authentifie')  //Redirection vers la page d accueil authentifiee
                 })
                 .catch((err) => {
