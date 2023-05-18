@@ -37,7 +37,8 @@ class User extends Authenticatable
         return $this->hasMany(Modification::class, "utilisateur_id");
     }
     public function cours(){
-        return $this->belongsToMany(Cours::class, 'enseigner', 'professeur_id', 'cours_id');
+        return $this->belongsToMany(Cours::class, 'enseigner', 'professeur_id', 'cours_id')
+            ->withPivot('ponderation');
     }
     public function scenarios(){
         return $this->hasMany(Scenario::class, 'proprietaire_id');

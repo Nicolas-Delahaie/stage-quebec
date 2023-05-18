@@ -145,7 +145,8 @@ function DetailsScenario() {
 
     var liberations = [];
     var professeurs = [];
-    var enseignantMatch = false;
+    var enseignantMatch = null;
+    var coursMatch = null;
 
     /**
      * 
@@ -303,21 +304,20 @@ function DetailsScenario() {
                                                 <TdScenario>{cours.pivot.nbGroupes}</TdScenario>
                                                 {
                                                     professeurs.map((professeur) => (
-                                                        console.log('voici le professeur'),
-                                                        console.log(professeur),
                                                         cours.enseignants.length === 0 ? (
-                                                            console.log('j\'affiche pas'),
                                                             <TdScenario key={professeur.id}></TdScenario>
                                                         ) : (
-                                                            console.log('voici la liste des enseignants dans cours'),
-                                                            console.log(cours.enseignants),
 
                                                             enseignantMatch = cours.enseignants.find(enseignant => enseignant.id_enseignant === professeur.id_enseignant),
-                                                            enseignantMatch ? (
-                                                                console.log('j\'affiche'),
-                                                                <TdScenario key={professeur.id}>X</TdScenario>
+                                                            enseignantMatch ? (   
+                                                                coursMatch = enseignantMatch.cours.find(cours => cours.id_cours === cours.id_cours),
+                                                                coursMatch ?(
+                                                                    console.log(coursMatch.pivot),
+                                                                    <TdScenario key={professeur.id}>{coursMatch.pivot.ponderation}</TdScenario>
+                                                                ):(
+                                                                    <TdScenario key={professeur.id}>0</TdScenario>
+                                                                )
                                                             ) : (
-                                                                console.log('j\'affiche pas'),
                                                                 <TdScenario key={professeur.id}></TdScenario>
                                                             )
 

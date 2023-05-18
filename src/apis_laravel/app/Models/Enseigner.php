@@ -13,11 +13,8 @@ class Enseigner extends Model
     protected $fillable = [
         'cours_id',
         'professeur_id',
-        'scenario_id'
+        'ponderation'
     ];
 
-    public function scenario(){
-        return $this->belongsTo(Scenario::class, "scenario_id");
-    }
 
 }

@@ -74,6 +74,7 @@ class ScenarioController extends Controller
                     return [
                         'id_enseignant' => $enseignant->id,
                         'nom_enseignant' => $enseignant->name,
+                        'cours' => $enseignant->cours,
                         'email' => $enseignant->email,
                         'liberations' => $enseignant->liberations,
                     ];

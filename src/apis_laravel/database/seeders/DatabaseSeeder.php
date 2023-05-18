@@ -82,8 +82,13 @@ class DatabaseSeeder extends Seeder
             ] as $val){User::create($val);}
         User::factory(20)->create();
 
-
+        
         // TABLES AVEC 2 DEPENDANCES
+        $enseigner=[];
+        foreach(Cours::all() as $cours){
+            //Chaque cours a un prof
+            array_push($enseigner, ["cours_id" => $cours->id, "professeur_id"=>$faker->numberBetween(1, User::count()), "ponderation"=>$faker->numberBetween(1, 3)]);
+        }
 
         $alouer=[
             ["tempsALoue"=>0.5125, "utilisateur_id"=>1, "liberation_id"=>3],
@@ -119,7 +124,9 @@ class DatabaseSeeder extends Seeder
             ["nom" => "Lettres", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
             ["nom" => "Langues Modernes", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
         ];
+        
 
+        foreach($enseigner as $val){Enseigner::create($val);}
         foreach($alouer as $val){Alouer::create($val);}
         foreach($departement as $val){Departement::create($val);}
 
@@ -204,14 +211,8 @@ class DatabaseSeeder extends Seeder
             }
         }
         
-        $enseigner=[];
-        foreach(Cours::all() as $cours){
-            //Chaque cours a un prof
-            array_push($enseigner, ["cours_id" => $cours->id, "professeur_id"=>$faker->numberBetween(1, User::count()), "scenario_id"=>$faker->numberBetween(1, Scenario::count())]);
-        }
         
         foreach($modification as $val){Modification::create($val);}
         foreach($rdv as $val){Rdv::create($val);}
-        foreach($enseigner as $val){Enseigner::create($val);}
     }
 }

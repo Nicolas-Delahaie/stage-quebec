@@ -72,8 +72,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger("cours_id");
             $table->unsignedBigInteger("professeur_id");
-            $table->unsignedBigInteger("scenario_id");
-            $table->unique(["cours_id", "professeur_id", "scenario_id"]);
+            $table->unsignedBigInteger("ponderation");
+            $table->unique(["cours_id", "professeur_id"]);
         });
         Schema::create("alouer", function(Blueprint $table){
             $table->id();
@@ -135,7 +135,6 @@ return new class extends Migration
             $table->foreign("professeur_id")->references("id")->on("users");
                 // ->onDelete("CASCADE")
                 // ->onUpdate("CASCADE");
-            $table->foreign("scenario_id")->references("id")->on("scenario");
         });
         Schema::table("alouer", function(Blueprint $table){
             $table->foreign("utilisateur_id")->references("id")->on("users");
