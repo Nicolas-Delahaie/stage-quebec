@@ -20,4 +20,7 @@ class ModificationController extends Controller
     public function showScenario($id){
         return Modification::findOrFail($id)->scenario->toJson();
     }
+    public function showDetails($id){
+        return Modification::findOrFail($id)->details->toJson();
+    }
 }

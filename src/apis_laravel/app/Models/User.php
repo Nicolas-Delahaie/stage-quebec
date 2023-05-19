@@ -36,8 +36,8 @@ class User extends Authenticatable
     public function modifications(){
         return $this->hasMany(Modification::class, "utilisateur_id");
     }
-    public function cours(){
-        return $this->belongsToMany(Cours::class, 'enseigner', 'professeur_id', 'cours_id');
+    public function coursEnseignes(){
+        return $this->belongsToMany(Cours::class, 'enseigner', 'professeur_id', 'cours_propose_id');
     }
     public function scenarios(){
         return $this->hasMany(Scenario::class, 'proprietaire_id');

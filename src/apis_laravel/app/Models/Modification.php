@@ -22,4 +22,7 @@ class Modification extends Model
     public function scenario(){
         return $this->belongsTo(Scenario::class, "scenario_id");
     }
+    public function details(){
+        return $this->hasMany(DetailModification::class, "modification_id");
+    }
 }

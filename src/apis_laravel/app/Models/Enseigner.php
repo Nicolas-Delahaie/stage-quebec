@@ -11,7 +11,8 @@ class Enseigner extends Model
     public $timestamps = false; //Pour que le seeder sache qu'il ne faut pas l initialiser (meme s il n existe pas)
     protected $table = 'enseigner';
     protected $fillable = [
-        'cours_id',
+        'nbGroupes',
+        'cours_propose_id',
         'professeur_id',
     ];
 }
