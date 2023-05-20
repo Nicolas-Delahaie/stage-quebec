@@ -213,13 +213,20 @@ class DatabaseSeeder extends Seeder
             foreach($rdv as $val){Rdv::create($val);}
             
             $enseigner=[];
+            // Chaque cours proposé a entre 0 et 5 profs
             foreach(CoursPropose::all() as $coursPropose){
-                //Chaque cours proposé a un prof
-                array_push($enseigner, [
-                    "nbGroupes" => $faker->numberBetween(1, 4),
-                    "cours_propose_id" => $coursPropose->id, 
-                    "professeur_id"=>$faker->numberBetween(1, User::count()),
-                ]);
+                $nbProfs = $faker->numberBetween(0, 3);
+
+                // On cree un tableau de profs uniques
+                $profs = User::where("type_utilisateur_id", 3)->inRandomOrder()->take($nbProfs)->get();
+
+                for ($i=0; $i < $nbProfs; $i++){
+                    array_push($enseigner, [
+                        "nbGroupes" => $faker->numberBetween(1, 4),
+                        "cours_propose_id" => $coursPropose->id, 
+                        "professeur_id" => $profs[$i]->id,
+                    ]);
+                }
             }
             foreach($enseigner as $val){Enseigner::create($val);}
 
@@ -233,17 +240,20 @@ class DatabaseSeeder extends Seeder
                     //Pour chaque scenario departement
                     foreach ($scenario->modifications as $modif){
                         //Pour chaque modification du scenario
-                        for ($i=0; $i < $faker->numberBetween(0, 10); $i++) {
+                        $nbDetails = $faker->numberBetween(0, 10);
+                        while (count($details_modification) < $nbDetails) {
                             // On attribue a chaque modification de chaque scenario de chaque department entre 0 et 10 details
                             $coursProposeAleatoire = $dep->coursProposes()->inRandomOrder()->first();
                             $profAleatoire = $coursProposeAleatoire->enseignants()->inRandomOrder()->first();
-                            array_push($details_modification, [
-                                "modification_id" => $modif->id,
-                                "cours_propose_id" => $coursProposeAleatoire->id,
-                                "professeur_id" => $profAleatoire->id,
-                                "oldPonderation" => $faker->numberBetween(0, 4),
-                                "newPonderation" => $faker->numberBetween(0, 4),
-                            ]);
+                            if ($profAleatoire !== null){
+                                array_push($details_modification, [
+                                    "modification_id" => $modif->id,
+                                    "cours_propose_id" => $coursProposeAleatoire->id,
+                                    "professeur_id" => $profAleatoire->id,
+                                    "oldPonderation" => $faker->numberBetween(0, 4),
+                                    "newPonderation" => $faker->numberBetween(0, 4),
+                                ]);
+                            }
                         }
                     }
                 }

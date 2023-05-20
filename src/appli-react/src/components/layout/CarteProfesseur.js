@@ -8,7 +8,7 @@ export const DivCarteReduite = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: start;
 
     box-shadow: 0 0 10px ${colors.gris};
     border-radius: 1rem;

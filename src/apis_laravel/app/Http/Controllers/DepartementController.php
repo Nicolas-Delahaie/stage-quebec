@@ -26,6 +26,9 @@ class DepartementController extends Controller
     public function showCoursProposes($id){
         return Departement::find($id)->coursProposes->toJson();
     }
+    public function showCoursProposesDetailles($id){
+        return Departement::find($id)->coursProposesDetailles->toJson();
+    }
     public function showScenarios($id){
         return Departement::find($id)->scenarios->toJson();
     }

@@ -38,6 +38,7 @@ Route::get('/departementsDetailles', [DepartementController::class, 'indexDetail
 Route::get('/departements/{id}', [DepartementController::class, 'show'])->middleware(['auth:sanctum', 'responsable']);
 Route::get('/departements/{id}/coordonnateur', [DepartementController::class, 'showCoordonnateur'])->middleware(['auth:sanctum', 'responsable']);
 Route::get('/departements/{id}/cours_proposes', [DepartementController::class, 'showCoursProposes'])->middleware(['auth:sanctum', 'responsable']);
+Route::get('/departements/{id}/cours_proposes_detailles', [DepartementController::class, 'showCoursProposesDetailles'])->middleware(['auth:sanctum', 'responsable']);
 Route::get('/departements/{id}/scenarios', [DepartementController::class, 'showScenarios'])->middleware(['auth:sanctum', 'responsable']);
 
 

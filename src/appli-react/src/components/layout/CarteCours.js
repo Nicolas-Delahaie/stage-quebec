@@ -240,7 +240,7 @@ function CarteCours({ coursPropose, idDepartement, allCours, setAllCours }) {
                     )
                     :
                     (
-                        <div>
+                        <>
                             <DivH2>
                                 <H2Cours>Pondération : {coursPropose.ponderation}</H2Cours>
                                 <H2Cours>Taille du groupe : {coursPropose.tailleGroupes}</H2Cours>
@@ -250,7 +250,16 @@ function CarteCours({ coursPropose, idDepartement, allCours, setAllCours }) {
                                 <Bouton onClick={() => setVeutModifier(true)}>Modifier</Bouton>
                                 <Bouton onClick={() => validationSuppression()}>Supprimer</Bouton>
                             </DivBouton >
-                        </div>
+                            <DivH2>
+                                <H1Cours>Professeurs</H1Cours>
+                                {
+                                    coursPropose.enseignants?.map((professeur) => (
+                                        <H2Cours>{professeur.name}</H2Cours>
+                                    ))
+                                }
+
+                            </DivH2>
+                        </>
                     )
             }
         </DivCarteReduite >

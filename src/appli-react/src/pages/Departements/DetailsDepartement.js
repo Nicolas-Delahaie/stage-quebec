@@ -80,12 +80,10 @@ function DetailsDepartement() {
     const [loadingDepartement, setLoadingDepartement] = useState(true);
     const [loadingCoordo, setLoadingCoordo] = useState(true);
     const [loadingCoursProposes, setLoadingCoursProposes] = useState(true);
-    const [loadingProfesseurs, setLoadingProfesseurs] = useState(true);
 
     const [departement, setDepartement] = useState([]);
     const [coursProposes, setCoursProposes] = useState([]);
     const [coordo, setCoordo] = useState([]);
-    const [professeurs, setProfesseurs] = useState([]);
 
 
     const getInfos = async () => {
@@ -121,36 +119,20 @@ function DetailsDepartement() {
 
             // ---- RECUPERATION DES COURS PROPOSES---- //
             const resultatCoursProposes = await apiAccess({
-                url: `http://localhost:8000/api/departements/${id}/cours_proposes`,
+                url: `http://localhost:8000/api/departements/${id}/cours_proposes_detailles`,
                 method: "get",
             });
             setLoadingCoursProposes(false);
 
             // -- Analyse --
             if (resultatCoursProposes.success) {
-                console.log(resultatCoursProposes.datas);
                 setCoursProposes(resultatCoursProposes.datas);
             }
             else {
                 /** @todo Gerer l erreur */
                 console.error(resultatCoursProposes.erreur);
             }
-
-            // ---- RECUPERATION DES PROFESSEURS ---- //
-            // const resultatProfesseurs = await apiAccess({
-            //     url: `http://localhost:8000/api/departements/${id}/users`,
-            //     method: "get",
-            // });
-            // setLoadingProfesseurs(false);
-
-            // // -- Analyse --
-            // if (resultatProfesseurs.success) {
-            //     setProfesseurs(resultatProfesseurs.datas);
-            // }
-            // else {
-            //     /** @todo Gerer l erreur */
-            //     console.error(resultatProfesseurs.erreur);
-            // }
+            
         }
         else {
             /** @todo Gerer l erreur */
@@ -191,17 +173,6 @@ function DetailsDepartement() {
                                             <CarteCours key={coursPropose.id} coursPropose={coursPropose} idDepartement={departement.id} allCours={coursProposes} setAllCours={setCoursProposes} />
                                         ))
                                     )
-                            }
-                        </DivListe>
-                        <H2DetailsDepartement>Les professeurs de ce département</H2DetailsDepartement>
-                        <DivListe>
-                            {
-                                loadingProfesseurs ?
-                                    <Loader />
-                                    :
-                                    professeurs?.map((professeur) => (
-                                        <CarteProfesseur key={professeur.id} idProfesseur={professeur.id} nomProfesseur={professeur.name} matieresProfesseur={professeur.nom} />
-                                    ))
                             }
                         </DivListe>
                     </DivDetailsDepartement>
