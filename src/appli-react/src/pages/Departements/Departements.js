@@ -89,7 +89,7 @@ function Departements() {
     const getDepartements = async () => {
         // -- Recuperation --
         const resultat = await apiAccess({
-            url: `http://localhost:8000/api/departementsDetaille`,
+            url: `http://localhost:8000/api/departementsDetailles`,
             method: "get",
         });
 

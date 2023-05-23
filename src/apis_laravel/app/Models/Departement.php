@@ -19,10 +19,15 @@ class Departement extends Model
     public function coordonnateur(){
         return $this->belongsTo(User::class, "coordonnateur_id");
     }
-    public function cours(){
-        return $this->belongsToMany(Cours::class, 'proposer', 'departement_id', 'cours_id')
-            ->withPivot('ponderation', 'tailleGroupes', 'nbGroupes');
+    public function coursProposes(){
+        return $this->hasMany(CoursPropose::class, 'departement_id');
     }
+    public function coursProposesDetailles(){
+        return $this->hasMany(CoursPropose::class, 'departement_id')
+        ->with("enseignants")
+        ->with("cours");
+    }
+
     public function scenarios(){
         return $this->hasMany(Scenario::class, "departement_id");
     }

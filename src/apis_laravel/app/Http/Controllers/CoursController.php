@@ -14,10 +14,8 @@ class CoursController extends Controller
     public function show($id){
         return Cours::find($id);
     }
-    public function showEnseignants($id){
-        return Cours::find($id)->enseignants->toJson();
-    }
     public function showDepartements($id){
         return Cours::find($id)->departements->toJson();
     }
+    
 }

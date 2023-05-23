@@ -25,7 +25,6 @@ use App\HTTP\Controllers\CoursController;
 
 Route::get('/cours', [CoursController::class, 'index'])->middleware(['auth:sanctum', 'responsable']);
 Route::get('/cours/{id}', [CoursController::class, 'show'])->middleware(['auth:sanctum', 'responsable']);
-Route::get('/cours/{id}/enseignants', [CoursController::class, 'showEnseignants'])->middleware(['auth:sanctum', 'responsable']);
 Route::get('/cours/{id}/departements', [CoursController::class, 'showDepartements'])->middleware(['auth:sanctum', 'responsable']);
 
 
@@ -35,10 +34,11 @@ Route::get('/cours/{id}/departements', [CoursController::class, 'showDepartement
 use App\HTTP\Controllers\DepartementController;
 
 Route::get('/departements', [DepartementController::class, 'index'])->middleware(['auth:sanctum', 'responsable']);
-Route::get('/departementsDetaille', [DepartementController::class, 'showCoordonnateurs'])->middleware(['auth:sanctum', 'responsable']);
+Route::get('/departementsDetailles', [DepartementController::class, 'indexDetaille'])->middleware(['auth:sanctum', 'responsable']);
 Route::get('/departements/{id}', [DepartementController::class, 'show'])->middleware(['auth:sanctum', 'responsable']);
 Route::get('/departements/{id}/coordonnateur', [DepartementController::class, 'showCoordonnateur'])->middleware(['auth:sanctum', 'responsable']);
-Route::get('/departements/{id}/cours', [DepartementController::class, 'showCours'])->middleware(['auth:sanctum', 'responsable']);
+Route::get('/departements/{id}/cours_proposes', [DepartementController::class, 'showCoursProposes'])->middleware(['auth:sanctum', 'responsable']);
+Route::get('/departements/{id}/cours_proposes_detailles', [DepartementController::class, 'showCoursProposesDetailles'])->middleware(['auth:sanctum', 'responsable']);
 Route::get('/departements/{id}/scenarios', [DepartementController::class, 'showScenarios'])->middleware(['auth:sanctum', 'responsable']);
 
 
@@ -61,6 +61,7 @@ Route::get('modifications', [ModificationController::class, 'index'])->middlewar
 Route::get('modifications/{id}', [ModificationController::class, 'show'])->middleware('auth:sanctum');
 Route::get('modifications/{id}/user', [ModificationController::class, 'showUser'])->middleware('auth:sanctum');
 Route::get('modifications/{id}/scenario', [ModificationController::class, 'showScenario'])->middleware('auth:sanctum');
+Route::get('modifications/{id}/details', [ModificationController::class, 'showDetails'])->middleware('auth:sanctum');
 
 
 /* -------------------------------------------------------------------------- */
@@ -114,12 +115,16 @@ Route::put('/users/{id}/contraintes', [UserController::class, 'updateContraintes
 
 
 /* -------------------------------------------------------------------------- */
-/*                                  PROPOSER                                  */
+/*                               COURS PROPOSE                                */
 /* -------------------------------------------------------------------------- */
-use App\Http\Controllers\ProposerController;
+use App\Http\Controllers\CoursProposeController;
 
-Route::delete('/proposer', [ProposerController::class, 'delete'])->middleware(['auth:sanctum']);
-Route::put('/proposer', [ProposerController::class, 'update'])->middleware(['auth:sanctum']);
+Route::get('/cours_proposes/{id}/cours', [CoursProposeController::class, 'showCours'])->middleware(['auth:sanctum', 'responsable']);
+Route::get('/cours_proposes/{id}/departement', [CoursProposeController::class, 'showDepartement'])->middleware(['auth:sanctum', 'responsable']);
+Route::get('/cours_proposes/{id}/enseignants', [CoursProposeController::class, 'showEnseignants'])->middleware(['auth:sanctum', 'responsable']);
+
+Route::delete('/cours_proposes/{id}', [CoursProposeController::class, 'delete'])->middleware(['auth:sanctum']);
+Route::put('/cours_proposes/{id}', [CoursProposeController::class, 'update'])->middleware(['auth:sanctum']);
 
 
 /* -------------------------------------------------------------------------- */
@@ -127,4 +132,3 @@ Route::put('/proposer', [ProposerController::class, 'update'])->middleware(['aut
 /* -------------------------------------------------------------------------- */
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/disconnection', [UserController::class, 'disconnection'])->middleware('auth:sanctum');
-

@@ -17,9 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string("contraintes",511)->nullable();
-            $table->timestamp('email_verified_at')->nullable();
-            /** @todo Supprimer api_token qui est une copie de personal_access_token */
-            $table->string("api_token", 80)->unique()->nullable();  
+            $table->boolean("estCoordo")->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

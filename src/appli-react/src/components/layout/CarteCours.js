@@ -1,6 +1,6 @@
 /**
  * @warning On peut appuyer plusieurs fois sur valider la modification
- * @todo Ajouter la partie pour ajouter des cours aux départements
+ * @todo Ajouter la partie pour ajouter des cours proposés aux départements
  * @todo ameliorer le responsive (pour que les tailles ne changent pas quand on clique sur modifier)
  * @todo modifier les boutons pour pas que ce soient les memes (aux memes endroits) lorsqu on modifie ou non
  */
@@ -94,28 +94,28 @@ const Bouton = styled.button`
     margin: 1rem;
 `
 
-function CarteCours({ cours, idDepartement, allCours, setAllCours }) {
+function CarteCours({ coursPropose, idDepartement, allCours, setAllCours }) {
     const { apiAccess } = useContext(AppContext);
 
     const [veutModifier, setVeutModifier] = useState(false);
-    const [newPonderationCours, setNewPonderationCours] = useState(cours.pivot.ponderation);
-    const [newTailleGroupesCours, setNewTailleGroupesCours] = useState(cours.pivot.tailleGroupes);
-    const [newNbGroupesCours, setNewNbGroupesCours] = useState(cours.pivot.nbGroupes);
+    const [newPonderationCours, setNewPonderationCours] = useState(coursPropose.ponderation);
+    const [newTailleGroupesCours, setNewTailleGroupesCours] = useState(coursPropose.tailleGroupes);
+    const [newNbGroupesCours, setNewNbGroupesCours] = useState(coursPropose.nbGroupes);
 
     useEffect(() => {
         // Remise à jour des valeurs si on annule la modification
-        setNewPonderationCours(cours.pivot.ponderation);
-        setNewTailleGroupesCours(cours.pivot.tailleGroupes);
-        setNewNbGroupesCours(cours.pivot.nbGroupes);
+        setNewPonderationCours(coursPropose.ponderation);
+        setNewTailleGroupesCours(coursPropose.tailleGroupes);
+        setNewNbGroupesCours(coursPropose.nbGroupes);
     }, [veutModifier])
 
     /**
-     * @brief Affiche l'interface de validation pour la suppression du cours
+     * @brief Affiche l'interface de validation pour la suppression du cours propose
      */
     const validationSuppression = () => {
         toast((t) => (
             <div>
-                <div>Êtes-vous sûr de vouloir supprimer le cours "{cours.nom}" ?</div>
+                <div>Êtes-vous sûr de vouloir supprimer le cours "{coursPropose.cours.nom}" ?</div>
                 <DivBoutonToast>
                     <Bouton onClick={() => toast.dismiss(t.id)}>Annuler</Bouton>
                     <Bouton onClick={() => { toast.dismiss(t.id); supprimerCours(); }}>Confirmer</Bouton>
@@ -155,11 +155,9 @@ function CarteCours({ cours, idDepartement, allCours, setAllCours }) {
     const apiModifier = async () => {
         // -- Envoi --
         const reponse = await apiAccess({
-            url: `http://localhost:8000/api/proposer`,
+            url: `http://localhost:8000/api/cours_proposes/${coursPropose.id}`,
             method: "put",
             body: {
-                cours_id: cours.id,
-                departement_id: idDepartement,
                 nbGroupes: newNbGroupesCours,
                 tailleGroupes: newTailleGroupesCours,
                 ponderation: newPonderationCours
@@ -170,10 +168,10 @@ function CarteCours({ cours, idDepartement, allCours, setAllCours }) {
         if (reponse.success) {
             // On modifie la ressource de la page parente
             const updatedCours = [...allCours];                 //Copie de la liste des cours
-            const indexCours = allCours.findIndex(c => c.id === cours.id);      //index du cours a modifier dans la liste des cours
-            updatedCours[indexCours].pivot.ponderation = newPonderationCours;
-            updatedCours[indexCours].pivot.tailleGroupes = newTailleGroupesCours;
-            updatedCours[indexCours].pivot.nbGroupes = newNbGroupesCours;
+            const indexCours = allCours.findIndex(c => c.id === coursPropose.id);      //index du cours a modifier dans la liste des cours
+            updatedCours[indexCours].ponderation = newPonderationCours;
+            updatedCours[indexCours].tailleGroupes = newTailleGroupesCours;
+            updatedCours[indexCours].nbGroupes = newNbGroupesCours;
             setAllCours(updatedCours);
             setVeutModifier(false);
             return true;
@@ -193,18 +191,14 @@ function CarteCours({ cours, idDepartement, allCours, setAllCours }) {
     const apiSupprimer = async () => {
         // -- Envoi --
         const reponse = await apiAccess({
-            url: `http://localhost:8000/api/proposer`,
+            url: `http://localhost:8000/api/cours_proposes/${coursPropose.id}}`,
             method: "delete",
-            body: {
-                cours_id: cours.id,
-                departement_id: idDepartement,
-            }
         })
 
         // -- Analyse --
         if (reponse.success) {
             // On supprime la ressource de la page parente
-            setAllCours(allCours => allCours.filter(unCours => unCours.id !== cours.id));
+            setAllCours(allCours => allCours.filter(unCours => unCours.id !== coursPropose.id));
         }
         else {
             if (reponse.statusCode === 404) {
@@ -225,7 +219,7 @@ function CarteCours({ cours, idDepartement, allCours, setAllCours }) {
     return (
         <DivCarteReduite>
             <Toaster />
-            <H1Cours>{cours.nom}</H1Cours>
+            <H1Cours>{coursPropose.cours.nom}</H1Cours>
             {
                 veutModifier ?
                     (
@@ -246,17 +240,26 @@ function CarteCours({ cours, idDepartement, allCours, setAllCours }) {
                     )
                     :
                     (
-                        <div>
+                        <>
                             <DivH2>
-                                <H2Cours>Pondération : {cours.pivot.ponderation}</H2Cours>
-                                <H2Cours>Taille du groupe : {cours.pivot.tailleGroupes}</H2Cours>
-                                <H2Cours>Nombre de groupes : {cours.pivot.nbGroupes}</H2Cours>
+                                <H2Cours>Pondération : {coursPropose.ponderation}</H2Cours>
+                                <H2Cours>Taille du groupe : {coursPropose.tailleGroupes}</H2Cours>
+                                <H2Cours>Nombre de groupes : {coursPropose.nbGroupes}</H2Cours>
                             </DivH2>
                             <DivBouton>
                                 <Bouton onClick={() => setVeutModifier(true)}>Modifier</Bouton>
                                 <Bouton onClick={() => validationSuppression()}>Supprimer</Bouton>
                             </DivBouton >
-                        </div>
+                            <DivH2>
+                                <H1Cours>Professeurs</H1Cours>
+                                {
+                                    coursPropose.enseignants?.map((professeur) => (
+                                        <H2Cours>{professeur.name}</H2Cours>
+                                    ))
+                                }
+
+                            </DivH2>
+                        </>
                     )
             }
         </DivCarteReduite >

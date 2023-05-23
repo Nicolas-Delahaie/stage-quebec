@@ -3,10 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Proposer;
+use App\Models\CoursPropose;
 
-class ProposerController extends Controller
+class CoursProposeController extends Controller
 {
+    public function showCours($id){
+        return CoursPropose::findOr($id)->cours->toJson();
+    }
+    public function showDepartement($id){
+        return CoursPropose::find($id)->departement->toJson();
+    }
+
+    public function showEnseignants($id){
+        return CoursPropose::find($id)->enseignants->toJson();
+    }
+    
     /**
      * @brief Supprime un cours d'un département
      * @param departement_id
@@ -16,17 +27,9 @@ class ProposerController extends Controller
      * @return Response 422 Parametres incorrects
      * @return Response 500 Internal Server Error
      */
-    public function delete(Request $request){
+    public function delete($id){
         try{
-            $request->validate([
-                'departement_id' => 'required|integer|min:1',
-                'cours_id' => 'required|integer|min:1',
-            ]);
-
-            $cours = Proposer::where([
-                ['departement_id', '=', $request->input('departement_id')],
-                ['cours_id', '=', $request->input('cours_id')]
-            ])->first();
+            $cours = CoursPropose::find($id);
 
             if ($cours === null){
                 return response(['message' => 'Enregistrement non trouvé'], 404);
@@ -34,10 +37,6 @@ class ProposerController extends Controller
             $cours->delete();
 
             return response(['message' => 'Suppression réussie'], 200);
-        }
-        catch (\Illuminate\Validation\ValidationException $e) {
-            //Recupère l erreur de validation des champs
-            return response(['errors' => $e->errors()], 422);
         }
         catch(Throwable $e){
             return response(['message' => $e->getMessage()], 500);
@@ -56,20 +55,15 @@ class ProposerController extends Controller
      * @return Response 422 Parametres incorrects
      * @return Response 500 Internal Server Error
      */
-    public function update(Request $request){
+    public function update($id, Request $request){
         try{
             $request->validate([
-                'departement_id' => 'required|integer|min:1',
-                'cours_id' => 'required|integer|min:1',
                 'ponderation' => 'required|integer|min:0|max:255', // max value for an unsignedTinyInteger
                 'tailleGroupes' => 'required|integer|min:0|max:255', // max value for an unsignedTinyInteger
                 'nbGroupes' => 'required|integer|min:0|max:65535' // max value for an unsignedSmallInteger
             ]);
 
-            $cours = Proposer::where([
-                ['departement_id', '=', $request->input('departement_id')],
-                ['cours_id', '=', $request->input('cours_id')]
-            ])->first();
+            $cours = CoursPropose::find($id);
 
             if ($cours === null){
                 return response(['message' => 'Enregistrement non trouvé'], 404);
