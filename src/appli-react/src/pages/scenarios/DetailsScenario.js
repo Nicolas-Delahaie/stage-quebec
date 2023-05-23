@@ -10,8 +10,6 @@ import { AppContext } from '../../utils/context/context';
 import { Loader, colors, fonts } from "../../utils/styles";
 
 import styled from "styled-components";
-import { useContext } from "react";
-import { AppContext } from "../../utils/context/context";
 
 
 /* ---------------------------------- STYLE --------------------------------- */
@@ -140,12 +138,14 @@ const TrTitreScenario = styled(TrScenario)`
 /* ----------------------------------- DOM ---------------------------------- */
 
 function DetailsScenario() {
-    const id = useParams().id;                                          // Récupération de l'id du scénario dans l'url
-    const [scenario, setScenario] = useState({});                       // State des données générales du scénario
-    const [modification, setModification] = useState({});               // State des modifications du scénario
-    const [scenarioRepartition, setscenarioRepartition] = useState({}); // State de la répartition du scénario
-    const [loading, setLoading] = useState(false);                      // State du chargement de la page
-    const { getToken } = useContext(AppContext);                        // Récupération du token dans le contexte
+    const id = useParams().id;                                                      // Récupération de l'id du scénario dans l'url
+    const [scenario, setScenario] = useState({});                                   // State des données générales du scénario
+    const [modifications, setModifications] = useState({});                           // State des modifications du scénario
+    const [scenarioRepartition, setscenarioRepartition] = useState({});             // State de la répartition du scénario
+    const [loading, setLoading] = useState(false);                                  // State du chargement de la page
+    const { apiAccess } = useContext(AppContext);                                   // Récupération de la fonction permetant de faire des apels apis
+    const [isLoadingScenario, setIsLoadingScenario] = useState(true);               // loader pour le scenario
+    const [isLoadingModifications, setIsLoadingModifications] = useState(true);     // loader pour les modifications
 
     var liberations = [];                                    // Tableau des libérations
     var professeurs = [];                                 // Tableau des professeurs   
@@ -245,40 +245,6 @@ function DetailsScenario() {
 
     /* -------------------------------- USEEFFECT ------------------------------- */
 
-    /**
-     * Récupération des données détaillées du scénario
-     */
-    useEffect(() => {
-        setLoading(true);
-        fetch(`http://localhost:8000/api/scenarios/${id}/detaille`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': 'Bearer ' + getToken().slice(1, -1),
-
-            }
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((scenarioRepartition) => {
-                setScenario(scenarioRepartition);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                setLoading(false);
-            });
-    }, []);
-function DetailsScenario() {
-    const id = useParams().id;
-    const { apiAccess } = useContext(AppContext);
-
-    const [scenario, setScenario] = useState({});
-    const [modifications, setModifications] = useState({});
-    const [isLoadingScenario, setIsLoadingScenario] = useState(true);
-    const [isLoadingModifications, setIsLoadingModifications] = useState(true);
-
     const getScenarioDetaille = async () => {
         const rep = await apiAccess({
             url: `http://localhost:8000/api/scenarios/${id}/detaille`,
@@ -312,7 +278,12 @@ function DetailsScenario() {
             console.log(rep.erreur)
         }
     }
-
+    
+    // const getRepartition = async () => {
+    //     const rep = await apiAccess({
+    //         url: 
+    //     })
+    // }
 
     /**
      * Récupération des modifications du scénario
@@ -339,13 +310,13 @@ function DetailsScenario() {
                     <H2Scenario>Propriétaire : {scenario.proprietaire.nom}</H2Scenario>
                     <H1Scenario>Historique des modifications</H1Scenario>
                     {
-                        modification[0] === undefined ? (
+                        modifications[0] === undefined ? (
                             <p>Aucune modification n'a été apportée</p>
                         ) : (
                             <div>
                                 {
                                     /*Pour chaque modification, on affiche la date de modification et l'utilisateur qui a fait la modification*/
-                                    modification.map((modif) => (
+                                    modifications.map((modif) => (
                                         <div key={modif.id}>
                                             <p>Date de dernière modification : {modif.date_modif}</p>
                                             <p>Utilisateur aillant fait la modification : {modif.utilisateur_name}</p>
@@ -512,4 +483,4 @@ function DetailsScenario() {
     )
 }
 
-export default DetailsScenario;
+export default DetailsScenario

@@ -120,6 +120,7 @@ export const AppProvider = ({ children }) => {
 
         // -- TRAITEMENT --
         console.log(url);
+        console.log(token);
         const res = await fetch(url, {
             method: method,
             headers: {
@@ -163,7 +164,7 @@ export const AppProvider = ({ children }) => {
 
 
     return (
-        <AppContext.Provider value={{ deconnexion, connexion, estConnecte, apiAccess, getUserId }}>
+        <AppContext.Provider value={{ deconnexion, connexion, estConnecte, apiAccess, getUserId, getType, getUserToken }}>
             {children}
         </AppContext.Provider>
     );

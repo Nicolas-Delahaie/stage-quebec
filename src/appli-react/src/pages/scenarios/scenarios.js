@@ -15,9 +15,6 @@ import { iconNonValide } from '../../assets/svg/iconNonValide.js'
 
 import { colors, fonts, Loader } from '../../utils/styles';
 
-import { AppContext } from '../../utils/context/context';
-import { useContext } from 'react';
-
 const Container = styled.div`
     display: flex;
     flex-direction: column;
