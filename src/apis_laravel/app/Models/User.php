@@ -25,19 +25,20 @@ class User extends Authenticatable
         'type_utilisateur_id'
     ];
 
-    
+
     public function type(){
         return $this->belongsTo(TypeUtilisateur::class, "type_utilisateur_id");
     }
     public function liberations(){
         return $this->belongsToMany(Liberation::class, "alouer", "utilisateur_id", "liberation_id")
-            ->withPivot("annee", "semestre", "tempsAloue");
+            ->withPivot("annee", "semestre", "tempsAloue")
+            ->orderBy("tempsAloue", "desc");
     }
     public function modifications(){
         return $this->hasMany(Modification::class, "utilisateur_id");
     }
-    public function coursEnseignes(){
-        return $this->belongsToMany(Cours::class, 'enseigner', 'professeur_id', 'cours_propose_id');
+    public function coursEnseignes(){ 
+        return $this->belongsToMany(CoursPropose::class, 'enseigner', 'professeur_id', 'cours_propose_id');
     }
     public function scenarios(){
         return $this->hasMany(Scenario::class, 'proprietaire_id');

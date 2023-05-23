@@ -38,16 +38,30 @@ const StyledInput = styled.input`
  * 
  * @returns un input stylisé
  */
-function Input({ type, placeholder, onChange, required }) {
+function Input({ type, placeholder, onChange, required, autoFocus }) {
     if (required) {
-        return (
-            <StyledInput type={type} placeholder={placeholder} onChange={onChange} required />
-        )
+        if (autoFocus) {
+            return (
+                <StyledInput type={type} placeholder={placeholder} onChange={onChange} required autoFocus />
+            )
+        }
+        else {
+            return (
+                <StyledInput type={type} placeholder={placeholder} onChange={onChange} required />
+            )
+        }
     }
     else {
-        return (
-            <StyledInput type={type} placeholder={placeholder} onChange={onChange} />
-        )
+        if (autoFocus) {
+            return (
+                <StyledInput type={type} placeholder={placeholder} onChange={onChange} autoFocus />
+            )
+        }
+        else {
+            return (
+                <StyledInput type={type} placeholder={placeholder} onChange={onChange} />
+            )
+        }
     }
 }
 

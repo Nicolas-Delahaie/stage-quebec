@@ -7,12 +7,11 @@ import styled from 'styled-components'
 import toast, { Toaster } from "react-hot-toast"
 import { Input, InputSubmit } from "../../components/forms"
 
-import { colors, fonts } from "../../utils/styles"
+import { Loader, colors, fonts } from "../../utils/styles"
 
 //Autre
-import { useState } from "react"
+import { useState, useContext, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { useContext } from "react"
 import { AppContext } from "../../utils/context/context"
 
 
@@ -57,24 +56,29 @@ function Login() {
     const [mail, setMail] = useState("");
     const [mdp, setMdp] = useState("");
     const [resterConnecte, setResterConnecte] = useState(false);
-    const [erreur, setErreur] = useState("");
+    const [erreur, setErreur] = useState(null);
+    const [isConnecting, setIsConnecting] = useState(null);
 
     const navigate = useNavigate();     //Pour naviguer entre les pages
     const { estConnecte, connexion, deconnexion, apiAccess } = useContext(AppContext);
 
-    // Deconnecte l utilisateur s il est deja connecte
-    if (estConnecte && mail === "" && mdp === "" && !resterConnecte) {
-        console.log("Deconnexion");
-        deconnexion();
-        /**
-         * @warning FONCTIONNE MAL (affiche en double) a cause du react strictmod dans index.js
-         * @details s'affiche en double car le temps que deconnexion modifie la variable estConnecte, la deuxieme page chargee a le temps de s'afficher
-        */
-        toast.success("Vous avez été déconnecté", { duration: 8000, position: "top-center" });
-    }
+
+    useEffect(() => {
+        // Deconnecte l utilisateur s il est deja connecte
+        if (estConnecte && mail === "" && mdp === "" && !resterConnecte) {
+            console.log("Deconnexion");
+            deconnexion();
+            /**
+             * @warning FONCTIONNE MAL (affiche en double) a cause du react strictmod dans index.js
+             * @details s'affiche en double car le temps que deconnexion modifie la variable estConnecte, la deuxieme page chargee a le temps de s'afficher
+            */
+            toast.success("Vous avez été déconnecté", { duration: 8000, position: "top-center" });
+        }
+    }, []);
 
     const clicConnexion = async (e) => {
         e.preventDefault();         //Pour empecher le comportement normal de validation du formulaire
+        setErreur(null);
 
         //Validation du mail
         const regexMail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -85,6 +89,7 @@ function Login() {
             const dureeSessionEnMin = resterConnecte ? 60 * 24 * 100 : 60 * 12;    //Si on coche la case, on reste connecte pour 100 jours, sinon pour 12h
 
             // -- Envoi de la requete --
+            setIsConnecting(true);
             const rep = await apiAccess({
                 url: `http://localhost:8000/api/login`,
                 method: "post",
@@ -99,10 +104,11 @@ function Login() {
             // -- Traitement de la reponse --
             if (rep.success) {
                 //Connexion pour 100 jours si on coche la case, sinon pour 24h
-                connexion(rep.datas.token, dureeSessionEnMin, 8);
+                connexion(rep.datas.token, dureeSessionEnMin);
                 navigate(-1);
             }
             else {
+                setIsConnecting(false);
                 if (rep.statusCode === 401) {
                     setErreur("Mot de passe ou mail incorrect");
                 }
@@ -126,6 +132,7 @@ function Login() {
                     <Input type="email"
                         required={true}
                         value={mail}
+                        autoFocus
                         onChange={(e) => setMail(e.target.value)} />
                 </DivLabelInput>
                 <DivLabelInput>
@@ -141,8 +148,9 @@ function Login() {
                         checked={resterConnecte}
                         onChange={(e) => setResterConnecte(e.target.checked)} />
                 </DivLabelInput>
-                <InputSubmit type="submit" value="Se connecter" />
-                <PErreur>{erreur}</PErreur>
+                {erreur && <PErreur>{erreur}</PErreur>}
+                {isConnecting && <Loader />}
+                {isConnecting || <InputSubmit type="submit" value="Se connecter" />}
             </FormAuthentification>
         </DivAuthentification>
     )

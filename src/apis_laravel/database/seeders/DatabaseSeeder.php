@@ -88,18 +88,20 @@ class DatabaseSeeder extends Seeder
 
 
             // TABLES AVEC 2 DEPENDANCES
-            $alouer=[
-                ["tempsALoue"=>0.5125, "utilisateur_id"=>1, "liberation_id"=>3],
-                ["tempsALoue"=>0.823, "semestre"=>1, "utilisateur_id"=>3, "liberation_id"=>3],
-                ["tempsALoue"=>0.732, "annee"=>2023, "semestre"=>1, "utilisateur_id"=>6, "liberation_id"=>3],
-                ["tempsALoue"=>0.9, "annee"=>2023, "semestre"=>2, "utilisateur_id"=>7, "liberation_id"=>3],
-                ["tempsALoue"=>0.3, "annee"=>2024, "semestre"=>2, "utilisateur_id"=>2, "liberation_id"=>2],
-                ["tempsALoue"=>0.005, "annee"=>2024, "utilisateur_id"=>4, "liberation_id"=>2],
-                ["tempsALoue"=>0.2, "annee"=>2023, "semestre"=>2, "utilisateur_id"=>5, "liberation_id"=>2],
-                ["tempsALoue"=>0.125, "annee"=>2023, "semestre"=>1, "utilisateur_id"=>10, "liberation_id"=>2],
-                ["tempsALoue"=>0.19, "semestre"=>1, "utilisateur_id"=>8, "liberation_id"=>1],
-                ["tempsALoue"=>0.23, "annee"=>2023, "utilisateur_id"=>9, "liberation_id"=>1],
-            ];
+            $alouer=[];
+            //Chaque prof a entre 0 et 7 liberations
+            foreach (User::where("type_utilisateur_id", 3)->get() as $prof){
+                $nbLiberations = $faker->numberBetween(0, 7);
+                for ($i=0; $i < $nbLiberations; $i++) {
+                    array_push($alouer, [
+                        "tempsALoue" => $faker->numberBetween(0, 1000)/1000,
+                        "annee" => rand(0,1) ? null : $faker->numberBetween(2021, 2024),
+                        "semestre" => rand(0,1) ? null : $faker->numberBetween(1, 2),
+                        "utilisateur_id" => $prof->id,
+                        "liberation_id" => $faker->numberBetween(1, Liberation::count()),
+                    ]);
+                }
+            }
             foreach($alouer as $val){Alouer::create($val);}
 
             $departement=[

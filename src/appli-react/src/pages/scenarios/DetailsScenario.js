@@ -56,12 +56,18 @@ function DetailsScenario() {
     const id = useParams().id;
     const { apiAccess } = useContext(AppContext);
 
-    const [scenario, setScenario] = useState({});
-    const [modifications, setModifications] = useState({});
-    const [isLoadingScenario, setIsLoadingScenario] = useState(true);
-    const [isLoadingModifications, setIsLoadingModifications] = useState(true);
+    const [isLoadingScenario, setIsLoadingScenario] = useState(null);
+    const [isLoadingModifications, setIsLoadingModifications] = useState(null);
 
-    const getScenarioDetaille = async () => {
+    const [erreurScenario, setErreurScenario] = useState(null);
+    const [erreurModifications, setErreurModifications] = useState(null);
+
+    const [scenario, setScenario] = useState(null);
+    const [modifications, setModifications] = useState(null);
+
+
+    const getInfos = async () => {
+        setIsLoadingScenario(true);
         const rep = await apiAccess({
             url: `http://localhost:8000/api/scenarios/${id}/detaille`,
             method: "get",
@@ -71,76 +77,58 @@ function DetailsScenario() {
         // -- Analyse du coordo --
         if (rep.success) {
             setScenario(rep.datas);
+
+            // -- Recuperation des modifications --
+            setIsLoadingModifications(true);
+            const rep2 = await apiAccess({
+                url: `http://localhost:8000/api/scenarios/${id}/modifications`,
+                method: "get",
+            });
+            setIsLoadingModifications(false);
+
+            // -- Analyse du coordo --
+            if (rep2.success) {
+                setModifications(rep2.datas);
+            }
+            else {
+                setErreurModifications(rep2.erreur)
+            }
         }
         else {
-            /** @todo Gerer l erreur */
-            console.log(rep.erreur)
+            setErreurScenario(rep.erreur);
         }
     }
-    const getModifications = async () => {
-        const rep = await apiAccess({
-            url: `http://localhost:8000/api/scenarios/${id}/modifications`,
-            method: "get",
-        });
-        setIsLoadingModifications(false);
-        console.log(rep);
-
-        // -- Analyse du coordo --
-        if (rep.success) {
-            setModifications(rep.datas);
-        }
-        else {
-            /** @todo Gerer l erreur */
-            console.log(rep.erreur)
-        }
-    }
-
-
     useEffect(() => {
         // Initialisation de informations
-        getScenarioDetaille();
-        getModifications()
+        getInfos()
     }, []);
 
 
     return (
         <DivPageDetailsScenario>
             <ArticleTitle texte="Détails du scénario" />
-            {
-                isLoadingScenario ?
-                    < Loader />
-                    :
-                    <DivDetailsScenario>
-                        <H1Scenario>Informations</H1Scenario>
-                        <H2Scenario>Département : {scenario.departement.nom}</H2Scenario>
-                        <H2Scenario>Pour l'année {scenario.annee}</H2Scenario>
-                        <p>Date de création : {scenario.created_at}</p>
-                        <p>Dernière modification : {scenario.updated_at}</p>
-                        <H2Scenario>Propriétaire : {scenario.proprietaire.nom}</H2Scenario>
-                        <H1Scenario>Historique des modifications : </H1Scenario>
-                        {
-                            modifications[0] === undefined ?
-                                <p>Aucune modification n'a été apportée</p>
-                                :
-                                <div>
-                                    {
-                                        isLoadingModifications ?
-                                            <Loader />
-                                            :
-                                            modifications.map((modif) => (
-                                                <div key={modif.id}>
-                                                    <p>Date de dernière modification : {modif.date_modif}</p>
-                                                    <p>Utilisateur aillant fait la modification : {modif.utilisateur_name}</p>
-                                                </div>
-                                            ))
-                                    }
-                                </div>
-
-                        }
-                    </DivDetailsScenario>
+            {isLoadingScenario && < Loader />}
+            {erreurScenario && <h1>{erreurScenario}</h1>}
+            {scenario &&
+                <DivDetailsScenario>
+                    <H1Scenario>Informations</H1Scenario>
+                    <H2Scenario>Département : {scenario.departement.nom}</H2Scenario>
+                    <H2Scenario>Pour l'année {scenario.annee}</H2Scenario>
+                    <p>Date de création : {scenario.created_at}</p>
+                    <p>Dernière modification : {scenario.updated_at}</p>
+                    <H2Scenario>Propriétaire : {scenario.proprietaire.nom}</H2Scenario>
+                    <H1Scenario>Historique des modifications : </H1Scenario>
+                    {isLoadingModifications && <Loader />}
+                    {erreurModifications && <h2>{erreurModifications}</h2>}
+                    {modifications && modifications.length === 0 && <p>Aucune modification n'a été apportée</p>}
+                    {modifications && modifications.map((modif) => (
+                        <div key={modif.id}>
+                            <p>{modif.date_modif} : {modif.utilisateur_name}</p>
+                        </div>
+                    ))}
+                </DivDetailsScenario>
             }
         </DivPageDetailsScenario>
     )
 }
-
 export default DetailsScenario;

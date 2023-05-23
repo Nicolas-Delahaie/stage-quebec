@@ -29,12 +29,12 @@ class Kernel extends HttpKernel
      * @var array<string, array<int, class-string|string>>
      */
     protected $middlewareGroups = [
-        'web' => [
-            \Illuminate\Session\Middleware\StartSession::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        ],
+        // 'web' => [
+        //     \Illuminate\Session\Middleware\StartSession::class,
+        //     \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        //     \App\Http\Middleware\VerifyCsrfToken::class,
+        //     \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        // ],
 
         'api' => [
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
@@ -62,6 +62,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'responsable' => \App\Http\Middleware\UsersTypeResponsable::class,
+        'tokenBon' => \App\Http\Middleware\TokenBon::class,
     ];
 
     public function schedule(Schedule $schedule)

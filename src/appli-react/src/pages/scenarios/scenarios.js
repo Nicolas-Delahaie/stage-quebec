@@ -47,40 +47,43 @@ const ImgIcon = styled.img`
 `;
 
 function Scenarios() {
-    const { apiAccess, getUserId } = useContext(AppContext);
-    const [isLoadingContext, setIsLoadingContext] = useState(null);
-    const [isLoadingScenarios, setIsLoadingScenarios] = useState(null);
-    const [scenariosDetailles, setScenariosDetailles] = useState([]);
-    const userId = getUserId();
+    const { apiAccess } = useContext(AppContext);
+
+    const [erreurContexte, setErreurContexte] = useState(null);
+    const [isLoadingContexte, setIsLoadingContexte] = useState(false);
+    const [isLoadingScenarios, setIsLoadingScenarios] = useState(false);
+    const [scenariosDetailles, setScenariosDetailles] = useState(null);
+
     let urlImage = Calendrier;
     let icon = iconValide;
 
-    const getScenarios = async (id) => {
+    const getScenarios = async () => {
         // -- Recuperation des scenarios --
-        setIsLoadingContext(true);
+        setIsLoadingContexte(true);
         const rep = await apiAccess({
-            url: `http://localhost:8000/api/users/${userId}/scenarios`,
+            url: `http://localhost:8000/api/user/scenarios`,
             method: "get",
         });
-        setIsLoadingContext(false);
+        setIsLoadingContexte(false);
 
         // -- Analyse --
         if (rep.success) {
-            // -- Trie des scenarios (plus recents en premier) --
-            rep.datas.sort((a, b) => {
+            setScenariosDetailles([]);
+            var scenariosNonDetailles = rep.datas;
+
+            // -- Trie des scenarios (plus recents en premier et valides en premiers) --
+            scenariosNonDetailles.sort((a, b) => {
                 return b.annee - a.annee;
             });
-            // -- Trie des scenarios (valides en premiers) --
-            rep.datas.sort((a, b) => {
+            scenariosNonDetailles.sort((a, b) => {
                 return a.aEteValide - b.aEteValide;
             });
-            console.log(rep);
 
             // -- Recuperation des scenarios detailles un a un--
             setIsLoadingScenarios(true);
             for (let i = 0; i < rep.datas.length; i++) {
                 // -- Recuperation des scenarios detailles un a un--
-                const idScenario = rep.datas[i].id;
+                const idScenario = scenariosNonDetailles[i].id;
 
                 const rep2 = await apiAccess({
                     url: `http://localhost:8000/api/scenarios/${idScenario}/detaille`,
@@ -93,15 +96,13 @@ function Scenarios() {
                     setScenariosDetailles(scenariosDetailles => [...scenariosDetailles, rep2.datas]);
                 }
                 else {
-                    /** @todo Gerer l erreur */
                     console.error("Erreur du chargement d'un des scenarios");
                 }
             }
             setIsLoadingScenarios(false);
         }
         else {
-            /** @todo Gerer l erreur */
-            console.error("Erreur du chargement des scenarios");
+            setErreurContexte(rep.erreur);
         }
     };
 
@@ -110,39 +111,35 @@ function Scenarios() {
     }, [])
 
 
-    return (
-        <Container>
-            <ArticleTitle texte=" Vos Scénarios" />
-            {
-                isLoadingContext ?
-                    <Loader />
-                    :
-                    scenariosDetailles.map(scenario => (
-                        <CarteHorizontale
-                            key={scenario.id}
-                            urlImage={scenario.aEteValide ? Valider : Calendrier}
-                            titre={"Département " + scenario.departement.nom}
-                            texteBouton="Voir le scénario"
-                            lien={`/scenarios/${scenario.id}`}>
-                            <PScenarios>Propriétaire : {scenario.proprietaire.nom}</PScenarios>
-                            <PScenarios>Année :{scenario.annee}</PScenarios>
-                            <PScenarios>Dernière modification : {scenario.updated_at}</PScenarios>
-                            <PScenarios>Date de création : {scenario.created_at}</PScenarios>
-                            <DivValidation>
-                                <H3Scenarios>Validé par le responsable : </H3Scenarios>
-                                <ImgIcon src={scenario.aEteValide ? icon = iconValide : icon = iconNonValide} />
-                            </DivValidation>
-                        </CarteHorizontale>
-                    ))
-            }
-            {
-                isLoadingScenarios ?
-                    <Loader />
-                    :
-                    <div></div>
-            }
-        </Container>
-    )
+    return <>
+        <ArticleTitle texte=" Vos Scénarios" />
+        {erreurContexte && <h2>{erreurContexte}</h2>}
+        {isLoadingContexte ?
+            <Loader />
+            :
+            <>
+                {scenariosDetailles && scenariosDetailles.map(scenario => (
+                    <CarteHorizontale
+                        key={scenario.id}
+                        urlImage={scenario.aEteValide ? Valider : Calendrier}
+                        titre={"Département " + scenario.departement.nom}
+                        texteBouton="Voir le scénario"
+                        lien={`/scenarios/${scenario.id}`}>
+                        <PScenarios>Propriétaire : {scenario.proprietaire.nom}</PScenarios>
+                        <PScenarios>Année :{scenario.annee}</PScenarios>
+                        <PScenarios>Dernière modification : {scenario.updated_at}</PScenarios>
+                        <PScenarios>Date de création : {scenario.created_at}</PScenarios>
+                        <DivValidation>
+                            <H3Scenarios>Validé par le responsable : </H3Scenarios>
+                            <ImgIcon src={scenario.aEteValide ? icon = iconValide : icon = iconNonValide} />
+                        </DivValidation>
+                    </CarteHorizontale>
+                ))}
+                {isLoadingScenarios && <Loader />}
+                {scenariosDetailles && !isLoadingScenarios && scenariosDetailles.length === 0 && <h2>Vous n'avez aucun scénario</h2>}
+            </>
+        }
+    </>
 }
 
 export default Scenarios

@@ -17,7 +17,7 @@ export const AppProvider = ({ children }) => {
     const errorMessages = {
         400: "Requete mal formée",
         401: "Authentification necessaire",
-        403: "Accès refusé",
+        403: "Vous ne pouvez pas accéder à ces données",
         404: "La ressource n'existe pas",
         422: "Mauvais format de reponse",
         503: "Service indisponible (surcharge ou maintenance)",
@@ -32,19 +32,15 @@ export const AppProvider = ({ children }) => {
     const getUserToken = () => {
         return Cookies.get('token');
     }
-    const getUserId = () => {
-        return Cookies.get('userId');
-    }
 
     /**
      * @brief Connecte l utilsisateur
      * @details Cree le cookie de tokken et met a jour la variable estConnecte 
      */
-    const connexion = (token, dureeSessionEnMin, userId) => {
+    const connexion = (token, dureeSessionEnMin) => {
         const dureeSessionEnH = dureeSessionEnMin / 60;
         const dureeSessionEnJ = dureeSessionEnH / 24;
         Cookies.set("token", token, { expires: dureeSessionEnJ });
-        Cookies.set("userId", userId, { expires: dureeSessionEnJ });
         setEstConnecte(true);
     }
     /**
@@ -96,7 +92,6 @@ export const AppProvider = ({ children }) => {
             body = JSON.stringify(body);
         }
 
-
         // -- TRAITEMENT --
         console.log(url);
         const res = await fetch(url, {
@@ -142,7 +137,7 @@ export const AppProvider = ({ children }) => {
 
 
     return (
-        <AppContext.Provider value={{ deconnexion, connexion, estConnecte, apiAccess, getUserId }}>
+        <AppContext.Provider value={{ deconnexion, connexion, estConnecte, apiAccess }}>
             {children}
         </AppContext.Provider>
     );

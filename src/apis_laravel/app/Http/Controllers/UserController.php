@@ -20,6 +20,15 @@ class UserController extends Controller
     {
         return User::all();
     }
+    public function showUserDetails(){
+        return Auth::user()->load(["type", "liberations", "coursEnseignes"])
+            ->makeHidden("type_utilisateur_id")
+            ->toJson();
+    }
+    public function showUserScenarios()
+    {
+        return Auth::user()->scenarios->toJson();
+    }
 
     public function show($id)
     {
@@ -45,38 +54,14 @@ class UserController extends Controller
     {
         return User::findOrFail($id)->scenarios->toJson();
     }
-    public function showScenariosDetailles($id){
-        $user = User::findOrFail($id);
-
-        $scenarios = $user->scenarios()
-            ->with('proprietaire', 'departement')
-            ->get()
-            ->map(function ($scenario) {
-                return [
-                    'id' => $scenario->id,
-                    'aEteValide' => $scenario->aEteValide,
-                    'annee' => $scenario->annee,
-                    'created_at' => $scenario->created_at->format('Y-m-d'),
-                    'updated_at' => $scenario->updated_at->format('Y-m-d'),
-                    'proprietaire' => [
-                        'id' => $scenario->proprietaire->id,
-                        'nom' => $scenario->proprietaire->name,
-                        'email' => $scenario->proprietaire->email,
-                    ],
-                    'departement' => [
-                        'id' => $scenario->departement->id,
-                        'nom' => $scenario->departement->nom,
-                    ],
-                ];
-            })->sortBy('aEteValide')->values();
-        
-
-        return response()->json($scenarios);
-    }
-
-    public function updateContraintes(Request $request, $id){
-        $user = User::findOrFail($id);
-        $user->contraintes = $request->input('contraintes');
+    
+    public function updateUserContraintes(Request $request){
+        $user = Auth::user();
+        $newContraintes = $request->input('contraintes');
+        if ($newContraintes === null){
+            $newContraintes = "";
+        }
+        $user->contraintes = $newContraintes;        
         $user->save();
 
         return response(['message'=>'Contraintes bien modifiées'], 200);

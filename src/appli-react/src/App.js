@@ -16,8 +16,7 @@ import Scenarios from "./pages/scenarios/scenarios";
 import DetailsScenario from "./pages/scenarios/DetailsScenario";
 import Departements from "./pages/Departements/Departements";
 import DetailsDepartement from "./pages/Departements/DetailsDepartement";
-import ProfesseurModification from "./pages/Professeur/ProfesseurModification";
-import Contraintes from "./pages/users/Contraintes";
+import Profil from "./pages/users/Profil";
 import TestAPIs from "./pages/TestAPIs";
 import NotFound from "./pages/NotFound";
 
@@ -41,8 +40,7 @@ function App() {
             <Route exact path="/scenarios/:id" element={<DetailsScenario />} />
             <Route exact path="/departements" element={<Departements />} />
             <Route exact path="/departements/:id" element={<DetailsDepartement />} />
-            <Route exact path='/contraintes' element={<Contraintes />} />
-            <Route exact path="/professeurs/modifier/:id" element={<ProfesseurModification />} />
+            <Route exact path="/profil" element={<Profil />} />
             <Route exact path="/api" element={<TestAPIs />} />
 
             <Route path="*" element={<NotFound />} />

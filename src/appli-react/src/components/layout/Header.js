@@ -64,18 +64,11 @@ function Header() {
             <Link to="/">
                 <ImgLogo src={home} alt="logo" />
             </Link>
-            {/* Si l'utilisateur est connecté, on affiche le bouton de déconnexion, sinon on affiche le bouton de connexion */}
             {estConnecte ?
-                (
-                    <Lien to="/">
-                        <ButtonTexte onClick={() => deconnexion()}>Se deconnecter</ButtonTexte>
-                    </Lien>
-                ) :
-                (
-                    <Lien to="/login">
-                        <ButtonTexte>Se connecter</ButtonTexte>
-                    </Lien>
-                )}
+                <Lien to="/" ><button onClick={() => deconnexion()}>Se deconnecter</button></Lien>
+                :
+                <Lien to="/login">Se connecter</Lien>
+            }
         </HeaderStyle>
     )
 }
