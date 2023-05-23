@@ -110,23 +110,21 @@ Route::get('/users/{id}/modifications', [UserController::class,'showModification
 Route::get('/users/{id}/cours', [UserController::class,'showCours'])->middleware('auth:sanctum');
 Route::get('/users/{id}/scenarios', [UserController::class,'showScenarios'])->middleware('auth:sanctum');
 
-/**
- * @warning A supprimer : On recopie manuelleement la meme fonction que scenarioDetaille
- */
-Route::get('/users/{id}/scenariosDetailles', [UserController::class,'showScenariosDetailles']);
+Route::put('/users/{id}/contraintes', [UserController::class, 'updateContraintes'])->middleware('auth:sanctum');
 
 
 /* -------------------------------------------------------------------------- */
-/*                             APIS POUR LES PAGES                            */
+/*                                  PROPOSER                                  */
 /* -------------------------------------------------------------------------- */
-/* ------------------------------ DEPARTEMENTS ------------------------------ */
+use App\Http\Controllers\ProposerController;
 
-
-/* -------------------------------- SCENARIOS ------------------------------- */
-
+Route::delete('/proposer', [ProposerController::class, 'delete'])->middleware(['auth:sanctum']);
+Route::put('/proposer', [ProposerController::class, 'update'])->middleware(['auth:sanctum']);
 
 
 /* -------------------------------------------------------------------------- */
 /*                                    AUTRE                                   */
 /* -------------------------------------------------------------------------- */
 Route::post('/login', [UserController::class, 'login']);
+Route::post('/disconnection', [UserController::class, 'disconnection'])->middleware('auth:sanctum');
+

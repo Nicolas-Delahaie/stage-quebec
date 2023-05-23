@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { AppContext } from '../../utils/context/context';
 
 import styled from "styled-components";
 
@@ -8,7 +9,6 @@ import ArticleTitle from "../../components/forms/ArticleTitle";
 import CarteProfesseur from "../../components/layout/CarteProfesseur";
 import CarteCours from "../../components/layout/CarteCours";
 
-/** @todo Faire en sorte que les donnees se chargent hierarchiquement (actuellement tous les fetchs se font en meme temps de maniere asynchrone) */
 
 /* ---------------------------------- STYLE --------------------------------- */
 
@@ -74,8 +74,7 @@ const H3Coordonnateur = styled.h3`
 
 function DetailsDepartement() {
     const { id } = useParams();
-
-    // const [loadingDepartement, setloadingDepartement] = useState(false);
+    const { apiAccess } = useContext(AppContext);
 
     // Tous les booleens indiquant si la ressource a ete chargee ou non
     const [loadingDepartement, setLoadingDepartement] = useState(true);
@@ -88,99 +87,80 @@ function DetailsDepartement() {
     const [coordo, setCoordo] = useState([]);
     const [professeurs, setProfesseurs] = useState([]);
 
+
+    const getInfos = async () => {
+        // ---- RECUPERATION DES INFORMATIONS DU DEPARTEMENT ---- //
+        const resultatDepartement = await apiAccess({
+            url: `http://localhost:8000/api/departements/${id}`,
+            method: "get",
+        });
+        setLoadingDepartement(false);
+
+
+        // -- Analyse --
+        if (resultatDepartement.success) {
+            setDepartement(resultatDepartement.datas);
+
+
+            // ---- RECUPERATION DU COORDONNATEUR ---- //
+            const resultatCoordo = await apiAccess({
+                url: `http://localhost:8000/api/departements/${id}/coordonnateur`,
+                method: "get",
+            });
+            setLoadingCoordo(false);
+
+            // -- Analyse du coordo --
+            if (resultatCoordo.success) {
+                setCoordo(resultatCoordo.datas);
+            }
+            else {
+                /** @todo Gerer l erreur */
+                console.error(resultatCoordo.erreur);
+            }
+
+
+            // ---- RECUPERATION DES COURS ---- //
+            const resultatCours = await apiAccess({
+                url: `http://localhost:8000/api/departements/${id}/cours`,
+                method: "get",
+            });
+            setLoadingCours(false);
+
+            // -- Analyse --
+            if (resultatCours.success) {
+                setCours(resultatCours.datas);
+            }
+            else {
+                /** @todo Gerer l erreur */
+                console.error(resultatCours.erreur);
+            }
+
+            // ---- RECUPERATION DES PROFESSEURS ---- //
+            const resultatProfesseurs = await apiAccess({
+                url: `http://localhost:8000/api/departements/${id}/users`,
+                method: "get",
+            });
+            setLoadingProfesseurs(false);
+
+            // -- Analyse --
+            if (resultatProfesseurs.success) {
+                setProfesseurs(resultatProfesseurs.datas);
+            }
+            else {
+                /** @todo Gerer l erreur */
+                console.error(resultatProfesseurs.erreur);
+            }
+        }
+        else {
+            /** @todo Gerer l erreur */
+            console.error(resultatDepartement.erreur);
+        }
+
+    }
+
     // Récupération des données
     useEffect(() => {
-        // Récupération des informations generales du departement
-        fetch(`http://localhost:8000/api/departements/${id}`, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
-        })
-            .then((res) => {
-                if (!res.ok) {
-                    throw Error('could not fetch the data for that resource');
-                }
-                return res.json();
-            })
-            .then((data) => {
-                console.log(data);
-                setDepartement(data);
-                setLoadingDepartement(false);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-
-        // Récupération du coordonnateur du département
-        fetch(`http://localhost:8000/api/departements/${id}/coordonnateur`, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
-        })
-            .then((res) => {
-                if (!res.ok) {
-                    throw Error('could not fetch the data for that resource');
-                }
-                return res.json();
-            })
-            .then((data) => {
-                console.log(data);
-                setCoordo(data);
-                setLoadingCoordo(false);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-
-        // Récupération des departements du département
-        fetch(`http://localhost:8000/api/departements/${id}/cours`, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
-        })
-            .then((res) => {
-                if (!res.ok) {
-                    throw Error('could not fetch the data for that resource');
-                }
-                return res.json();
-            })
-            .then((data) => {
-                console.log(data);
-                setCours(data);
-                setLoadingCours(false);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-
-        // Récupération des professeurs du département
-        fetch(`http://localhost:8000/api/departements/${id}/users`, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
-        })
-            .then((res) => {
-                if (!res.ok) {
-                    throw Error('could not fetch the data for that resource');
-                }
-                return res.json();
-            })
-            .then((data) => {
-                console.log(data);
-                setProfesseurs(data);
-                setLoadingProfesseurs(false);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        getInfos();
     }, []);
 
 

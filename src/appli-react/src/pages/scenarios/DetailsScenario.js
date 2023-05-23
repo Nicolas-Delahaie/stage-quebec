@@ -1,7 +1,11 @@
+/**
+ * @todo Mieux gérer l affichage des modifications 
+ */
 import { ArticleTitle } from "../../components/forms";
 
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AppContext } from '../../utils/context/context';
 
 import { Loader, colors, fonts } from "../../utils/styles";
 
@@ -266,57 +270,59 @@ function DetailsScenario() {
                 setLoading(false);
             });
     }, []);
+function DetailsScenario() {
+    const id = useParams().id;
+    const { apiAccess } = useContext(AppContext);
+
+    const [scenario, setScenario] = useState({});
+    const [modifications, setModifications] = useState({});
+    const [isLoadingScenario, setIsLoadingScenario] = useState(true);
+    const [isLoadingModifications, setIsLoadingModifications] = useState(true);
+
+    const getScenarioDetaille = async () => {
+        const rep = await apiAccess({
+            url: `http://localhost:8000/api/scenarios/${id}/detaille`,
+            method: "get",
+        });
+        setIsLoadingScenario(false);
+
+        // -- Analyse du coordo --
+        if (rep.success) {
+            setScenario(rep.datas);
+        }
+        else {
+            /** @todo Gerer l erreur */
+            console.log(rep.erreur)
+        }
+    }
+    const getModifications = async () => {
+        const rep = await apiAccess({
+            url: `http://localhost:8000/api/scenarios/${id}/modifications`,
+            method: "get",
+        });
+        setIsLoadingModifications(false);
+        console.log(rep);
+
+        // -- Analyse du coordo --
+        if (rep.success) {
+            setModifications(rep.datas);
+        }
+        else {
+            /** @todo Gerer l erreur */
+            console.log(rep.erreur)
+        }
+    }
+
 
     /**
      * Récupération des modifications du scénario
      */
     useEffect(() => {
-        setLoading(true);
-        fetch(`http://localhost:8000/api/scenarios/${id}/modifications`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': 'Bearer ' + getToken().slice(1, -1),
-
-            }
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((scenarioRepartition) => {
-                setModification(scenarioRepartition);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                setLoading(false);
-            });
+        // Initialisation de informations
+        getScenarioDetaille();
+        getModifications()
     }, []);
 
-    /**
-     * Récupération de la répartition du scénario
-     */
-    useEffect(() => {
-        setLoading(true);
-        fetch(`http://localhost:8000/api/scenarios/${id}/repartition`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': 'Bearer ' + getToken().slice(1, -1),
-            }
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((scenarioRepartition) => {
-                setscenarioRepartition(scenarioRepartition);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                setLoading(false);
-            });
-    }, []);
 
     return (
         <DivPageDetailsScenario>

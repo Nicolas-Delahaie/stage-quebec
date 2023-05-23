@@ -68,27 +68,18 @@ class UserController extends Controller
                         'nom' => $scenario->departement->nom,
                     ],
                 ];
-            })->sortBy('aEteValide')->values()
-            ;
+            })->sortBy('aEteValide')->values();
+        
 
-        $data = [
-            'user' => [
-                'id' => $user->id,
-                'nom' => $user->name,
-                'email' => $user->email,
-            ],
-            'scenarios' => $scenarios,
-        ];
-
-        return response()->json($data);
+        return response()->json($scenarios);
     }
 
     public function updateContraintes(Request $request, $id){
-        $scenario = User::findOrFail($id);
-        $scenario->contraintes = $request->input('contraintes');
-        $scenario->save();
+        $user = User::findOrFail($id);
+        $user->contraintes = $request->input('contraintes');
+        $user->save();
 
-        return User::findOrFail($id);
+        return response(['message'=>'Contraintes bien modifiées'], 200);
     }
 
 
@@ -102,8 +93,7 @@ class UserController extends Controller
      * @return Response (Voir le code pour les differents cas)
      * @return token string Token de l'utilisateur
      */
-    public function login(Request $request)
-    {
+    public function login(Request $request){
         try {
             // -- Validation des parametres --
             $request->validate([
@@ -116,6 +106,9 @@ class UserController extends Controller
             $user = User::where('email', $request->email)->first();
             if($user && Hash::check($request->password, $user->password)){
                 // -- Identifiants bons --
+                // Revocation des autres tokens
+                $user->tokens()->delete();
+
                 // Création du token
                 $token = $user->createToken('userToken');
 
@@ -138,5 +131,11 @@ class UserController extends Controller
         catch (\Throwable $th) {
             return response(['message' => "Erreur inattendue", 'error' => $th->getMessage()], 500);
         }
+    }
+
+    public function disconnection(){
+        $user = Auth::user();
+        $user->tokens()->delete();
+        return response(['message' => 'Utilisateur bien déconnecté'], 299);
     }
 }

@@ -5,6 +5,10 @@
  * @todo modifier les boutons pour pas que ce soient les memes (aux memes endroits) lorsqu on modifie ou non
  */
 
+import { useContext, useEffect } from "react";
+import { AppContext } from "../../utils/context/context";
+
+
 import styled from "styled-components"
 import { DivBouton, DivCarteReduite } from "./CarteProfesseur"
 import { colors, fonts } from "../../utils/styles"
@@ -91,10 +95,19 @@ const Bouton = styled.button`
 `
 
 function CarteCours({ cours, idDepartement, allCours, setAllCours }) {
+    const { apiAccess } = useContext(AppContext);
+
     const [veutModifier, setVeutModifier] = useState(false);
     const [newPonderationCours, setNewPonderationCours] = useState(cours.pivot.ponderation);
     const [newTailleGroupesCours, setNewTailleGroupesCours] = useState(cours.pivot.tailleGroupes);
     const [newNbGroupesCours, setNewNbGroupesCours] = useState(cours.pivot.nbGroupes);
+
+    useEffect(() => {
+        // Remise à jour des valeurs si on annule la modification
+        setNewPonderationCours(cours.pivot.ponderation);
+        setNewTailleGroupesCours(cours.pivot.tailleGroupes);
+        setNewNbGroupesCours(cours.pivot.nbGroupes);
+    }, [veutModifier])
 
     /**
      * @brief Affiche l'interface de validation pour la suppression du cours
@@ -115,7 +128,7 @@ function CarteCours({ cours, idDepartement, allCours, setAllCours }) {
      */
     const supprimerCours = () => {
         toast.promise(
-            fetchAPI('DELETE'),
+            apiSupprimer(),
             {
                 loading: 'Suppression...',
                 success: <b>Cours supprimé !</b>,
@@ -128,7 +141,7 @@ function CarteCours({ cours, idDepartement, allCours, setAllCours }) {
      */
     const modifierCours = () => {
         toast.promise(
-            fetchAPI('PUT'),
+            apiModifier(),
             {
                 loading: 'Sauvegarde...',
                 success: <b>Changements sauvegardés !</b>,
@@ -139,54 +152,68 @@ function CarteCours({ cours, idDepartement, allCours, setAllCours }) {
 
 
     //Appel des apis
-    /**
-     * @warning On appelle l'API
-     */
-    const fetchAPI = (method) => {
-        return fetch(`http://localhost:8000/api/proposer`, {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({
+    const apiModifier = async () => {
+        // -- Envoi --
+        const reponse = await apiAccess({
+            url: `http://localhost:8000/api/proposer`,
+            method: "put",
+            body: {
                 cours_id: cours.id,
                 departement_id: idDepartement,
                 nbGroupes: newNbGroupesCours,
                 tailleGroupes: newTailleGroupesCours,
                 ponderation: newPonderationCours
-            })
+            }
         })
-            .then(res => {
-                if (!res.ok) {
-                    if (res.status === 404) {
-                        throw new Error(`Cours introuvable`);
-                    }
-                    else if (res.status === 422) {
-                        throw new Error(`Mauvais format de données`);
-                    }
-                    else {
-                        throw new Error(`Problème de serveur`);
-                    }
-                }
 
-                //Fonctionne
-                if (method === 'DELETE') {
-                    // On supprime la ressource de la page parente
-                    setAllCours(allCours => allCours.filter(unCours => unCours.id !== cours.id));
-                }
-                else if (method === 'PUT') {
-                    // On modifie la ressource de la page parente
-                    const updatedCours = [...allCours];                 //Copie de la liste des cours
-                    const indexCours = allCours.findIndex(c => c.id === cours.id);      //index du cours a modifier dans la liste des cours
-                    updatedCours[indexCours].pivot.ponderation = newPonderationCours;
-                    updatedCours[indexCours].pivot.tailleGroupes = newTailleGroupesCours;
-                    updatedCours[indexCours].pivot.nbGroupes = newNbGroupesCours;
-                    setAllCours(updatedCours);
-                    setVeutModifier(false);
-                }
-                return true;
-            })
+        // -- Analyse --
+        if (reponse.success) {
+            // On modifie la ressource de la page parente
+            const updatedCours = [...allCours];                 //Copie de la liste des cours
+            const indexCours = allCours.findIndex(c => c.id === cours.id);      //index du cours a modifier dans la liste des cours
+            updatedCours[indexCours].pivot.ponderation = newPonderationCours;
+            updatedCours[indexCours].pivot.tailleGroupes = newTailleGroupesCours;
+            updatedCours[indexCours].pivot.nbGroupes = newNbGroupesCours;
+            setAllCours(updatedCours);
+            setVeutModifier(false);
+            return true;
+        }
+        else {
+            if (reponse.statusCode === 404) {
+                throw new Error(`Cours introuvable`);
+            }
+            else if (reponse.statusCode === 422) {
+                throw new Error(`Mauvais format de données`);
+            }
+            else {
+                throw new Error(`Problème de serveur`);
+            }
+        }
+    }
+    const apiSupprimer = async () => {
+        // -- Envoi --
+        const reponse = await apiAccess({
+            url: `http://localhost:8000/api/proposer`,
+            method: "delete",
+            body: {
+                cours_id: cours.id,
+                departement_id: idDepartement,
+            }
+        })
+
+        // -- Analyse --
+        if (reponse.success) {
+            // On supprime la ressource de la page parente
+            setAllCours(allCours => allCours.filter(unCours => unCours.id !== cours.id));
+        }
+        else {
+            if (reponse.statusCode === 404) {
+                throw new Error(`Cours introuvable`);
+            }
+            else {
+                throw new Error(`Problème de serveur`);
+            }
+        }
     }
 
     document.addEventListener("keydown", (event) => {
@@ -205,11 +232,11 @@ function CarteCours({ cours, idDepartement, allCours, setAllCours }) {
                         <form onSubmit={(e) => { modifierCours(); e.preventDefault(); }}>
                             <Oskfbbz>
                                 <H2Cours>Pondération</H2Cours>
-                                <Input type="number" value={newPonderationCours} onChange={(e) => setNewPonderationCours(e.target.value)} autoFocus />
+                                <Input type="number" required value={newPonderationCours} onChange={(e) => setNewPonderationCours(e.target.value)} autoFocus />
                                 <H2Cours>Taille du groupe</H2Cours>
-                                <Input type="number" value={newTailleGroupesCours} onChange={(e) => setNewTailleGroupesCours(e.target.value)} />
+                                <Input type="number" required value={newTailleGroupesCours} onChange={(e) => setNewTailleGroupesCours(e.target.value)} />
                                 <H2Cours>Nombre de groupes</H2Cours>
-                                <Input type="number" value={newNbGroupesCours} onChange={(e) => setNewNbGroupesCours(e.target.value)} />
+                                <Input type="number" required value={newNbGroupesCours} onChange={(e) => setNewNbGroupesCours(e.target.value)} />
                             </Oskfbbz>
                             <DivBouton>
                                 <Bouton type="button" onClick={() => setVeutModifier(false)}>Annuler</Bouton>

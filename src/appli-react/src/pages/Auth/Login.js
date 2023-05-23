@@ -60,7 +60,7 @@ function Login() {
     const [erreur, setErreur] = useState("");
 
     const navigate = useNavigate();     //Pour naviguer entre les pages
-    const { estConnecte, connexion, deconnexion } = useContext(AppContext);
+    const { estConnecte, connexion, deconnexion, apiAccess } = useContext(AppContext);
 
     // Deconnecte l utilisateur s il est deja connecte
     if (estConnecte && mail === "" && mdp === "" && !resterConnecte) {
@@ -73,7 +73,7 @@ function Login() {
         toast.success("Vous avez été déconnecté", { duration: 8000, position: "top-center" });
     }
 
-    const clicConnexion = (e) => {
+    const clicConnexion = async (e) => {
         e.preventDefault();         //Pour empecher le comportement normal de validation du formulaire
 
         //Validation du mail
@@ -82,46 +82,38 @@ function Login() {
             setErreur("Adresse mail invalide");
         }
         else {
-            const dureeTokenEnMin = resterConnecte ? 60 * 24 * 100 : 60 * 12;    //Si on coche la case, on reste connecte pour 100 jours, sinon pour 12h
+            const dureeSessionEnMin = resterConnecte ? 60 * 24 * 100 : 60 * 12;    //Si on coche la case, on reste connecte pour 100 jours, sinon pour 12h
 
-            fetch('http://localhost:8000/api/login', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
+            // -- Envoi de la requete --
+            const rep = await apiAccess({
+                url: `http://localhost:8000/api/login`,
+                method: "post",
+                body: {
                     email: mail,
                     password: mdp,
-                    duration: dureeTokenEnMin
-                })
-            })
-                .then((res) => {
-                    if (!res.ok) {
-                        if (res.status === 401) {
-                            throw Error("Mot de passe ou mail incorrect");
-                        }
-                        else if (res.status === 422) {
-                            throw Error("Mauvais format de reponse");
-                        }
-                        else {
-                            throw Error("Erreur de serveur");
-                        }
-                    }
-                    else {
-                        return res.json();
-                    }
-                })
-                .then(data => {
-                    //Connexion pour 100 jours si on coche la case, sinon pour 24h
-                    connexion(data.token, dureeTokenEnMin, data.type.nom, data.idUser);
-                    navigate('/authentifie')  //Redirection vers la page d accueil authentifiee
-                })
-                .catch((err) => {
-                    setErreur(err.message)
-                })
-        }
+                    duration: dureeSessionEnMin,
+                },
+                needAuth: false
+            });
 
+            // -- Traitement de la reponse --
+            if (rep.success) {
+                //Connexion pour 100 jours si on coche la case, sinon pour 24h
+                connexion(rep.datas.token, dureeSessionEnMin, 8);
+                navigate(-1);
+            }
+            else {
+                if (rep.statusCode === 401) {
+                    setErreur("Mot de passe ou mail incorrect");
+                }
+                else if (rep.statusCode === 422) {
+                    setErreur("Mauvais format de reponse");
+                }
+                else {
+                    setErreur("Erreur de serveur");
+                }
+            }
+        }
     }
 
     return (
