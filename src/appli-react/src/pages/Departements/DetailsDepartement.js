@@ -6,7 +6,6 @@ import styled from "styled-components";
 
 import { Loader, colors, fonts } from "../../utils/styles";
 import ArticleTitle from "../../components/forms/ArticleTitle";
-import CarteProfesseur from "../../components/layout/CarteProfesseur";
 import CarteCours from "../../components/layout/CarteCours";
 
 
@@ -77,17 +76,22 @@ function DetailsDepartement() {
     const { apiAccess } = useContext(AppContext);
 
     // Tous les booleens indiquant si la ressource a ete chargee ou non
-    const [loadingDepartement, setLoadingDepartement] = useState(true);
-    const [loadingCoordo, setLoadingCoordo] = useState(true);
-    const [loadingCoursProposes, setLoadingCoursProposes] = useState(true);
+    const [loadingDepartement, setLoadingDepartement] = useState(null);
+    const [loadingCoordo, setLoadingCoordo] = useState(null);
+    const [loadingCoursProposes, setLoadingCoursProposes] = useState(null);
 
-    const [departement, setDepartement] = useState([]);
-    const [coursProposes, setCoursProposes] = useState([]);
-    const [coordo, setCoordo] = useState([]);
+    const [erreurDepartement, setErreurDepartement] = useState(null);
+    const [erreurCoordo, setErreurCoordo] = useState(null);
+    const [erreurCoursProposes, setErreurCoursProposes] = useState(null);
+
+    const [departement, setDepartement] = useState(null);
+    const [coursProposes, setCoursProposes] = useState(null);
+    const [coordo, setCoordo] = useState(null);
 
 
     const getInfos = async () => {
         // ---- RECUPERATION DES INFORMATIONS DU DEPARTEMENT ---- //
+        setLoadingDepartement(true);
         const resultatDepartement = await apiAccess({
             url: `http://localhost:8000/api/departements/${id}`,
             method: "get",
@@ -101,6 +105,7 @@ function DetailsDepartement() {
 
 
             // ---- RECUPERATION DU COORDONNATEUR ---- //
+            setLoadingCoordo(true);
             const resultatCoordo = await apiAccess({
                 url: `http://localhost:8000/api/departements/${id}/coordonnateur`,
                 method: "get",
@@ -112,12 +117,12 @@ function DetailsDepartement() {
                 setCoordo(resultatCoordo.datas);
             }
             else {
-                /** @todo Gerer l erreur */
-                console.error(resultatCoordo.erreur);
+                setErreurCoordo(resultatCoordo.erreur)
             }
 
 
             // ---- RECUPERATION DES COURS PROPOSES---- //
+            setLoadingCoursProposes(true);
             const resultatCoursProposes = await apiAccess({
                 url: `http://localhost:8000/api/departements/${id}/cours_proposes_detailles`,
                 method: "get",
@@ -129,14 +134,12 @@ function DetailsDepartement() {
                 setCoursProposes(resultatCoursProposes.datas);
             }
             else {
-                /** @todo Gerer l erreur */
-                console.error(resultatCoursProposes.erreur);
+                setErreurCoursProposes(resultatCoursProposes.erreur);
             }
-            
+
         }
         else {
-            /** @todo Gerer l erreur */
-            console.error(resultatDepartement.erreur);
+            setErreurDepartement(resultatDepartement.erreur);
         }
 
     }
@@ -149,33 +152,33 @@ function DetailsDepartement() {
 
     return (
         <DivPageDetailsDepartement>
-            <ArticleTitle texte="Détails du département" />
-            {
-                loadingDepartement ?
-                    <Loader />
-                    :
+            {loadingDepartement && <Loader />}
+            {erreurDepartement && <H2DetailsDepartement>Erreur : {erreurDepartement}</H2DetailsDepartement>}
+            {departement &&
+                <>
+                    <ArticleTitle texte={departement.nom} />
                     <DivDetailsDepartement>
-                        <H1Departements>{departement.nom}</H1Departements>
-                        {
-                            loadingCoordo ?
-                                <Loader />
-                                :
-                                <H3Coordonnateur>Coordonné par : {coordo.name}</H3Coordonnateur>
-                        }
-                        <H2DetailsDepartement>Les cours proposés par le département </H2DetailsDepartement>
-                        <DivListe>
-                            {
-                                loadingCoursProposes ?
-                                    <Loader />
-                                    :
-                                    (
+                        {loadingCoordo && <Loader />}
+                        {erreurCoordo && <h1>Erreur : {erreurCoordo}</h1>}
+                        {coordo && <H3Coordonnateur>Coordonné par : {coordo.name}</H3Coordonnateur>}
+
+                        <H2DetailsDepartement>Cours proposés par le département </H2DetailsDepartement>
+                        {loadingCoursProposes && <Loader />}
+                        {erreurCoursProposes && <h1>Erreur : {erreurCoursProposes}</h1>}
+                        {coursProposes &&
+                            <>
+                                <DivListe>
+                                    {
                                         coursProposes?.map((coursPropose) => (
                                             <CarteCours key={coursPropose.id} coursPropose={coursPropose} idDepartement={departement.id} allCours={coursProposes} setAllCours={setCoursProposes} />
                                         ))
-                                    )
-                            }
-                        </DivListe>
+                                    }
+                                </DivListe>
+                            </>
+                        }
+
                     </DivDetailsDepartement>
+                </>
             }
         </DivPageDetailsDepartement>
     )

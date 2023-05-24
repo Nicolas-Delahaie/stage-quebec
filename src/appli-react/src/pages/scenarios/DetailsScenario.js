@@ -251,7 +251,11 @@ function DetailsScenario() {
 
     /* -------------------------------- USEEFFECT ------------------------------- */
 
-    const getScenarioDetaille = async () => {
+    const [erreurScenario, setErreurScenario] = useState(null);
+    const [erreurModifications, setErreurModifications] = useState(null);
+
+    const getInfos = async () => {
+        setIsLoadingScenario(true);
         const rep = await apiAccess({
             url: `http://localhost:8000/api/scenarios/${id}/detaille`,
             method: "get",
@@ -261,10 +265,25 @@ function DetailsScenario() {
         // -- Analyse du coordo --
         if (rep.success) {
             setScenario(rep.datas);
+
+            // -- Recuperation des modifications --
+            setIsLoadingModifications(true);
+            const rep2 = await apiAccess({
+                url: `http://localhost:8000/api/scenarios/${id}/modifications`,
+                method: "get",
+            });
+            setIsLoadingModifications(false);
+
+            // -- Analyse du coordo --
+            if (rep2.success) {
+                setModifications(rep2.datas);
+            }
+            else {
+                setErreurModifications(rep2.erreur)
+            }
         }
         else {
-            /** @todo Gerer l erreur */
-            console.log(rep.erreur)
+            setErreurScenario(rep.erreur);
         }
     }
     const getModifications = async () => {
@@ -301,12 +320,13 @@ function DetailsScenario() {
         }
     }
 
+
     /**
      * Récupération des modifications du scénario
      */
     useEffect(() => {
         // Initialisation de informations
-        getScenarioDetaille();
+        getInfos();
         getModifications();
         getRepartition();
     }, []);

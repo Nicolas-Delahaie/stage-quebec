@@ -17,7 +17,7 @@ export const AppProvider = ({ children }) => {
     const errorMessages = {
         400: "Requete mal formée",
         401: "Authentification necessaire",
-        403: "Accès refusé",
+        403: "Vous ne pouvez pas accéder à ces données",
         404: "La ressource n'existe pas",
         422: "Mauvais format de reponse",
         503: "Service indisponible (surcharge ou maintenance)",
@@ -32,9 +32,6 @@ export const AppProvider = ({ children }) => {
     const getUserToken = () => {
         return Cookies.get('token');
     }
-    const getUserId = () => {
-        return Cookies.get('userId');
-    }
 
     const getType = () => {
         let type = Cookies.get('type');
@@ -46,7 +43,7 @@ export const AppProvider = ({ children }) => {
         }
     }
 
-    const getID = () => {
+    const getUserId = () => {
         let id = Cookies.get('idUser');
         if (id) {
             return id;
@@ -116,7 +113,6 @@ export const AppProvider = ({ children }) => {
             // On convertit le body en string s il y en a un
             body = JSON.stringify(body);
         }
-
 
         // -- TRAITEMENT --
         console.log(url);

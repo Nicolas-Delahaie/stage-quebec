@@ -5,7 +5,7 @@ import { AppContext } from '../../utils/context/context';
 
 /* import pour le style */
 import styled from "styled-components"
-import { Loader, fonts, colors } from "../../utils/styles"
+import { Loader } from "../../utils/styles"
 
 /* import des composants */
 import CarteHorizontale from "../../components/layout/CarteHorizontale"
@@ -81,29 +81,28 @@ function rechercheImage(nomDepartement) {
 /* ----------------------------------- DOM ---------------------------------- */
 
 function Departements() {
-
-    const [isLoading, setIsLoading] = useState(true);
-    const [departement, setDepartement] = useState({});
     const { apiAccess } = useContext(AppContext);
+
+    const [isLoading, setIsLoading] = useState(null);
+    const [departement, setDepartement] = useState(null);
+    const [erreur, setErreur] = useState(null)
 
     const getDepartements = async () => {
         // -- Recuperation --
+        setIsLoading(true);
         const resultat = await apiAccess({
             url: `http://localhost:8000/api/departementsDetailles`,
             method: "get",
         });
+        setIsLoading(false);
 
         // -- Analyse --
         if (resultat.success) {
             setDepartement(resultat.datas);
         }
         else {
-            /**
-             * @todo Gerer l erreur
-             */
+            setErreur(resultat.erreur);
         }
-        setIsLoading(false);
-
     }
 
     useEffect(() => {
@@ -113,28 +112,25 @@ function Departements() {
     return (
         <DivPageDepartements>
             <ArticleTitle texte="Départements" />
-            {
-                isLoading || departement.length === undefined ? (
-                    <Loader />
-                )
-                    : (
-                        <StyledDepartements>
-                            {
-                                departement.map((departement) => (
-                                    <CarteHorizontale
-                                        key={departement.id}
-                                        titre={departement.nom}
-                                        texteBouton={"Voir plus en détail"}
-                                        urlImage={rechercheImage(departement.nom)}
-                                        lien={`/departements/${departement.id}`}
-                                    >
-                                        <p>Coordonnateur : {departement.coordonnateur.name}</p>
-                                        <p>Nombre d'étudiant : {departement.nbEleves}</p>
-                                    </CarteHorizontale>
-                                ))
-                            }
-                        </StyledDepartements>
-                    )
+            {erreur && <h1>{erreur}</h1>}
+            {isLoading && <Loader />}
+            {departement &&
+                <StyledDepartements>
+                    {
+                        departement.map((departement) => (
+                            <CarteHorizontale
+                                key={departement.id}
+                                titre={departement.nom}
+                                texteBouton={"Voir plus en détail"}
+                                urlImage={rechercheImage(departement.nom)}
+                                lien={`/departements/${departement.id}`}
+                            >
+                                <p>Coordonnateur : {departement.coordonnateur.name}</p>
+                                <p>Nombre d'étudiant : {departement.nbEleves}</p>
+                            </CarteHorizontale>
+                        ))
+                    }
+                </StyledDepartements>
             }
         </DivPageDepartements>
     )
