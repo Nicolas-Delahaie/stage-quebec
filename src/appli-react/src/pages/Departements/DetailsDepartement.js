@@ -28,6 +28,7 @@ const DivDetailsDepartement = styled(DivPageDetailsDepartement)`
 
 const DivListe = styled.div`
     display: grid;
+    width:100%;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 1rem;
 `;
@@ -87,6 +88,7 @@ function DetailsDepartement() {
     const [departement, setDepartement] = useState(null);
     const [coursProposes, setCoursProposes] = useState(null);
     const [coordo, setCoordo] = useState(null);
+    const [professeursAssignables, setProfesseursAssignables] = useState(null);
 
 
     const getInfos = async () => {
@@ -121,20 +123,30 @@ function DetailsDepartement() {
             }
 
 
-            // ---- RECUPERATION DES COURS PROPOSES---- //
+            // ---- RECUPERATION DES COURS PROPOSES ET DE LEURS PROFESSEURS ATTRIBUABLES ---- //
             setLoadingCoursProposes(true);
             const resultatCoursProposes = await apiAccess({
                 url: `http://localhost:8000/api/departements/${id}/cours_proposes_detailles`,
                 method: "get",
             });
+            const resultatProfs = await apiAccess({
+                url: `http://localhost:8000/api/users`
+            })
             setLoadingCoursProposes(false);
 
-            // -- Analyse --
+            // -- Analyses --
             if (resultatCoursProposes.success) {
                 setCoursProposes(resultatCoursProposes.datas);
             }
             else {
                 setErreurCoursProposes(resultatCoursProposes.erreur);
+            }
+            if (resultatProfs.success) {
+                // On ne garde que les professeurs
+                setProfesseursAssignables(resultatProfs.datas.filter((prof) => prof.type_utilisateur_id === 3));
+            }
+            else {
+                console.log("Impossible de recuperer les professeurs assignables aux cours")
             }
 
         }
@@ -165,12 +177,12 @@ function DetailsDepartement() {
                         <H2DetailsDepartement>Cours proposés par le département </H2DetailsDepartement>
                         {loadingCoursProposes && <Loader />}
                         {erreurCoursProposes && <h1>Erreur : {erreurCoursProposes}</h1>}
-                        {coursProposes &&
+                        {coursProposes && professeursAssignables &&
                             <>
                                 <DivListe>
                                     {
                                         coursProposes?.map((coursPropose) => (
-                                            <CarteCours key={coursPropose.id} coursPropose={coursPropose} idDepartement={departement.id} allCours={coursProposes} setAllCours={setCoursProposes} />
+                                            <CarteCours key={coursPropose.id} coursPropose={coursPropose} idDepartement={departement.id} allCours={coursProposes} setAllCours={setCoursProposes} professeursAssignables={professeursAssignables} />
                                         ))
                                     }
                                 </DivListe>
