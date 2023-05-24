@@ -102,7 +102,7 @@ class UserController extends Controller
                 $token->accessToken->expires_at = $date_expiration;
                 $token->accessToken->save();
 
-                return response(['token' => $token->plainTextToken, 'idUser' => $user->id, 'type' => $user->type, 'message' => 'Utilisateur bien authentifié'], 299);
+                return response(['token' => $token->plainTextToken, 'type' => $user->type, 'message' => 'Utilisateur bien authentifié'], 299);
             }
             else{
                 // Mauvais identifiants

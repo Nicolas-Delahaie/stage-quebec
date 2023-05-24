@@ -213,7 +213,7 @@ function Profil() {
                         <DivContainerLiberations>
                             <H2Profil>Libérations</H2Profil>
                             {user.liberations.length === 0 ?
-                                <p>Vous n'avez aucune libération</p>
+                                <p>Vous n'avez aucune libération récente</p>
                                 :
                                 <DivLiberations>
                                     <H2Profil>Semestre</H2Profil>

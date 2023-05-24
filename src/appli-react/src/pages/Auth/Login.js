@@ -102,10 +102,11 @@ function Login() {
                 needAuth: false
             });
 
+            console.log(rep);
             // -- Traitement de la reponse --
             if (rep.success) {
                 //Connexion pour 100 jours si on coche la case, sinon pour 24h
-                connexion(rep.datas.token, dureeSessionEnMin);
+                connexion(rep.datas.token, dureeSessionEnMin, rep.datas.type.nom);
                 navigate("/authentifie");
             }
             else {

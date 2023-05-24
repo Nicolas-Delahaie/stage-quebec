@@ -31,40 +31,20 @@ export const AppProvider = ({ children }) => {
      * @details Met egalement a jour la variable estConnecte 
      * @returns string, undefined
      */
-    const getUserToken = () => {
-        return Cookies.get('token');
-    }
 
     const getType = () => {
-        let type = Cookies.get('type');
-        if (type) {
-            return type;
-        }
-        else {
-            return undefined;
-        }
-    }
-
-    const getUserId = () => {
-        let id = Cookies.get('idUser');
-        if (id) {
-            return id;
-        }
-        else {
-            return undefined;
-        }
+        return Cookies.get('userType');
     }
 
     /**
      * @brief Connecte l utilsisateur
      * @details Cree le cookie de tokken et met a jour la variable estConnecte 
      */
-    const connexion = (token, dureeSessionEnMin, userId, userType) => {
+    const connexion = (token, dureeSessionEnMin, userType) => {
         const dureeSessionEnH = dureeSessionEnMin / 60;
         const dureeSessionEnJ = dureeSessionEnH / 24;
         Cookies.set("token", token, { expires: dureeSessionEnJ });
-        Cookies.set("userId", userId, { expires: dureeSessionEnJ });
-        Cookies.set("userType", userType, {expires: dureeSessionEnJ});
+        Cookies.set("userType", userType, { expires: dureeSessionEnJ });
         setEstConnecte(true);
     }
     /**
@@ -73,6 +53,7 @@ export const AppProvider = ({ children }) => {
      */
     const deconnexion = () => {
         Cookies.remove('token');
+        Cookies.remove('userType');
         navigate("/login");
         setEstConnecte(false);
     }
@@ -99,7 +80,7 @@ export const AppProvider = ({ children }) => {
     }) => {
         // -- PRE-TRAITEMENTS --
         // Verificaton de l authentification
-        const token = getUserToken();
+        const token = Cookies.get('token');
         if (needAuth && !token) {
             // Aucun utilisateur connecte
             setEstConnecte(false);
@@ -119,7 +100,6 @@ export const AppProvider = ({ children }) => {
 
         // -- TRAITEMENT --
         console.log(url);
-        console.log(token);
         const res = await fetch(url, {
             method: method,
             headers: {
@@ -163,7 +143,7 @@ export const AppProvider = ({ children }) => {
 
 
     return (
-        <AppContext.Provider value={{ deconnexion, connexion, estConnecte, apiAccess, getUserId, getType, getUserToken }}>
+        <AppContext.Provider value={{ deconnexion, connexion, estConnecte, apiAccess, getType }}>
             {children}
         </AppContext.Provider>
     );

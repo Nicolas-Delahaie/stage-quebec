@@ -93,7 +93,7 @@ function Header() {
                                                 <ButtonTexte>Mes scénarios</ButtonTexte>
                                             </Lien>
                                             <Lien to="/profil">
-                                                <ButtonTexte>Mes contraintes</ButtonTexte>
+                                                <ButtonTexte>Mon profil</ButtonTexte>
                                             </Lien>
                                         </DivLien>
                                     )
@@ -104,7 +104,7 @@ function Header() {
                                                 <ButtonTexte>Mes scénarios</ButtonTexte>
                                             </Lien>
                                             <Lien to="/profil">
-                                                <ButtonTexte>Mes contraintes</ButtonTexte>
+                                                <ButtonTexte>Mon profil</ButtonTexte>
                                             </Lien>
                                             <Lien to="/departements/">
                                                 <ButtonTexte>Tous les départements</ButtonTexte>
@@ -118,7 +118,7 @@ function Header() {
                                                 <ButtonTexte>Mes scénarios</ButtonTexte>
                                             </Lien>
                                             <Lien to="profil">
-                                                <ButtonTexte>Mes contraintes</ButtonTexte>
+                                                <ButtonTexte>Mon profil</ButtonTexte>
                                             </Lien>
                                         </DivLien>
                                     )
