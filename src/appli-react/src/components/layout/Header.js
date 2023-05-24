@@ -27,6 +27,8 @@ import { AppContext } from "../../utils/context/context"
 import whiteCursor from "../../assets/svg/whiteCursor.svg"
 import cursor from "../../assets/svg/cursor.svg"
 
+import { BoutonStyle } from "../forms/Bouton"
+
 /* --------------------------------- STYLES --------------------------------- */
 
 /*Container général du header */
@@ -57,6 +59,11 @@ const ButtonTexte = styled.div`
     cursor: url(${cursor}), auto;
 `;
 
+const LinkStyle = styled(Link)`
+    text-decoration: none;
+    color: ${colors.bleuFonce};
+`;
+
 /* ----------------------------------- DOM ---------------------------------- */
 
 /**
@@ -75,60 +82,61 @@ function Header() {
 
             {/* Si l'utilisateur est connecté, on affiche le bouton de déconnexion, sinon on affiche le bouton de connexion */}
             {estConnecte ?
-    (
-        <>
-            {(() => {
-                switch (type.slice(1, -1)) {
-                    case 'professeur':
-                        return (
-                            <DivLien estConnecte={estConnecte} >
-                                <Lien to="/scenarios">
-                                    <ButtonTexte>Mes scénarios</ButtonTexte>
-                                </Lien>
-                                <Lien to="/users/:id/contraintes">
-                                    <ButtonTexte>Mes contraintes</ButtonTexte>
-                                </Lien>
-                            </DivLien>
-                        )
-                    case 'responsable':
-                        return (
-                            <DivLien estConnecte={estConnecte}>
-                                <Lien to="/scenarios">
-                                    <ButtonTexte>Mes scénarios</ButtonTexte>
-                                </Lien>
-                                <Lien to="/users/:id/contraintes">
-                                    <ButtonTexte>Mes contraintes</ButtonTexte>
-                                </Lien>
-                                <Lien to="/departements/">
-                                    <ButtonTexte>Mon département</ButtonTexte>
-                                </Lien>
-                            </DivLien>
-                        )
-                    default:
-                        return (
-                            <DivLien estConnecte={estConnecte}>
-                                <Lien to="/scenarios">
-                                    <ButtonTexte>Mes scénarios</ButtonTexte>
-                                </Lien>
-                                <Lien to="/users/:id/contraintes">
-                                    <ButtonTexte>Mes contraintes</ButtonTexte>
-                                </Lien>
-                            </DivLien>
-                        )
-                }
-            })()}
-            <DivLien>
-            <Lien to="/">
-                <ButtonTexte onClick={() => deconnexion()}>Se deconnecter</ButtonTexte>
-            </Lien>
-            </DivLien>
-        </>
-    ) :
+                (
+                    <>
+                        {(() => {
+                            switch (type.slice(1, -1)) {
+                                case 'professeur':
+                                    return (
+                                        <DivLien estConnecte={estConnecte} >
+                                            <Lien to="/scenarios">
+                                                <ButtonTexte>Mes scénarios</ButtonTexte>
+                                            </Lien>
+                                            <Lien to="/users/:id/contraintes">
+                                                <ButtonTexte>Mes contraintes</ButtonTexte>
+                                            </Lien>
+                                        </DivLien>
+                                    )
+                                case 'responsable':
+                                    return (
+                                        <DivLien estConnecte={estConnecte}>
+                                            <Lien to="/scenarios">
+                                                <ButtonTexte>Mes scénarios</ButtonTexte>
+                                            </Lien>
+                                            <Lien to="/users/:id/contraintes">
+                                                <ButtonTexte>Mes contraintes</ButtonTexte>
+                                            </Lien>
+                                            <Lien to="/departements/">
+                                                <ButtonTexte>Mon département</ButtonTexte>
+                                            </Lien>
+                                        </DivLien>
+                                    )
+                                default:
+                                    return (
+                                        <DivLien estConnecte={estConnecte}>
+                                            <Lien to="/scenarios">
+                                                <ButtonTexte>Mes scénarios</ButtonTexte>
+                                            </Lien>
+                                            <Lien to="/users/:id/contraintes">
+                                                <ButtonTexte>Mes contraintes</ButtonTexte>
+                                            </Lien>
+                                        </DivLien>
+                                    )
+                            }
+                        })()}
+                        <DivLien>
+                            <BoutonStyle onClick={() => deconnexion()}>
+                                <LinkStyle to="/">Se déconnecter</LinkStyle>
+                            </BoutonStyle>
+
+                        </DivLien>
+                    </>
+                ) :
                 (
                     <DivLien estConnecte={estConnecte}>
-                    <Lien to="/login">
-                        <ButtonTexte>Se connecter</ButtonTexte>
-                    </Lien>
+                        <BoutonStyle onClick={() => deconnexion()}>
+                            <LinkStyle to="/login">Se connecter</LinkStyle>
+                        </BoutonStyle>
                     </DivLien>
                 )}
         </HeaderStyle>

@@ -4,7 +4,7 @@
 import { createContext } from 'react';  //Pour generer le contexte
 import Cookies from 'js-cookie';        //Pour récupérer les cookies
 import { useState } from 'react';        //Pour utiliser les variables d'état
-
+import { useNavigate } from 'react-router-dom'; //Pour naviguer entre les pages
 /* création du contexte */
 export const AppContext = createContext();
 
@@ -14,6 +14,7 @@ export const AppProvider = ({ children }) => {
      * @details Mise à jour a chaque recuperation du token
      */
     const [estConnecte, setEstConnecte] = useState(Cookies.get('token') !== undefined);
+    const navigate = useNavigate();     //Pour naviguer entre les pages
     const errorMessages = {
         400: "Requete mal formée",
         401: "Authentification necessaire",
@@ -71,6 +72,7 @@ export const AppProvider = ({ children }) => {
      */
     const deconnexion = () => {
         Cookies.remove('token');
+        navigate("/login");
         setEstConnecte(false);
     }
 
