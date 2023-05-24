@@ -17,7 +17,6 @@ import DetailsScenario from "./pages/scenarios/DetailsScenario";
 import Departements from "./pages/Departements/Departements";
 import DetailsDepartement from "./pages/Departements/DetailsDepartement";
 import Profil from "./pages/users/Profil";
-import TestAPIs from "./pages/TestAPIs";
 import NotFound from "./pages/NotFound";
 
 /* Import des Layout */
@@ -41,7 +40,6 @@ function App() {
             <Route exact path="/departements" element={<Departements />} />
             <Route exact path="/departements/:id" element={<DetailsDepartement />} />
             <Route exact path="/profil" element={<Profil />} />
-            <Route exact path="/api" element={<TestAPIs />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes >

@@ -94,25 +94,32 @@ const Bouton = styled.button`
     margin: 1rem;
 `
 
-function CarteCours({ coursPropose, idDepartement, allCours, setAllCours }) {
+function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignables }) {
     const { apiAccess } = useContext(AppContext);
 
-    const [veutModifier, setVeutModifier] = useState(false);
+    const [modifierInformations, setModifierInformations] = useState(false);
+    const [modifierProfesseurs, setModifierProfesseurs] = useState(false);
     const [newPonderationCours, setNewPonderationCours] = useState(coursPropose.ponderation);
     const [newTailleGroupesCours, setNewTailleGroupesCours] = useState(coursPropose.tailleGroupes);
     const [newNbGroupesCours, setNewNbGroupesCours] = useState(coursPropose.nbGroupes);
 
     useEffect(() => {
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") {
+                setModifierInformations(false);
+                setModifierProfesseurs(false);
+            }
+        });
+    }, [])
+    useEffect(() => {
         // Remise à jour des valeurs si on annule la modification
         setNewPonderationCours(coursPropose.ponderation);
         setNewTailleGroupesCours(coursPropose.tailleGroupes);
         setNewNbGroupesCours(coursPropose.nbGroupes);
-    }, [veutModifier])
+    }, [modifierInformations])
 
-    /**
-     * @brief Affiche l'interface de validation pour la suppression du cours propose
-     */
-    const validationSuppression = () => {
+
+    const validationSuppressionCours = () => {
         toast((t) => (
             <div>
                 <div>Êtes-vous sûr de vouloir supprimer le cours "{coursPropose.cours.nom}" ?</div>
@@ -123,37 +130,35 @@ function CarteCours({ coursPropose, idDepartement, allCours, setAllCours }) {
             </div>
         ))
     }
-    /**
-     * @brief Affiche un toaster en attendant la reponse de l api
-     */
-    const supprimerCours = () => {
-        toast.promise(
-            apiSupprimer(),
-            {
-                loading: 'Suppression...',
-                success: <b>Cours supprimé !</b>,
-                error: (erreur) => <b>{erreur.message}</b>,
-            }
-        );
-    }
-    /**
-     * @brief Affiche un toaster en attendant la reponse de l api
-     */
-    const modifierCours = () => {
-        toast.promise(
-            apiModifier(),
-            {
-                loading: 'Sauvegarde...',
-                success: <b>Changements sauvegardés !</b>,
-                error: (erreur) => <b>{erreur.message}</b>,
-            }
-        );
-    }
-
-
-    //Appel des apis
-    const apiModifier = async () => {
+    const supprimerCours = async () => {
         // -- Envoi --
+        toast.loading("Suppression...");
+        const reponse = await apiAccess({
+            url: `http://localhost:8000/api/cours_proposes/${coursPropose.id}}`,
+            method: "delete",
+        })
+        toast.dismiss();
+
+        // -- Analyse --
+        if (reponse.success) {
+            toast.success(<b>Cours supprimé !</b>);
+            // On supprime la ressource de la page parente
+            setAllCours(allCours => allCours.filter(unCours => unCours.id !== coursPropose.id));
+        }
+        else {
+            var erreur;
+            if (reponse.statusCode === 404) {
+                erreur = `Cours introuvable`;
+            }
+            else {
+                erreur = `Problème de serveur`;
+            }
+            toast.error(<b>{erreur}</b>);
+        }
+    }
+    const modifierCours = async () => {
+        // -- Envoi --
+        toast.loading("Sauvegarde...");
         const reponse = await apiAccess({
             url: `http://localhost:8000/api/cours_proposes/${coursPropose.id}`,
             method: "put",
@@ -163,9 +168,11 @@ function CarteCours({ coursPropose, idDepartement, allCours, setAllCours }) {
                 ponderation: newPonderationCours
             }
         })
+        toast.dismiss();
 
         // -- Analyse --
         if (reponse.success) {
+            toast.success(<b>Changements sauvegardés !</b>)
             // On modifie la ressource de la page parente
             const updatedCours = [...allCours];                 //Copie de la liste des cours
             const indexCours = allCours.findIndex(c => c.id === coursPropose.id);      //index du cours a modifier dans la liste des cours
@@ -173,95 +180,178 @@ function CarteCours({ coursPropose, idDepartement, allCours, setAllCours }) {
             updatedCours[indexCours].tailleGroupes = newTailleGroupesCours;
             updatedCours[indexCours].nbGroupes = newNbGroupesCours;
             setAllCours(updatedCours);
-            setVeutModifier(false);
+            setModifierInformations(false);
             return true;
         }
         else {
+            var erreur;
             if (reponse.statusCode === 404) {
-                throw new Error(`Cours introuvable`);
+                erreur = `Cours introuvable`;
             }
             else if (reponse.statusCode === 422) {
-                throw new Error(`Mauvais format de données`);
+                erreur = `Mauvais format de données`;
             }
             else {
-                throw new Error(`Problème de serveur`);
+                erreur`Problème de serveur`;
             }
+            toast.error(<b>{erreur}</b>);
         }
     }
-    const apiSupprimer = async () => {
+    const validationSuppressionProf = (idProf, nomProf) => {
+        toast((t) => (
+            <div>
+                <div>Retirer {nomProf} de {coursPropose.cours.nom}?</div>
+                <DivBoutonToast>
+                    <Bouton onClick={() => toast.dismiss(t.id)}>Annuler</Bouton>
+                    <Bouton onClick={() => { toast.dismiss(t.id); retirerProf(idProf); }}>Confirmer</Bouton>
+                </DivBoutonToast>
+            </div>
+        ))
+    }
+    const retirerProf = async (idProf) => {
         // -- Envoi --
+        toast.loading("Retrait du professeur...");
         const reponse = await apiAccess({
-            url: `http://localhost:8000/api/cours_proposes/${coursPropose.id}}`,
+            url: `http://localhost:8000/api/enseigner`,
             method: "delete",
+            body: {
+                professeur_id: idProf,
+                cours_propose_id: coursPropose.id
+            }
         })
+        toast.dismiss();
+
+        console.log(reponse);
 
         // -- Analyse --
         if (reponse.success) {
-            // On supprime la ressource de la page parente
-            setAllCours(allCours => allCours.filter(unCours => unCours.id !== coursPropose.id));
+            toast.success(<b>Professeur retiré !</b>);
+            // On modifie la ressource de la page parente
+            const updatedCours = [...allCours];                 //Copie de la liste des cours
+            const indexCours = allCours.findIndex(c => c.id === coursPropose.id);      //index du cours a modifier dans la liste des cours
+            updatedCours[indexCours].enseignants = updatedCours[indexCours].enseignants.filter((enseignant) => enseignant.id !== idProf);
+            setAllCours(updatedCours);
         }
         else {
+            var erreur;
             if (reponse.statusCode === 404) {
-                throw new Error(`Cours introuvable`);
+                erreur = `Professeur ou cours introuvable`;
             }
             else {
-                throw new Error(`Problème de serveur`);
+                erreur = `Problème de serveur`;
             }
+            toast.error(<b>{erreur}</b>);
+        }
+    }
+    const attribuerProfesseurs = async (e) => {
+        e.preventDefault();
+        const idProf = e.target.selectProf.value;
+
+        // -- Envoi --
+        toast.loading("Attribution du professeur...")
+        const rep = await apiAccess({
+            url: `http://localhost:8000/api/enseigner`,
+            method: "post",
+            body: {
+                professeur_id: idProf,
+                cours_propose_id: coursPropose.id
+            },
+        })
+        toast.dismiss();
+
+        // -- Analyse --
+        if (rep.success) {
+            toast.success(<b>Professeur attribué !</b>)
+            // On modifie la ressource de la page parente
+            const updatedCours = [...allCours];                 //Copie de la liste des cours
+            const indexCours = allCours.findIndex(c => c.id === coursPropose.id);      //index du cours a modifier dans la liste des cours
+            const nomProf = professeursAssignables.find((prof) => prof.id == idProf).name;
+            updatedCours[indexCours].enseignants.push({ id: idProf, name: nomProf });
+            setAllCours(updatedCours);
+        }
+        else {
+            var erreur;
+            if (rep.statusCode === 404) {
+                erreur = `Professeur ou cours introuvable`;
+            }
+            if (rep.statusCode === 409) {
+                erreur = `Professeur déjà assigné à ce cours`;
+            }
+            else {
+                erreur = `Problème de serveur`;
+            }
+            toast.error(<b>{erreur}</b>);
         }
     }
 
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-            setVeutModifier(false);
-        }
-    });
 
     return (
         <DivCarteReduite>
             <Toaster />
             <H1Cours>{coursPropose.cours.nom}</H1Cours>
+            <h2>Informations</h2>
             {
-                veutModifier ?
-                    (
-                        <form onSubmit={(e) => { modifierCours(); e.preventDefault(); }}>
-                            <Oskfbbz>
-                                <H2Cours>Pondération</H2Cours>
-                                <Input type="number" required value={newPonderationCours} onChange={(e) => setNewPonderationCours(e.target.value)} autoFocus />
-                                <H2Cours>Taille du groupe</H2Cours>
-                                <Input type="number" required value={newTailleGroupesCours} onChange={(e) => setNewTailleGroupesCours(e.target.value)} />
-                                <H2Cours>Nombre de groupes</H2Cours>
-                                <Input type="number" required value={newNbGroupesCours} onChange={(e) => setNewNbGroupesCours(e.target.value)} />
-                            </Oskfbbz>
-                            <DivBouton>
-                                <Bouton type="button" onClick={() => setVeutModifier(false)}>Annuler</Bouton>
-                                <Bouton type="submit">Confirmer</Bouton>
-                            </DivBouton>
-                        </form>
-                    )
+                modifierInformations ?
+                    <form onSubmit={(e) => { modifierCours(); e.preventDefault(); }}>
+                        <Oskfbbz>
+                            <H2Cours>Pondération</H2Cours>
+                            <Input type="number" required value={newPonderationCours} onChange={(e) => setNewPonderationCours(e.target.value)} autoFocus />
+                            <H2Cours>Taille du groupe</H2Cours>
+                            <Input type="number" required value={newTailleGroupesCours} onChange={(e) => setNewTailleGroupesCours(e.target.value)} />
+                            <H2Cours>Nombre de groupes</H2Cours>
+                            <Input type="number" required value={newNbGroupesCours} onChange={(e) => setNewNbGroupesCours(e.target.value)} />
+                        </Oskfbbz>
+                        <DivBouton>
+                            <Bouton type="button" onClick={() => setModifierInformations(false)}>Annuler</Bouton>
+                            <Bouton type="submit">Confirmer</Bouton>
+                        </DivBouton>
+                    </form>
                     :
-                    (
-                        <>
-                            <DivH2>
-                                <H2Cours>Pondération : {coursPropose.ponderation}</H2Cours>
-                                <H2Cours>Taille du groupe : {coursPropose.tailleGroupes}</H2Cours>
-                                <H2Cours>Nombre de groupes : {coursPropose.nbGroupes}</H2Cours>
-                            </DivH2>
-                            <DivBouton>
-                                <Bouton onClick={() => setVeutModifier(true)}>Modifier</Bouton>
-                                <Bouton onClick={() => validationSuppression()}>Supprimer</Bouton>
-                            </DivBouton >
-                            <DivH2>
-                                <H1Cours>Professeurs</H1Cours>
-                                {
-                                    coursPropose.enseignants?.map((professeur) => (
-                                        <H2Cours>{professeur.name}</H2Cours>
-                                    ))
-                                }
-
-                            </DivH2>
-                        </>
-                    )
+                    <DivH2>
+                        <H2Cours>Pondération : {coursPropose.ponderation}</H2Cours>
+                        <H2Cours>Taille du groupe : {coursPropose.tailleGroupes}</H2Cours>
+                        <H2Cours>Nombre de groupes : {coursPropose.nbGroupes}</H2Cours>
+                        <Bouton onClick={() => setModifierInformations(true)}>Modifier</Bouton>
+                    </DivH2>
             }
+            <h2>Professeurs</h2>
+            <DivH2>
+                {coursPropose.enseignants.length === 0 && <H2Cours>Aucun professeur</H2Cours>}
+                {
+                    modifierProfesseurs ?
+                        <>
+                            {
+                                coursPropose.enseignants.map((professeur) =>
+                                    <>
+                                        <H2Cours onClick={() => validationSuppressionProf(professeur.id, professeur.name)}>{professeur.name}</H2Cours>
+                                        {/* <Bouton type="button" >Retirer</Bouton> */}
+                                    </>)
+                            }
+                            <h3>Ajouter un professeur</h3>
+                            {professeursAssignables &&
+                                <form onSubmit={attribuerProfesseurs}>
+                                    <select name="selectProf">
+                                        {professeursAssignables && professeursAssignables.map((prof) => (
+                                            <option key={prof.id} value={prof.id}>{prof.name}</option>
+                                        ))}
+                                    </select>
+                                    <Bouton type="submit">Ajouter</Bouton>
+                                </form>
+                            }
+                            <Bouton type="button" onClick={() => setModifierProfesseurs(false)}>Annuler</Bouton>
+                        </>
+                        :
+                        <>
+                            {
+                                coursPropose.enseignants.map((professeur) => (
+                                    <H2Cours>{professeur.name}</H2Cours>
+                                ))
+                            }
+                            <Bouton onClick={() => setModifierProfesseurs(true)}>Modifier</Bouton>
+                        </>
+                }
+            </DivH2>
+            <Bouton onClick={() => validationSuppressionCours()}>Supprimer</Bouton>
         </DivCarteReduite >
     )
 }

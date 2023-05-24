@@ -61,7 +61,7 @@ function Scenarios() {
         // -- Recuperation des scenarios --
         setIsLoadingContexte(true);
         const rep = await apiAccess({
-            url: `http://localhost:8000/api/user/scenarios`,
+            url: `http://localhost:8000/api/user/scenariosCrees`,
             method: "get",
         });
         setIsLoadingContexte(false);
@@ -69,6 +69,8 @@ function Scenarios() {
         // -- Analyse --
         if (rep.success) {
             setScenariosDetailles([]);
+            console.log(rep);
+
             var scenariosNonDetailles = rep.datas;
 
             // -- Trie des scenarios (plus recents en premier et valides en premiers) --
@@ -89,7 +91,7 @@ function Scenarios() {
                     url: `http://localhost:8000/api/scenarios/${idScenario}/detaille`,
                     method: "get",
                 });
-
+                console.log(rep2);
                 // -- Analyse --
                 if (rep2.success) {
                     // On ajoute le scenario aux autres scenarios

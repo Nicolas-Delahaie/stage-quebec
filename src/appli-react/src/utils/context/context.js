@@ -1,5 +1,6 @@
 /**
  * @todo Ajouter le script de deconnexion laravel au front
+ * @todo faire en sorte que toutes les pages se re-rendent lorsque estConnecte est modifié 
  */
 import { createContext } from 'react';  //Pour generer le contexte
 import Cookies from 'js-cookie';        //Pour récupérer les cookies
