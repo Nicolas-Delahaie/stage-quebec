@@ -92,7 +92,7 @@ function Header() {
                                             <Lien to="/scenarios">
                                                 <ButtonTexte>Mes scénarios</ButtonTexte>
                                             </Lien>
-                                            <Lien to="/users/:id/contraintes">
+                                            <Lien to="/profil">
                                                 <ButtonTexte>Mes contraintes</ButtonTexte>
                                             </Lien>
                                         </DivLien>
@@ -103,11 +103,11 @@ function Header() {
                                             <Lien to="/scenarios">
                                                 <ButtonTexte>Mes scénarios</ButtonTexte>
                                             </Lien>
-                                            <Lien to="/users/:id/contraintes">
+                                            <Lien to="/profil">
                                                 <ButtonTexte>Mes contraintes</ButtonTexte>
                                             </Lien>
                                             <Lien to="/departements/">
-                                                <ButtonTexte>Mon département</ButtonTexte>
+                                                <ButtonTexte>Tous les départements</ButtonTexte>
                                             </Lien>
                                         </DivLien>
                                     )
@@ -117,7 +117,7 @@ function Header() {
                                             <Lien to="/scenarios">
                                                 <ButtonTexte>Mes scénarios</ButtonTexte>
                                             </Lien>
-                                            <Lien to="/users/:id/contraintes">
+                                            <Lien to="profil">
                                                 <ButtonTexte>Mes contraintes</ButtonTexte>
                                             </Lien>
                                         </DivLien>

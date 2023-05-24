@@ -22,7 +22,11 @@ const DivPageProfil = styled.div`
 const DivInfos = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr;
-    padding: 1rem 3rem;
+    padding: 1rem 2rem;
+`;
+
+const DivContraintes = styled.div`
+    padding: 1rem;
 `;
 
 const FromProfil = styled.form`
@@ -43,7 +47,7 @@ const H2Profil = styled.h2`
 
 const TextareaProfil = styled.textarea`
     height: 100%;
-    width: 100%;
+    width: calc(50vw - 3rem);
 
     cursor: text;
     border: none;
@@ -67,6 +71,10 @@ const SubmitProfil = styled.input`
     padding: 0.5rem 1rem;
     border-radius: 1rem;
     margin: 1rem;
+`;
+
+const DivContainerLiberations = styled.div`
+    padding: 1rem;
 `;
 
 const DivLiberations = styled.div`
@@ -187,7 +195,7 @@ function Profil() {
                 <>
                     <ArticleTitle texte="Mon profil" />
                     <DivInfos>
-                        <div>
+                        <DivContraintes>
                             <H2Profil>Informations globales</H2Profil>
                             <p>{user.name}</p>
                             <p>{user.email}</p>
@@ -201,8 +209,8 @@ function Profil() {
                                     <SubmitProfil type="submit" value="Modifier"></SubmitProfil>
                                 }
                             </FromProfil>
-                        </div>
-                        <div>
+                        </DivContraintes>
+                        <DivContainerLiberations>
                             <H2Profil>Libérations</H2Profil>
                             {user.liberations.length === 0 ?
                                 <p>Vous n'avez aucune libération</p>
@@ -228,7 +236,7 @@ function Profil() {
                                 </DivLiberations>
                             }
                             <Bouton>Voir toutes mes libérations</Bouton>
-                        </div>
+                        </DivContainerLiberations>
                     </DivInfos>
                 </>
             }

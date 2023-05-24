@@ -40,22 +40,22 @@ function Authentifie() {
                         return (
                             <>
                                 <CarteAccueil urlImage={Repartir} titre={'Voir mes scénarios'} texteBouton={'Mes scénarios'} lien={'/scenarios'} />
-                                <CarteAccueil urlImage={Calendrier} titre={'Gérer mes contraintes'} texteBouton={'Mes contraintes'} lien={'/users/:id/contraintes'} />
+                                <CarteAccueil urlImage={Calendrier} titre={'Gérer mes contraintes'} texteBouton={'Mes contraintes'} lien={'/profil'} />
                             </>
                         )
                     case 'responsable':
                         return (
                             <>
                                 <CarteAccueil urlImage={Repartir} titre={'Voir mes scénarios'} texteBouton={'Mes scénarios'} lien={'/scenarios'} />
-                                <CarteAccueil urlImage={Calendrier} titre={'Gérer mes contraintes'} texteBouton={'Mes contraintes'} lien={'/users/:id/contraintes'} />
-                                <CarteAccueil urlImage={Departements} titre={'Voir mon département'} texteBouton={'Voir en détail'} lien={'/departements/'} />
+                                <CarteAccueil urlImage={Calendrier} titre={'Gérer mes contraintes'} texteBouton={'Mes contraintes'} lien={'/profil'} />
+                                <CarteAccueil urlImage={Departements} titre={'Voir les départements'} texteBouton={'Les départements'} lien={'/departements/'} />
                             </>
                         )
                     default:
                         return (
                             <>
                                 <CarteAccueil urlImage={Repartir} titre={'Voir mes scénarios'} texteBouton={'Mes scénarios'} lien={'/scenarios'} />
-                                <CarteAccueil urlImage={Calendrier} titre={'Gérer mes contraintes'} texteBouton={'Mes contraintes'} lien={'/users/:id/contraintes'} />
+                                <CarteAccueil urlImage={Calendrier} titre={'Gérer mes contraintes'} texteBouton={'Mes contraintes'} lien={'/profil'} />
                             </>
                         )
                 }

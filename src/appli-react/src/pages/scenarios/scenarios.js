@@ -15,12 +15,12 @@ import { iconNonValide } from '../../assets/svg/iconNonValide.js'
 
 import { colors, fonts, Loader } from '../../utils/styles';
 
-const Container = styled.div`
+const DivPageScenarios = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    padding : 2rem 2rem;
+    padding : 2rem 0rem;
 `;
 
 const PScenarios = styled.p`
@@ -111,7 +111,7 @@ function Scenarios() {
     }, [])
 
 
-    return <>
+    return <DivPageScenarios>
         <ArticleTitle texte=" Vos Scénarios" />
         {erreurContexte && <h2>{erreurContexte}</h2>}
         {isLoadingContexte ?
@@ -139,7 +139,7 @@ function Scenarios() {
                 {scenariosDetailles && !isLoadingScenarios && scenariosDetailles.length === 0 && <h2>Vous n'avez aucun scénario</h2>}
             </>
         }
-    </>
+    </DivPageScenarios>
 }
 
 export default Scenarios
