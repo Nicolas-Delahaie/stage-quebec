@@ -65,22 +65,16 @@ class ScenarioController extends Controller
         $scenario = Scenario::with('departement')->findOrFail($id);
 
         /*récupération des enseignants liés au scénario*/
-        // $repartition = $scenario->departement->cours->map(function ($cours) {
-        //     return [
-        //         'id_cours' => $cours->id,
-        //         'nom_cours' => $cours->nom,
-        //         'pivot' => $cours->pivot,
-        //         'enseignants' => $cours->enseignants->map(function ($enseignant) {
-        //             return [
-        //                 'id_enseignant' => $enseignant->id,
-        //                 'nom_enseignant' => $enseignant->name,
-        //                 'cours' => $enseignant->cours,
-        //                 'email' => $enseignant->email,
-        //                 'liberations' => $enseignant->liberations,
-        //             ];
-        //         }),
-        //     ];
-        // });
+        $repartition = $scenario->departement->coursProposesDetailles->map(function ($cours) {
+            return $cours->enseignants->map(function ($enseignant) use ($cours) {
+                return [
+                    'id_enseignant' => $enseignant->id,
+                    'nom_enseignant' => $enseignant->name,
+                    'liberations' => $enseignant->liberations,
+                ];
+            });
+        });
+
 
         /*mise en forme des données*/
         $data = [
@@ -90,7 +84,7 @@ class ScenarioController extends Controller
                 'id' => $scenario->departement->id,
                 'nom' => $scenario->departement->nom,
                 'repartition' => $scenario->departement->coursProposesDetailles,
-                // 'repartition' => $repartition,
+                'liberations' => $repartition,
             ]
 
         ];
