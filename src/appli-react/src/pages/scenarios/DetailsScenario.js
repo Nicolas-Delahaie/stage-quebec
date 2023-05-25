@@ -154,6 +154,7 @@ function DetailsScenario() {
     var CITotal = 0;                                    // Variable pour le calcul de CI
     var heuresCoursTotal = 0;                                // Variable pour le calcul des heures
     var liberationTotal = 0;                                // Variable pour le calcul des libérations
+    var tempsAloueLiberation = 0;                           // Variable pour le calcul du temps alloué aux libérations
 
     /**
      * 
@@ -559,8 +560,9 @@ function DetailsScenario() {
                                                                 return (
                                                                     // Si on a une libération, on affiche le temps alloué
                                                                     liberationMatch ? (
+                                                                        tempsAloueLiberation = parseFloat(liberationMatch.tempsAloue),
                                                                         <TdScenario key={indexLiberation + ',' + indexProfesseur}>
-                                                                            {liberationMatch.tempsAloue}
+                                                                            {tempsAloueLiberation.toFixed(3)}
                                                                         </TdScenario>
                                                                     ) : (
                                                                         // Sinon on n'affiche rien
