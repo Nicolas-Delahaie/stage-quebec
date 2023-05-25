@@ -88,13 +88,13 @@ const ThScenario = styled.th`
     padding: 0.5rem;
     background-color: ${colors.jauneFonce};
     border: 1px solid ${colors.bleuFonce};
+`;
 
-    &:nth-child(n+5) {
-        text-orientation: mixed;
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
-        width: 2rem;
-    }
+const ThScenarioProfesseur = styled(ThScenario)`
+    background-color: ${colors.jauneClair};
+    text-orientation: mixed;
+    writing-mode: vertical-rl;
+
 `;
 
 const TrScenario = styled.tr`
@@ -159,9 +159,11 @@ function DetailsScenario() {
      * @param {*} nbPreparation nombre de préparation du cours
      * @returns 
      */
-    const calculCI = (nbGroupes, ponderation, nbEtudiantsTotal, nbEtudiantsDifferents, nbPreparation) => {
+    const calculCIP = (nbGroupes, ponderation, tailleGroupes, nbPreparation) => {
         var CIP = 0;
         var facteurPreparation = 0;
+        var nbEtudiantsTotal = tailleGroupes * nbGroupes;
+        var nbEtudiantsDifferents = nbEtudiantsTotal;
 
         //Calcul du facteur de préparation
         switch (nbPreparation) {
@@ -200,6 +202,12 @@ function DetailsScenario() {
         }
 
         return CIP.toFixed(2);
+    }
+
+    const calculCIL = (ETC) => {
+        var CIL = 0;
+        CIL = 40 * ETC;
+        return CIL.toFixed(2);
     }
 
     /* -------------------------------- USEEFFECT ------------------------------- */
@@ -456,7 +464,7 @@ function DetailsScenario() {
                                             <ThScenario></ThScenario>
                                         ) : (
                                             TbProfesseurs.map((professeur) => (
-                                                <ThScenario key={professeur.nom}>{professeur.nom}</ThScenario>
+                                                <ThScenarioProfesseur key={professeur.nom}>{professeur.nom}</ThScenarioProfesseur>
                                             ))
                                         )
                                     }
@@ -560,11 +568,18 @@ function DetailsScenario() {
                                                     if (attribution.idProfesseur === professeur.id) {
                                                         const coursMatch = TbCours.find(cours => cours.id === attribution.idCours);
                                                         // On ajoute le CI du cours au total de CI
-                                                        CITotal += parseInt(calculCI(attribution.nbGroupes, coursMatch.ponderation, coursMatch.tailleGroupes, coursMatch.tailleGroupes, 1));
+                                                        CITotal += parseFloat(calculCIP(attribution.nbGroupes, coursMatch.ponderation, coursMatch.tailleGroupes, 1));
+
+                                                    }
+                                                }),
+                                                TbLiberations.map((liberation) => {
+                                                    if (liberation.idProfesseur === professeur.id) {
+                                                        // On ajoute le CI du cours au total de CI
+                                                        CITotal += parseFloat(calculCIL(liberation.tempsAloue));
                                                     }
                                                 }),
                                                 // On affiche le total de CI
-                                                <TdScenario key={'Ci de ' + professeur.nom}>{CITotal}</TdScenario>
+                                                <TdScenario key={'Ci de ' + professeur.nom}>{CITotal.toFixed(2)}</TdScenario>
                                             ))
                                         }
                                     </TrScenario>}
