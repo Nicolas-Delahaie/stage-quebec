@@ -7,15 +7,5 @@ use App\Models\Cours;
 
 class CoursController extends Controller
 {
-    public function index(){
-        return Cours::all();
-    } 
-
-    public function show($id){
-        return Cours::find($id);
-    }
-    public function showDepartements($id){
-        return Cours::find($id)->departements->toJson();
-    }
-    
+    //
 }

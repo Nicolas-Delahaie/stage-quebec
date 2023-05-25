@@ -28,6 +28,7 @@ import whiteCursor from "../../assets/svg/whiteCursor.svg"
 import cursor from "../../assets/svg/cursor.svg"
 
 import { BoutonStyle } from "../forms/Bouton"
+import { useEffect } from "react"
 
 /* --------------------------------- STYLES --------------------------------- */
 
@@ -72,7 +73,11 @@ const LinkStyle = styled(Link)`
  */
 function Header() {
     const { estConnecte, deconnexion, getType } = useContext(AppContext);
-    const [type, setType] = useState(getType());
+    const [type, setType] = useState();
+
+    useEffect(() => {
+        setType(getType());
+    }, [estConnecte])
 
     return (
         <HeaderStyle estConnecte={estConnecte}>
@@ -80,65 +85,51 @@ function Header() {
                 <ImgLogo src={home} alt="logo" />
             </Link>
 
-            {/* Si l'utilisateur est connecté, on affiche le bouton de déconnexion, sinon on affiche le bouton de connexion */}
-            {estConnecte ?
-                (
-                    <>
-                        {(() => {
-                            switch (type.slice(1, -1)) {
-                                case 'professeur':
-                                    return (
-                                        <DivLien estConnecte={estConnecte} >
-                                            <Lien to="/scenarios">
-                                                <ButtonTexte>Mes scénarios</ButtonTexte>
-                                            </Lien>
-                                            <Lien to="/profil">
-                                                <ButtonTexte>Mon profil</ButtonTexte>
-                                            </Lien>
-                                        </DivLien>
-                                    )
-                                case 'responsable':
-                                    return (
-                                        <DivLien estConnecte={estConnecte}>
-                                            <Lien to="/scenarios">
-                                                <ButtonTexte>Mes scénarios</ButtonTexte>
-                                            </Lien>
-                                            <Lien to="/profil">
-                                                <ButtonTexte>Mon profil</ButtonTexte>
-                                            </Lien>
-                                            <Lien to="/departements/">
-                                                <ButtonTexte>Tous les départements</ButtonTexte>
-                                            </Lien>
-                                        </DivLien>
-                                    )
-                                default:
-                                    return (
-                                        <DivLien estConnecte={estConnecte}>
-                                            <Lien to="/scenarios">
-                                                <ButtonTexte>Mes scénarios</ButtonTexte>
-                                            </Lien>
-                                            <Lien to="profil">
-                                                <ButtonTexte>Mon profil</ButtonTexte>
-                                            </Lien>
-                                        </DivLien>
-                                    )
-                            }
-                        })()}
-                        <DivLien>
-                            <BoutonStyle onClick={() => deconnexion()}>
-                                <LinkStyle to="/">Se déconnecter</LinkStyle>
-                            </BoutonStyle>
+            {estConnecte && type === "administrateur" &&
+                <DivLien estConnecte={estConnecte}>
+                    <Lien to="/scenarios">
+                        <ButtonTexte>Mes scénarios</ButtonTexte>
+                    </Lien>
+                    <Lien to="profil">
+                        <ButtonTexte>Mon profil</ButtonTexte>
+                    </Lien>
+                </DivLien>
+            }
+            {estConnecte && type === "responsable" &&
+                <DivLien estConnecte={estConnecte}>
+                    <Lien to="/scenarios">
+                        <ButtonTexte>Mes scénarios</ButtonTexte>
+                    </Lien>
+                    <Lien to="/profil">
+                        <ButtonTexte>Mon profil</ButtonTexte>
+                    </Lien>
+                    <Lien to="/departements/">
+                        <ButtonTexte>Tous les départements</ButtonTexte>
+                    </Lien>
+                </DivLien>
+            }
+            {estConnecte && type === "professeur" &&
+                <DivLien estConnecte={estConnecte} >
+                    <Lien to="/scenarios">
+                        <ButtonTexte>Mes scénarios</ButtonTexte>
+                    </Lien>
+                    <Lien to="/profil">
+                        <ButtonTexte>Mon profil</ButtonTexte>
+                    </Lien>
+                </DivLien>
+            }
 
-                        </DivLien>
-                    </>
-                ) :
-                (
-                    <DivLien estConnecte={estConnecte}>
-                        <BoutonStyle onClick={() => deconnexion()}>
-                            <LinkStyle to="/login">Se connecter</LinkStyle>
-                        </BoutonStyle>
-                    </DivLien>
-                )}
+            <DivLien estConnecte={estConnecte}>
+                {estConnecte ?
+                    <BoutonStyle onClick={() => deconnexion()}>
+                        <LinkStyle to="/">Se déconnecter</LinkStyle>
+                    </BoutonStyle>
+                    :
+                    <BoutonStyle>
+                        <LinkStyle to="/login">Se connecter</LinkStyle>
+                    </BoutonStyle>
+                }
+            </DivLien>
         </HeaderStyle>
     )
 }

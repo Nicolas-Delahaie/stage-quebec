@@ -111,6 +111,7 @@ function Profil() {
             method: "get",
         });
         setIsLoading(false);
+        console.log(rep);
 
         // -- Traitement du resultat --
         if (rep.success) {
@@ -155,8 +156,6 @@ function Profil() {
 
     const enregistrementContraintes = async () => {
         // -- Enregistrement des contraintes --
-        console.log(newContraintes.current.value);
-
         setIsSavingContraintes(true);
         const rep = await apiAccess({
             url: `http://localhost:8000/api/user/contraintes`,

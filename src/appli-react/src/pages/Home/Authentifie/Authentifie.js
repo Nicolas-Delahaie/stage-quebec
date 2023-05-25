@@ -1,3 +1,6 @@
+/**
+ * @todo gérer l'absence de type (également la non connexion)
+ */
 /* --------------------------------- IMPORT --------------------------------- */
 /* import du composant CarteAccueil */
 import CarteAccueil from "../../../components/layout/CarteAccueil"
@@ -30,12 +33,10 @@ function Authentifie() {
     const { getType } = useContext(AppContext);
     const [type, setType] = useState(getType());
 
-    console.log(type);
-
     return (
         <DivAuthentifie>
             {(() => {
-                switch (type.slice(1,-1)) {
+                switch (type) {
                     case 'professeur':
                         return (
                             <>

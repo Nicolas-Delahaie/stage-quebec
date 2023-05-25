@@ -1,3 +1,6 @@
+/**
+ * @todo Gérer la redirection en cas de deconnexion (pour ne pas avoir "erreur de serveur" lorsque on nest plus connecte)
+ */
 import { useState, useEffect, useContext } from 'react'
 import { AppContext } from '../../utils/context/context';
 
@@ -91,7 +94,7 @@ function Scenarios() {
                     url: `http://localhost:8000/api/scenarios/${idScenario}/detaille`,
                     method: "get",
                 });
-                console.log(rep2);
+
                 // -- Analyse --
                 if (rep2.success) {
                     // On ajoute le scenario aux autres scenarios

@@ -1,5 +1,4 @@
 /**
- * @todo Ajouter le script de deconnexion laravel au front
  * @todo faire en sorte que toutes les pages se re-rendent lorsque estConnecte est modifié 
  */
 import { createContext } from 'react';  //Pour generer le contexte
@@ -51,11 +50,19 @@ export const AppProvider = ({ children }) => {
      * @brief Deconnecte l utilsisateur
      * @details Supprime le cookie de tokken et met a jour la variable estConnecte 
      */
-    const deconnexion = () => {
+    const deconnexionFront = () => {
         Cookies.remove('token');
         Cookies.remove('userType');
-        navigate("/login");
         setEstConnecte(false);
+    }
+    const deconnexion = async () => {
+        // Deconnexion back
+        const rep = await apiAccess({
+            url: "http://localhost:8000/api/logout",
+            method: "post",
+        });
+        // Dexonnexion front
+        deconnexionFront();
     }
 
     /**
@@ -129,7 +136,7 @@ export const AppProvider = ({ children }) => {
             // La requete a echoue
             if (res.status === 401) {
                 // Le tokken n est plus valide mais existe encore en local
-                deconnexion();
+                deconnexionFront();
             }
 
             return {
