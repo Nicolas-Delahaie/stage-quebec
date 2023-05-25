@@ -145,11 +145,14 @@ function DetailsScenario() {
     const [loading, setLoading] = useState(false);                                  // State du chargement de la page
     const { apiAccess } = useContext(AppContext);                                   // Récupération de la fonction permetant de faire des apels apis
 
-    
-    
+
+
     /* ----------------------- FONCTIONS POUR LES CALCULS ----------------------- */
-    
+
     var CITotal = 0;                                    // Variable pour le calcul de CI
+    var heuresCoursTotal = 0;                                // Variable pour le calcul des heures
+    var liberationTotal = 0;                                // Variable pour le calcul des libérations
+
     /**
      * 
      * @param {*} nbGroupes nombre de groupe du cours
@@ -311,6 +314,7 @@ function DetailsScenario() {
     var TbAttribution = [];                            // Tableau des attirbution de cours
 
     var repartitionMatch = false;                        // Variable de comparaison pour la répartition
+    var liberationMatch = false;                         // Variable de comparaison pour les libérations
 
     /**
      * 
@@ -525,22 +529,34 @@ function DetailsScenario() {
                                             {
                                                 // affiche chaque libération
                                                 TbLiberations.map((liberation, indexLiberation) => (
+                                                    //Pour chaque libération, on affiche l'ETC total 
+                                                    liberationTotal = 0,
+                                                    TbProfesseurs.map((professeur) => (
+                                                        liberationMatch = TbLiberations.find(attribution => attribution.idProfesseur === professeur.id),
+                                                        liberationMatch ? 
+                                                            liberationTotal += parseFloat(liberationMatch.tempsAloue)
+                                                            : liberationTotal += 0
+                                                    )),
                                                     <TrScenario key={liberation.id}>
                                                         <TdScenario></TdScenario>
                                                         <TdScenario></TdScenario>
-                                                        <TdScenario></TdScenario>
                                                         <TdScenario>{liberation.motif}</TdScenario>
+                                                        <TdScenario>{liberationTotal}</TdScenario>
                                                         {
-                                                            // Pour chaque professeur, on affiche ces libérations 
+                                                            // Pour chaque professeur, on affiche ses libérations
                                                             TbProfesseurs.map((professeur, indexProfesseur) => {
                                                                 // On cherche si le professeur a une libération
-                                                                const liberationMatch = TbLiberations.find(attribution => attribution.idProfesseur === professeur.id);
+                                                                liberationMatch = TbLiberations.find(attribution => attribution.idProfesseur === professeur.id);
                                                                 return (
                                                                     // Si on a une libération, on affiche le temps alloué
-                                                                    liberationMatch ?
-                                                                        <TdScenario key={indexLiberation + ',' + indexProfesseur}>{liberationMatch.tempsAloue}</TdScenario>
-                                                                        // Sinon on affiche rien
-                                                                        : <TdScenario key={indexLiberation + ',' + indexProfesseur}></TdScenario>
+                                                                    liberationMatch ? (
+                                                                        <TdScenario key={indexLiberation + ',' + indexProfesseur}>
+                                                                            {liberationMatch.tempsAloue}
+                                                                        </TdScenario>
+                                                                    ) : (
+                                                                        // Sinon on n'affiche rien
+                                                                        <TdScenario key={indexLiberation + ',' + indexProfesseur}></TdScenario>
+                                                                    )
                                                                 );
                                                             })
                                                         }
@@ -552,37 +568,68 @@ function DetailsScenario() {
 
                                 }
 
-                                {//Partie pour les totaux}
-                                    <TrScenario>
-                                        <TdScenario></TdScenario>
-                                        <TdScenario></TdScenario>
-                                        <TdScenario></TdScenario>
-                                        <TdScenario>Calcul de CI</TdScenario>
-                                        {
-                                            // Pour chaque professeur, on affiche le total de CI
-                                            TbProfesseurs.map((professeur) => (
-                                                // On initialise le total de CI à 0
-                                                CITotal = 0,
-                                                // On récupère toutes les attributions du professeur
-                                                TbAttribution.map((attribution) => {
-                                                    if (attribution.idProfesseur === professeur.id) {
-                                                        const coursMatch = TbCours.find(cours => cours.id === attribution.idCours);
-                                                        // On ajoute le CI du cours au total de CI
-                                                        CITotal += parseFloat(calculCIP(attribution.nbGroupes, coursMatch.ponderation, coursMatch.tailleGroupes, 1));
+                                {//Partie pour les totaux
+                                }
+                                < TrTitreScenario >
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario>Totaux</TdScenario>
+                                </TrTitreScenario>
 
-                                                    }
-                                                }),
-                                                TbLiberations.map((liberation) => {
-                                                    if (liberation.idProfesseur === professeur.id) {
-                                                        // On ajoute le CI du cours au total de CI
-                                                        CITotal += parseFloat(calculCIL(liberation.tempsAloue));
-                                                    }
-                                                }),
-                                                // On affiche le total de CI
-                                                <TdScenario key={'Ci de ' + professeur.nom}>{CITotal.toFixed(2)}</TdScenario>
-                                            ))
-                                        }
-                                    </TrScenario>}
+                                <TrScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario>Calcul de CI</TdScenario>
+                                    {
+                                        // Pour chaque professeur, on affiche le total de CI
+                                        TbProfesseurs.map((professeur) => (
+                                            // On initialise le total de CI à 0
+                                            CITotal = 0,
+                                            // On récupère toutes les attributions du professeur
+                                            TbAttribution.map((attribution) => {
+                                                if (attribution.idProfesseur === professeur.id) {
+                                                    const coursMatch = TbCours.find(cours => cours.id === attribution.idCours);
+                                                    // On ajoute le CI du cours au total de CI
+                                                    CITotal += parseFloat(calculCIP(attribution.nbGroupes, coursMatch.ponderation, coursMatch.tailleGroupes, 1));
+
+                                                }
+                                            }),
+                                            TbLiberations.map((liberation) => {
+                                                if (liberation.idProfesseur === professeur.id) {
+                                                    // On ajoute le CI du cours au total de CI
+                                                    CITotal += parseFloat(calculCIL(liberation.tempsAloue));
+                                                }
+                                            }),
+                                            // On affiche le total de CI
+                                            <TdScenario key={'Ci de ' + professeur.nom}>{CITotal.toFixed(2)}</TdScenario>
+                                        ))
+                                    }
+                                </TrScenario>
+                                <TrScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario>Heures de cours</TdScenario>
+                                    {
+                                        // Pour chaque professeur, on affiche le total d'heures de cours
+                                        TbProfesseurs.map((professeur) => (
+                                            // On initialise le total d'heures de cours à 0
+                                            heuresCoursTotal = 0,
+                                            // On récupère toutes les attributions du professeur
+                                            TbAttribution.map((attribution) => {
+                                                if (attribution.idProfesseur === professeur.id) {
+                                                    const coursMatch = TbCours.find(cours => cours.id === attribution.idCours);
+                                                    // On ajoute le nombre d'heures de cours au total d'heures de cours
+                                                    heuresCoursTotal += attribution.nbGroupes * coursMatch.ponderation;
+                                                }
+                                            }),
+                                            // On affiche le total d'heures de cours
+                                            <TdScenario key={'Heures de cours de ' + professeur.nom}>{heuresCoursTotal.toFixed(2)}</TdScenario>
+                                        ))
+                                    }
+                                </TrScenario>
                             </tbody>
                         </TableScenario>
                     </DivTableau>
