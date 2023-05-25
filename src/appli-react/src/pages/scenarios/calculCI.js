@@ -11,6 +11,10 @@
             return 0;
         }
 
+        if (nbGroupes < 0 || ponderation < 0 || tailleGroupes < 0 || nbPreparation < 0) {
+            return 0;
+        }
+
         var CIP = 0;
         var facteurPreparation = 0;
         var nbEtudiantsTotal = tailleGroupes * nbGroupes;
@@ -54,8 +58,9 @@
         return CIP.toFixed(2);
     }
 
-    export const calculCIL = (ETC) => {
+    export const calculCIL = (ETC=0) => {
         if(typeof ETC !== 'number') return 0;
+        if(ETC < 0) return 0;
 
         var CIL = 0;
         CIL = 40 * ETC;

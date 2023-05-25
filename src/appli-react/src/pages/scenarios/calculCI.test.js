@@ -64,6 +64,13 @@ describe('calculCIP', () => {
         
         expect(resultat).toEqual(resultatAttendu);
     });
+
+    it('renvoyer 0 avec des paramètres négatifs', () => {
+        const resultatAttendu = 0;
+        const resultat = parseFloat(calculCIP(-1, -1, -1, -1));
+
+        expect(resultat).toEqual(resultatAttendu);
+    });
 });
 
 describe('calculCIL', () => {
@@ -88,6 +95,21 @@ describe('calculCIL', () => {
 
         expect(resultat).toEqual(resultatAttendu);
     });
+
+    it('renvoyer 0 avec un paramètre aucun paramètres', () => {
+        const resultatAttendu = 0;
+        const resultat = parseFloat(calculCIL());
+
+        expect(resultat).toEqual(resultatAttendu);
+    });
+
+    it('renvoyer 0 avec un paramètre négatif', () => {
+        const resultatAttendu = 0;
+        const resultat = parseFloat(calculCIL(-1));
+
+        expect(resultat).toEqual(resultatAttendu);
+    });
+
 });
 
     
