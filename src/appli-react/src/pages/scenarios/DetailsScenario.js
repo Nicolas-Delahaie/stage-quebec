@@ -83,6 +83,7 @@ const TableScenario = styled.table`
 
 const ThScenario = styled.th`
     font-size: 0.9rem;
+    max-width: 5rem;
     font-family: ${fonts.titre};
     color: ${colors.bleuFonce};
     padding: 0.5rem;
@@ -116,11 +117,12 @@ const TrScenario = styled.tr`
 const TdScenario = styled.td`
     font-size: 0.9rem;
     padding: 0.25rem;
+    max-width: 5rem;
     font-family: ${fonts.texte};
     boder-collapse: collapse;
     border: 1px solid ${colors.bleuFonce};
     text-align: center;
-    &:nth-child(-n+4) {
+    &:nth-child(-n+5) {
         font-family: ${fonts.titre};
         background-color: ${colors.grisClair};
     }
@@ -461,8 +463,9 @@ function DetailsScenario() {
                                 <TrScenario>
                                     <ThScenario>Titre du cours</ThScenario>
                                     <ThScenario>Pondération</ThScenario>
-                                    <ThScenario>Nombre d'élèves</ThScenario>
-                                    <ThScenario>Nombre de groupes</ThScenario>
+                                    <ThScenario>Nbre d'élèves</ThScenario>
+                                    <ThScenario>Nbre GR</ThScenario>
+                                    <ThScenario>Nbre él. par groupe</ThScenario>
                                     {
                                         scenarioRepartition.aEteValide === undefined ? (
                                             <ThScenario></ThScenario>
@@ -481,6 +484,7 @@ function DetailsScenario() {
                                         <TdScenario></TdScenario>
                                         <TdScenario></TdScenario>
                                         <TdScenario></TdScenario>
+                                        <TdScenario></TdScenario>
                                         <TdScenario>Le scénario n'a pas été chargée</TdScenario>
                                     </TrScenario>
                                 ) : (
@@ -491,6 +495,8 @@ function DetailsScenario() {
                                             <TdScenario>{cours.ponderation}</TdScenario>
                                             <TdScenario>{cours.tailleGroupes}</TdScenario>
                                             <TdScenario>{cours.nbGroupes}</TdScenario>
+                                            <TdScenario>{cours.nbGroupes*cours.tailleGroupes}</TdScenario>
+                                            
                                             {
                                                 // Pour chaque professeur, on affiche la pondération du cours en utilisant le tableau professeurs 
                                                 TbProfesseurs.map((professeur, indexProfesseur) => (
@@ -511,6 +517,7 @@ function DetailsScenario() {
                                 < TrTitreScenario >
                                     <TdScenario></TdScenario>
                                     <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
                                     <TdScenario>Libération / Conge</TdScenario>
                                     <TdScenario>ETC</TdScenario>
                                 </TrTitreScenario>
@@ -518,6 +525,7 @@ function DetailsScenario() {
                                 {
                                     scenarioRepartition.aEteValide === undefined ? (
                                         <TrScenario>
+                                            <TdScenario></TdScenario>
                                             <TdScenario></TdScenario>
                                             <TdScenario></TdScenario>
                                             <TdScenario></TdScenario>
@@ -538,6 +546,7 @@ function DetailsScenario() {
                                                             : liberationTotal += 0
                                                     )),
                                                     <TrScenario key={liberation.id}>
+                                                        <TdScenario></TdScenario>
                                                         <TdScenario></TdScenario>
                                                         <TdScenario></TdScenario>
                                                         <TdScenario>{liberation.motif}</TdScenario>
@@ -574,10 +583,12 @@ function DetailsScenario() {
                                     <TdScenario></TdScenario>
                                     <TdScenario></TdScenario>
                                     <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
                                     <TdScenario>Totaux</TdScenario>
                                 </TrTitreScenario>
 
                                 <TrScenario>
+                                    <TdScenario></TdScenario>
                                     <TdScenario></TdScenario>
                                     <TdScenario></TdScenario>
                                     <TdScenario></TdScenario>
@@ -608,6 +619,7 @@ function DetailsScenario() {
                                     }
                                 </TrScenario>
                                 <TrScenario>
+                                    <TdScenario></TdScenario>
                                     <TdScenario></TdScenario>
                                     <TdScenario></TdScenario>
                                     <TdScenario></TdScenario>
