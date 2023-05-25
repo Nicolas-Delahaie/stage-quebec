@@ -144,17 +144,12 @@ function DetailsScenario() {
     const [scenarioRepartition, setScenarioRepartition] = useState({});             // State de la répartition du scénario
     const [loading, setLoading] = useState(false);                                  // State du chargement de la page
     const { apiAccess } = useContext(AppContext);                                   // Récupération de la fonction permetant de faire des apels apis
-    const [isLoadingScenario, setIsLoadingScenario] = useState(true);               // loader pour le scenario
-    const [isLoadingModifications, setIsLoadingModifications] = useState(true);     // loader pour les modifications
-    const [isLoadingRepartition, setIsLoadingRepartition] = useState(true);         // loader pour la répartition
 
-    var enseignantMatch = null;                            // Variable de comparaison pour les professeurs
-    var coursMatch = null;                               // Variable de comparaison pour les cours
-    var CITotal = 0;                                    // Variable pour le calcul de CI
-
-
+    
+    
     /* ----------------------- FONCTIONS POUR LES CALCULS ----------------------- */
-
+    
+    var CITotal = 0;                                    // Variable pour le calcul de CI
     /**
      * 
      * @param {*} nbGroupes nombre de groupe du cours
@@ -209,9 +204,16 @@ function DetailsScenario() {
 
     /* -------------------------------- USEEFFECT ------------------------------- */
 
-    const [erreurScenario, setErreurScenario] = useState(null);
-    const [erreurModifications, setErreurModifications] = useState(null);
+    const [isLoadingScenario, setIsLoadingScenario] = useState(false);              // State du chargement des informations générales du scénario
+    const [isLoadingModifications, setIsLoadingModifications] = useState(false);    // State du chargement des modifications du scénario
+    const [isLoadingRepartition, setIsLoadingRepartition] = useState(false);        // State du chargement de la répartition du scénario
+    const [erreurModifications, setErreurModifications] = useState(false);          // State de l'erreur lors de la récupération des modifications du scénario
+    const [erreurRepartition, setErreurRepartition] = useState(false);              // State de l'erreur lors de la récupération de la répartition du scénario
+    const [erreurScenario, setErreurScenario] = useState(false);                    // State de l'erreur lors de la récupération des informations générales du scénario
 
+    /**
+     * Fonction qui récupère les informations générales du scénario
+     */
     const getInfos = async () => {
         setIsLoadingScenario(true);
         const rep = await apiAccess({
@@ -244,6 +246,10 @@ function DetailsScenario() {
             setErreurScenario(rep.erreur);
         }
     }
+
+    /**
+     * Fonction qui récupère les modifications du scénario
+     */
     const getModifications = async () => {
         const rep = await apiAccess({
             url: `http://localhost:8000/api/scenarios/${id}/modifications`,
@@ -261,6 +267,9 @@ function DetailsScenario() {
         }
     }
 
+    /**
+     * Fonction qui récupère la répartition du scénario
+     */
     const getRepartition = async () => {
         const rep = await apiAccess({
             url: `http://localhost:8000/api/scenarios/${id}/repartition`,
@@ -279,11 +288,7 @@ function DetailsScenario() {
     }
 
 
-    /**
-     * Récupération des modifications du scénario
-     */
     useEffect(() => {
-        // Initialisation de informations
         getInfos();
         getModifications();
         getRepartition();
@@ -298,7 +303,6 @@ function DetailsScenario() {
     var TbAttribution = [];                            // Tableau des attirbution de cours
 
     var repartitionMatch = false;                        // Variable de comparaison pour la répartition
-    var liberationMatch = false;                        // Variable de comparaison pour les libérations
 
     /**
      * 
@@ -314,6 +318,7 @@ function DetailsScenario() {
         var tempsAloue = liberation.pivot.tempsAloue;
         var libExiste = false;
 
+        // Recherche de première occurence de la libération
         TbLiberations.forEach(lib => {
             if (lib.id == idLiberation) {
                 libExiste = true;
@@ -321,6 +326,7 @@ function DetailsScenario() {
         }
         );
 
+        // Si la libération n'existe pas, on l'ajoute au tableau
         if (!libExiste) {
             TbLiberations.push({ 'id': idLiberation, 'idProfesseur': idProfesseur, 'motif': motifLiberation, 'annee': annee, 'semestre': semestre, 'tempsAloue': tempsAloue });
         }
@@ -336,12 +342,14 @@ function DetailsScenario() {
         var nomProfesseur = professeur.name;
         var professeurExiste = false;
 
+        // Recherche de première occurence du professeur
         TbProfesseurs.forEach(prof => {
             if (prof.id == idProfesseur) {
                 professeurExiste = true;
             }
         });
 
+        // Si le professeur n'existe pas, on l'ajoute au tableau
         if (!professeurExiste) {
             TbProfesseurs.push({ 'id': idProfesseur, 'nom': nomProfesseur });
         }
@@ -365,6 +373,11 @@ function DetailsScenario() {
 
     }
 
+    /**
+     * 
+     * @param {*} attribution quel cours est enseigné par quel professeur
+     * @returns TbAttribution un tableau avec les attributions
+     */
     const addAttribution = (attribution) => {
         var idCours = attribution.cours_propose_id;
         var idProfesseur = attribution.professeur_id;
@@ -373,8 +386,7 @@ function DetailsScenario() {
         return TbAttribution.push({ 'idCours': idCours, 'idProfesseur': idProfesseur, 'nbGroupes': nbGoupes });
     }
 
-    console.log(scenarioRepartition)
-
+    // mise en place des tableaux professeurs et cours
     scenarioRepartition.id ? scenarioRepartition.departement.repartition.map((cours) => {
         addCours(cours);
         cours.enseignants.map((enseignant) => {
@@ -383,6 +395,7 @@ function DetailsScenario() {
         })
     }) : console.log("pas de scenarioRepartition");
 
+    // mise en place du tableau des libérations
     scenarioRepartition.id ? scenarioRepartition.departement.liberations.map((cours) => {
         cours.map((enseignant) => {
             enseignant.liberations.map((liberation) => {
@@ -502,6 +515,7 @@ function DetailsScenario() {
                                     ) : (
                                         <>
                                             {
+                                                // affiche chaque libération
                                                 TbLiberations.map((liberation, indexLiberation) => (
                                                     <TrScenario key={liberation.id}>
                                                         <TdScenario></TdScenario>
@@ -509,11 +523,15 @@ function DetailsScenario() {
                                                         <TdScenario></TdScenario>
                                                         <TdScenario>{liberation.motif}</TdScenario>
                                                         {
+                                                            // Pour chaque professeur, on affiche ces libérations 
                                                             TbProfesseurs.map((professeur, indexProfesseur) => {
+                                                                // On cherche si le professeur a une libération
                                                                 const liberationMatch = TbLiberations.find(attribution => attribution.idProfesseur === professeur.id);
                                                                 return (
+                                                                    // Si on a une libération, on affiche le temps alloué
                                                                     liberationMatch ?
                                                                         <TdScenario key={indexLiberation + ',' + indexProfesseur}>{liberationMatch.tempsAloue}</TdScenario>
+                                                                        // Sinon on affiche rien
                                                                         : <TdScenario key={indexLiberation + ',' + indexProfesseur}></TdScenario>
                                                                 );
                                                             })
@@ -533,14 +551,19 @@ function DetailsScenario() {
                                         <TdScenario></TdScenario>
                                         <TdScenario>Calcul de CI</TdScenario>
                                         {
+                                            // Pour chaque professeur, on affiche le total de CI
                                             TbProfesseurs.map((professeur) => (
+                                                // On initialise le total de CI à 0
                                                 CITotal = 0,
+                                                // On récupère toutes les attributions du professeur
                                                 TbAttribution.map((attribution) => {
                                                     if (attribution.idProfesseur === professeur.id) {
                                                         const coursMatch = TbCours.find(cours => cours.id === attribution.idCours);
+                                                        // On ajoute le CI du cours au total de CI
                                                         CITotal += parseInt(calculCI(attribution.nbGroupes, coursMatch.ponderation, coursMatch.tailleGroupes, coursMatch.tailleGroupes, 1));
                                                     }
                                                 }),
+                                                // On affiche le total de CI
                                                 <TdScenario key={'Ci de ' + professeur.nom}>{CITotal}</TdScenario>
                                             ))
                                         }
