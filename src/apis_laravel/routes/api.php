@@ -105,7 +105,7 @@ Route::get('/types_utilisateur/{id}/users', [TypeUtilisateurController::class, '
 use App\Http\Controllers\UserController;
 
 Route::get('/users', [UserController::class, 'index'])->middleware(['tokenBon','responsable']);
-Route::get('/user/scenarios', [UserController::class,'showUserScenarios'])->middleware('tokenBon');
+Route::get('/user/scenariosCrees', [UserController::class,'showUserScenarios'])->middleware('tokenBon', 'responsable');
 Route::get('/user/details', [UserController::class, 'showUserDetails'])->middleware(['tokenBon']);
 Route::get('/users/{id}', [UserController::class,'show'])->middleware('tokenBon');
 Route::get('/users/{id}/type', [UserController::class,'showType'])->middleware('tokenBon');
@@ -128,6 +128,15 @@ Route::get('/cours_proposes/{id}/enseignants', [CoursProposeController::class, '
 
 Route::delete('/cours_proposes/{id}', [CoursProposeController::class, 'delete'])->middleware(['tokenBon']);
 Route::put('/cours_proposes/{id}', [CoursProposeController::class, 'update'])->middleware(['tokenBon']);
+
+
+/* -------------------------------------------------------------------------- */
+/*                                  ENSEIGNER                                 */
+/* -------------------------------------------------------------------------- */
+use App\Http\Controllers\EnseignerController;
+
+Route::post('/enseigner', [EnseignerController::class, 'store'])->middleware(['tokenBon', 'responsable']);
+Route::delete('/enseigner', [EnseignerController::class, 'delete'])->middleware(['tokenBon', 'responsable']);
 
 
 /* -------------------------------------------------------------------------- */

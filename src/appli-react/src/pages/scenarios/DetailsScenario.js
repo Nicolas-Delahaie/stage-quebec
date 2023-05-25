@@ -11,6 +11,7 @@ import { Loader, colors, fonts } from "../../utils/styles";
 
 import styled from "styled-components";
 
+import { calculCIP,calculCIL } from "./calculCI";
 
 /* ---------------------------------- STYLE --------------------------------- */
 
@@ -156,59 +157,7 @@ function DetailsScenario() {
     var liberationTotal = 0;                                // Variable pour le calcul des libérations
     var tempsAloueLiberation = 0;                           // Variable pour le calcul du temps alloué aux libérations
 
-    /**
-     * 
-     * @param {*} nbGroupes nombre de groupe du cours
-     * @param {*} ponderation ponderation du professeur
-     * @param {*} nbEtudiantsTotal nombre d'étudiants total
-     * @param {*} nbEtudiantsDifferents nombre d'étudiants différents
-     * @param {*} nbPreparation nombre de préparation du cours
-     * @returns 
-     */
-    const calculCIP = (nbGroupes, ponderation, tailleGroupes, nbPreparation) => {
-        var CIP = 0;
-        var facteurPreparation = 0;
-        var nbEtudiantsTotal = tailleGroupes * nbGroupes;
-        var nbEtudiantsDifferents = nbEtudiantsTotal;
 
-        //Calcul du facteur de préparation
-        switch (nbPreparation) {
-            case 1 || 2:
-                facteurPreparation = 0.9;
-                break;
-            case 3:
-                facteurPreparation = 1.1;
-                break;
-            default:
-                facteurPreparation = 1.75;
-        }
-
-        CIP = facteurPreparation * ponderation
-
-        CIP += (1.2 * ponderation * nbGroupes)
-
-        if (ponderation * nbEtudiantsTotal > 415) {
-            CIP += 0.04 * 415
-        }
-        else {
-            CIP += 0.04 * (ponderation * nbEtudiantsTotal)
-        }
-
-        if (ponderation * nbEtudiantsTotal > 415) {
-            CIP += 0.07 * (ponderation * nbEtudiantsTotal - 415)
-
-        }
-        if (nbEtudiantsDifferents > 74 && ponderation > 2) {
-            CIP += 0.01 * nbEtudiantsDifferents
-
-        }
-
-        if (nbEtudiantsDifferents > 160 && ponderation > 2) {
-            CIP += 0.1 * ((nbEtudiantsDifferents - 160) ** 2)
-        }
-
-        return CIP.toFixed(2);
-    }
 
     const calculCIL = (ETC) => {
         var CIL = 0;
@@ -431,7 +380,7 @@ function DetailsScenario() {
                 <Loader />
             ) : (
                 <DivDetailsScenario>
-                    <H1Scenario>Département : {scenario.departement.nom}</H1Scenario>
+                    <H1Scenario data-testis="titreDep">Département : {scenario.departement.nom}</H1Scenario>
                     <H2Scenario>Annee : {scenario.annee}</H2Scenario>
                     <p>Date de création : {scenario.created_at}</p>
                     <p>Dernière modification : {scenario.updated_at}</p>
