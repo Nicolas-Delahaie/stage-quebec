@@ -11,7 +11,7 @@ import { Loader, colors, fonts } from "../../utils/styles";
 
 import styled from "styled-components";
 
-import { calculCIP,calculCIL } from "./calculCI";
+import { calculCIP, calculCIL } from "./calculCI";
 
 /* ---------------------------------- STYLE --------------------------------- */
 
@@ -54,10 +54,33 @@ const DivTableau = styled.div`
     }
 `;
 
+const DivShow = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const ButtonShow = styled.button`
+transition: all 0.3s ease-in-out;
+transform: ${props => props.showInfos ? "rotate(180deg)" : "rotate(0deg)"};
+    background-color: transparent;
+    border: none;
+`;
+
+const DivInfosScenario = styled.div`
+transition: all 0.3s ease-in-out;
+    display: ${props => props.showInfos ? "flex" : "none"};
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+`;
+
+
 const H1Scenario = styled.h1`
     font-size: 2rem;
     font-family: ${fonts.titre};
     color: ${colors.bleuFonce};
+    margin-right: 1rem;
 
     &:after {
         content: "";
@@ -150,20 +173,12 @@ function DetailsScenario() {
 
 
 
-    /* ----------------------- FONCTIONS POUR LES CALCULS ----------------------- */
+    /* ----------------------- VARIABLES POUR LES CALCULS ----------------------- */
 
     var CITotal = 0;                                    // Variable pour le calcul de CI
     var heuresCoursTotal = 0;                                // Variable pour le calcul des heures
     var liberationTotal = 0;                                // Variable pour le calcul des libérations
     var tempsAloueLiberation = 0;                           // Variable pour le calcul du temps alloué aux libérations
-
-
-
-    const calculCIL = (ETC) => {
-        var CIL = 0;
-        CIL = 40 * ETC;
-        return CIL.toFixed(2);
-    }
 
     /* -------------------------------- USEEFFECT ------------------------------- */
 
@@ -368,7 +383,18 @@ function DetailsScenario() {
         })
     }) : console.log("pas de scenarioRepartition");
 
+    /* ---------------------------- AUTRES FONCTIONS ---------------------------- */
 
+    const [showInfos, setShowInfos] = useState(false);
+    const [showHistorique, setShowHistorique] = useState(false);
+
+    const toggleShowInfos = () => {
+        setShowInfos(!showInfos);
+    }
+
+    const toggleShowHistorique = () => {
+        setShowHistorique(!showHistorique);
+    }
 
     /* ----------------------------------- DOM ---------------------------------- */
 
@@ -380,12 +406,25 @@ function DetailsScenario() {
                 <Loader />
             ) : (
                 <DivDetailsScenario>
-                    <H1Scenario data-testis="titreDep">Département : {scenario.departement.nom}</H1Scenario>
-                    <H2Scenario>Annee : {scenario.annee}</H2Scenario>
-                    <p>Date de création : {scenario.created_at}</p>
-                    <p>Dernière modification : {scenario.updated_at}</p>
-                    <H2Scenario>Propriétaire : {scenario.proprietaire.nom}</H2Scenario>
-                    <H1Scenario>Historique des modifications</H1Scenario>
+                    <DivShow>
+                        <H1Scenario data-testis="titreDep">Département : {scenario.departement.nom}</H1Scenario>
+                        <ButtonShow onClick={toggleShowInfos} showInfos={showInfos}>
+                            <img width="35" height="35" src="https://img.icons8.com/ios/50/circled-chevron-down.png" alt="circled-chevron-down" />
+                        </ButtonShow>
+                    </DivShow>
+                    <DivInfosScenario showInfos={showInfos}>
+                        <H2Scenario>Annee : {scenario.annee}</H2Scenario>
+                        <p>Date de création : {scenario.created_at}</p>
+                        <p>Dernière modification : {scenario.updated_at}</p>
+                        <H2Scenario>Propriétaire : {scenario.proprietaire.nom}</H2Scenario>
+                    </DivInfosScenario>
+                    <DivShow>
+                        <H1Scenario>Historique des modifications</H1Scenario>
+                        <ButtonShow onClick={toggleShowHistorique} showInfos={showHistorique}>
+                            <img width="35" height="35" src="https://img.icons8.com/ios/50/circled-chevron-down.png" alt="circled-chevron-down" />
+                        </ButtonShow>
+                    </DivShow>
+                    <DivInfosScenario showInfos={showHistorique}>
                     {
                         modifications[0] === undefined ? (
                             <p>Aucune modification n'a été apportée</p>
@@ -403,8 +442,8 @@ function DetailsScenario() {
                             </div>
                         )
                     }
+                    </DivInfosScenario>
                     <H1Scenario>Le scénario </H1Scenario>
-                    <H2Scenario>Répartition des cours</H2Scenario>
                     <DivTableau>
                         <TableScenario>
                             {//Première ligne du tableau, on affiche les noms des professeurs
@@ -445,8 +484,8 @@ function DetailsScenario() {
                                             <TdScenario>{cours.ponderation}</TdScenario>
                                             <TdScenario>{cours.tailleGroupes}</TdScenario>
                                             <TdScenario>{cours.nbGroupes}</TdScenario>
-                                            <TdScenario>{cours.nbGroupes*cours.tailleGroupes}</TdScenario>
-                                            
+                                            <TdScenario>{cours.nbGroupes * cours.tailleGroupes}</TdScenario>
+
                                             {
                                                 // Pour chaque professeur, on affiche la pondération du cours en utilisant le tableau professeurs 
                                                 TbProfesseurs.map((professeur, indexProfesseur) => (
@@ -491,7 +530,7 @@ function DetailsScenario() {
                                                     liberationTotal = 0,
                                                     TbProfesseurs.map((professeur) => (
                                                         liberationMatch = TbLiberations.find(attribution => attribution.idProfesseur === professeur.id),
-                                                        liberationMatch ? 
+                                                        liberationMatch ?
                                                             liberationTotal += parseFloat(liberationMatch.tempsAloue)
                                                             : liberationTotal += 0
                                                     )),
