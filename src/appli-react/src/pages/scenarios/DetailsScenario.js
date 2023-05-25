@@ -3,7 +3,7 @@
  */
 import { ArticleTitle } from "../../components/forms";
 
-import { useParams } from "react-router-dom";
+import { resolvePath, useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { AppContext } from '../../utils/context/context';
 
@@ -11,6 +11,7 @@ import { Loader, colors, fonts } from "../../utils/styles";
 
 import styled from "styled-components";
 
+import { calculCIP,calculCIL } from "./calculCI";
 
 /* ---------------------------------- STYLE --------------------------------- */
 
@@ -83,18 +84,19 @@ const TableScenario = styled.table`
 
 const ThScenario = styled.th`
     font-size: 0.9rem;
+    max-width: 5rem;
     font-family: ${fonts.titre};
     color: ${colors.bleuFonce};
     padding: 0.5rem;
     background-color: ${colors.jauneFonce};
     border: 1px solid ${colors.bleuFonce};
+`;
 
-    &:nth-child(n+5) {
-        text-orientation: mixed;
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
-        width: 2rem;
-    }
+const ThScenarioProfesseur = styled(ThScenario)`
+    background-color: ${colors.jauneClair};
+    text-orientation: mixed;
+    writing-mode: vertical-rl;
+
 `;
 
 const TrScenario = styled.tr`
@@ -116,11 +118,12 @@ const TrScenario = styled.tr`
 const TdScenario = styled.td`
     font-size: 0.9rem;
     padding: 0.25rem;
+    max-width: 5rem;
     font-family: ${fonts.texte};
     boder-collapse: collapse;
     border: 1px solid ${colors.bleuFonce};
     text-align: center;
-    &:nth-child(-n+4) {
+    &:nth-child(-n+5) {
         font-family: ${fonts.titre};
         background-color: ${colors.grisClair};
     }
@@ -144,116 +147,30 @@ function DetailsScenario() {
     const [scenarioRepartition, setScenarioRepartition] = useState({});             // State de la répartition du scénario
     const [loading, setLoading] = useState(false);                                  // State du chargement de la page
     const { apiAccess } = useContext(AppContext);                                   // Récupération de la fonction permetant de faire des apels apis
-    const [isLoadingScenario, setIsLoadingScenario] = useState(true);               // loader pour le scenario
-    const [isLoadingModifications, setIsLoadingModifications] = useState(true);     // loader pour les modifications
-    const [isLoadingRepartition, setIsLoadingRepartition] = useState(true);         // loader pour la répartition
 
-    var liberations = [];                                    // Tableau des libérations
-    var professeurs = [];                                 // Tableau des professeurs   
-    var TbCours = [];                                         // Tableau des cours
-    var coursParEnseignant = [];                            // Tableau des cours par enseignant
 
-    var enseignantMatch = null;                            // Variable de comparaison pour les professeurs
-    var coursMatch = null;                               // Variable de comparaison pour les cours
-    var CITotal = 0;                                    // Variable pour le calcul de CI
-
-    /* ---------------------------- FONCTION D'AJOUT ---------------------------- */
-
-    /**
-     * 
-     * @param {*} liberation liberation à ajouter au tableau
-     * @returns un tableau avec les libérations
-     */
-    const addLiberation = (liberation) => {
-        if (!liberations.includes(liberation)) {
-            liberations.push(liberation);
-        }
-    }
-
-    /**
-     * 
-     * @param {*} professeur professeur à ajouter au tableau
-     * @returns un tableau avec les professeurs
-     */
-    const addProfesseur = (professeur) => {
-        if (!professeurs.includes(professeur)) {
-            professeurs.push(professeur);
-        }
-    }
-
-    /**
-     * 
-     * @param {*} cours cours à ajouter au tableau
-     * @returns un tableau avec les cours
-     */
-    const addCours = (cours, professeur) => {
-        const existingProfesseur = coursParEnseignant.find(item => item.professeur === professeur);
-        if (existingProfesseur) {
-            existingProfesseur.cours.push(cours);
-        } else {
-            coursParEnseignant.push({ professeur, cours: [cours] });
-        }
-    }
 
     /* ----------------------- FONCTIONS POUR LES CALCULS ----------------------- */
 
-    /**
-     * 
-     * @param {*} nbGroupes nombre de groupe du cours
-     * @param {*} ponderation ponderation du professeur
-     * @param {*} nbEtudiantsTotal nombre d'étudiants total
-     * @param {*} nbEtudiantsDifferents nombre d'étudiants différents
-     * @param {*} nbPreparation nombre de préparation du cours
-     * @returns 
-     */
-    const calculCI = (nbGroupes, ponderation, nbEtudiantsTotal, nbEtudiantsDifferents, nbPreparation) => {
-        var CIP = 0;
-        var facteurPreparation = 0;
+    var CITotal = 0;                                    // Variable pour le calcul de CI
+    var heuresCoursTotal = 0;                                // Variable pour le calcul des heures
+    var liberationTotal = 0;                                // Variable pour le calcul des libérations
+    var tempsAloueLiberation = 0;                           // Variable pour le calcul du temps alloué aux libérations
 
-        //Calcul du facteur de préparation
-        switch (nbPreparation) {
-            case 1 || 2:
-                facteurPreparation = 0.9;
-                break;
-            case 3:
-                facteurPreparation = 1.1;
-                break;
-            default:
-                facteurPreparation = 1.75;
-        }
 
-        CIP = facteurPreparation * ponderation
-
-        CIP += (1.2 * ponderation * nbGroupes)
-
-        if (ponderation * nbEtudiantsTotal > 415) {
-            CIP += 0.04 * 415
-        }
-        else {
-            CIP += 0.04 * (ponderation * nbEtudiantsTotal)
-        }
-
-        if (ponderation * nbEtudiantsTotal > 415) {
-            CIP += 0.07 * (ponderation * nbEtudiantsTotal - 415)
-
-        }
-        if (nbEtudiantsDifferents > 74 && ponderation > 2) {
-            CIP += 0.01 * nbEtudiantsDifferents
-
-        }
-
-        if (nbEtudiantsDifferents > 160 && ponderation > 2) {
-            CIP += 0.1 * ((nbEtudiantsDifferents - 160) ** 2)
-        }
-
-        return CIP.toFixed(2);
-    }
 
     /* -------------------------------- USEEFFECT ------------------------------- */
 
-    const [erreurScenario, setErreurScenario] = useState(null);
-    const [erreurModifications, setErreurModifications] = useState(null);
+    const [isLoadingScenario, setIsLoadingScenario] = useState(false);              // State du chargement des informations générales du scénario
+    const [isLoadingModifications, setIsLoadingModifications] = useState(false);    // State du chargement des modifications du scénario
+    const [isLoadingRepartition, setIsLoadingRepartition] = useState(false);        // State du chargement de la répartition du scénario
+    const [erreurModifications, setErreurModifications] = useState(false);          // State de l'erreur lors de la récupération des modifications du scénario
+    const [erreurRepartition, setErreurRepartition] = useState(false);              // State de l'erreur lors de la récupération de la répartition du scénario
+    const [erreurScenario, setErreurScenario] = useState(false);                    // State de l'erreur lors de la récupération des informations générales du scénario
 
+    /**
+     * Fonction qui récupère les informations générales du scénario
+     */
     const getInfos = async () => {
         setIsLoadingScenario(true);
         const rep = await apiAccess({
@@ -286,6 +203,10 @@ function DetailsScenario() {
             setErreurScenario(rep.erreur);
         }
     }
+
+    /**
+     * Fonction qui récupère les modifications du scénario
+     */
     const getModifications = async () => {
         const rep = await apiAccess({
             url: `http://localhost:8000/api/scenarios/${id}/modifications`,
@@ -303,6 +224,9 @@ function DetailsScenario() {
         }
     }
 
+    /**
+     * Fonction qui récupère la répartition du scénario
+     */
     const getRepartition = async () => {
         const rep = await apiAccess({
             url: `http://localhost:8000/api/scenarios/${id}/repartition`,
@@ -321,15 +245,124 @@ function DetailsScenario() {
     }
 
 
-    /**
-     * Récupération des modifications du scénario
-     */
     useEffect(() => {
-        // Initialisation de informations
         getInfos();
         getModifications();
         getRepartition();
     }, []);
+
+    /* ---------------------------- INITIALISATIONS DES TABLEAUX ---------------------------- */
+
+
+    var TbLiberations = [];                                    // Tableau des libérations
+    var TbProfesseurs = [];                                 // Tableau des professeurs   
+    var TbCours = [];                                         // Tableau des cours
+    var TbAttribution = [];                            // Tableau des attirbution de cours
+
+    var repartitionMatch = false;                        // Variable de comparaison pour la répartition
+    var liberationMatch = false;                         // Variable de comparaison pour les libérations
+
+    /**
+     * 
+     * @param {*} liberation liberation à ajouter au tableau
+     * @returns un tableau avec les libérations
+     */
+    const addLiberation = (liberation, idProfesseur) => {
+        var idLiberation = liberation.id;
+        var idProfesseur = idProfesseur;
+        var motifLiberation = liberation.motif;
+        var annee = liberation.pivot.annee;
+        var semestre = liberation.pivot.semestre;
+        var tempsAloue = liberation.pivot.tempsAloue;
+        var libExiste = false;
+
+        // Recherche de première occurence de la libération
+        TbLiberations.forEach(lib => {
+            if (lib.id == idLiberation) {
+                libExiste = true;
+            }
+        }
+        );
+
+        // Si la libération n'existe pas, on l'ajoute au tableau
+        if (!libExiste) {
+            TbLiberations.push({ 'id': idLiberation, 'idProfesseur': idProfesseur, 'motif': motifLiberation, 'annee': annee, 'semestre': semestre, 'tempsAloue': tempsAloue });
+        }
+    }
+
+    /**
+     * 
+     * @param {*} professeur professeur à ajouter au tableau
+     * @returns un tableau avec les professeurs
+     */
+    const addProfesseur = (professeur) => {
+        var idProfesseur = professeur.id;
+        var nomProfesseur = professeur.name;
+        var professeurExiste = false;
+
+        // Recherche de première occurence du professeur
+        TbProfesseurs.forEach(prof => {
+            if (prof.id == idProfesseur) {
+                professeurExiste = true;
+            }
+        });
+
+        // Si le professeur n'existe pas, on l'ajoute au tableau
+        if (!professeurExiste) {
+            TbProfesseurs.push({ 'id': idProfesseur, 'nom': nomProfesseur });
+        }
+
+    }
+
+    /**
+     * 
+     * @param {*} cours cours à ajouter au tableau
+     * @returns un tableau avec les cours
+     */
+    const addCours = (cours) => {
+        var idCours = cours.id;
+        var nomCours = cours.cours.nom;
+        var nbGroupes = cours.nbGroupes;
+        var ponderation = cours.ponderation;
+        var tailleGroupes = cours.tailleGroupes;
+        var nbEtudiantsTotal = tailleGroupes * nbGroupes;
+
+        return TbCours.push({ 'id': idCours, 'nom': nomCours, 'nbGroupes': nbGroupes, 'ponderation': ponderation, 'tailleGroupes': tailleGroupes, 'nbEtudiantsTotal': nbEtudiantsTotal });
+
+    }
+
+    /**
+     * 
+     * @param {*} attribution quel cours est enseigné par quel professeur
+     * @returns TbAttribution un tableau avec les attributions
+     */
+    const addAttribution = (attribution) => {
+        var idCours = attribution.cours_propose_id;
+        var idProfesseur = attribution.professeur_id;
+        var nbGoupes = attribution.nbGroupes
+
+        return TbAttribution.push({ 'idCours': idCours, 'idProfesseur': idProfesseur, 'nbGroupes': nbGoupes });
+    }
+
+    // mise en place des tableaux professeurs et cours
+    scenarioRepartition.id ? scenarioRepartition.departement.repartition.map((cours) => {
+        addCours(cours);
+        cours.enseignants.map((enseignant) => {
+            addProfesseur(enseignant);
+            addAttribution(enseignant.pivot);
+        })
+    }) : console.log("pas de scenarioRepartition");
+
+    // mise en place du tableau des libérations
+    scenarioRepartition.id ? scenarioRepartition.departement.liberations.map((cours) => {
+        cours.map((enseignant) => {
+            enseignant.liberations.map((liberation) => {
+                addLiberation(liberation, enseignant.id_enseignant);
+            })
+        })
+    }) : console.log("pas de scenarioRepartition");
+
+
 
     /* ----------------------------------- DOM ---------------------------------- */
 
@@ -341,7 +374,7 @@ function DetailsScenario() {
                 <Loader />
             ) : (
                 <DivDetailsScenario>
-                    <H1Scenario>Département : {scenario.departement.nom}</H1Scenario>
+                    <H1Scenario data-testis="titreDep">Département : {scenario.departement.nom}</H1Scenario>
                     <H2Scenario>Annee : {scenario.annee}</H2Scenario>
                     <p>Date de création : {scenario.created_at}</p>
                     <p>Dernière modification : {scenario.updated_at}</p>
@@ -368,25 +401,21 @@ function DetailsScenario() {
                     <H2Scenario>Répartition des cours</H2Scenario>
                     <DivTableau>
                         <TableScenario>
-                            {/*Première ligne du tableau, on affiche les noms des professeurs*/}
+                            {//Première ligne du tableau, on affiche les noms des professeurs
+                            }
                             <thead>
                                 <TrScenario>
                                     <ThScenario>Titre du cours</ThScenario>
                                     <ThScenario>Pondération</ThScenario>
-                                    <ThScenario>Nombre d'élèves</ThScenario>
-                                    <ThScenario>Nombre de groupes</ThScenario>
+                                    <ThScenario>Nbre d'élèves</ThScenario>
+                                    <ThScenario>Nbre GR</ThScenario>
+                                    <ThScenario>Nbre él. par groupe</ThScenario>
                                     {
                                         scenarioRepartition.aEteValide === undefined ? (
                                             <ThScenario></ThScenario>
                                         ) : (
-                                            scenarioRepartition.departement.repartition.map((cours) => (
-                                                /*on stocke les cours dans un tableau afin de stocker le nombre de colonne*/
-                                                addCours(cours),
-                                                cours.enseignants.map((enseignant) => (
-                                                    /*on stocke les professeurs dans un tableau afin de stocker le nombre de colonne*/
-                                                    addProfesseur(enseignant),
-                                                    <ThScenario key={enseignant.id}>{enseignant.name}</ThScenario>
-                                                ))
+                                            TbProfesseurs.map((professeur) => (
+                                                <ThScenarioProfesseur key={professeur.nom}>{professeur.nom}</ThScenarioProfesseur>
                                             ))
                                         )
                                     }
@@ -399,35 +428,26 @@ function DetailsScenario() {
                                         <TdScenario></TdScenario>
                                         <TdScenario></TdScenario>
                                         <TdScenario></TdScenario>
+                                        <TdScenario></TdScenario>
                                         <TdScenario>Le scénario n'a pas été chargée</TdScenario>
                                     </TrScenario>
                                 ) : (
-                                    /* On affiche toutes les informations du cours du département */
-                                    scenarioRepartition.departement.repartition.map((cours) => (
-                                        <TrScenario key={cours.id_cours}>
-                                            <TdScenario>{cours.cours.nom}</TdScenario>
+                                    // On affiche toutes les informations du cours du département 
+                                    TbCours.map((cours, indexCours) => (
+                                        <TrScenario key={cours.id}>
+                                            <TdScenario>{cours.nom}</TdScenario>
                                             <TdScenario>{cours.ponderation}</TdScenario>
                                             <TdScenario>{cours.tailleGroupes}</TdScenario>
                                             <TdScenario>{cours.nbGroupes}</TdScenario>
+                                            <TdScenario>{cours.nbGroupes*cours.tailleGroupes}</TdScenario>
+                                            
                                             {
-                                                /* Pour chaque professeur, on affiche la pondération du cours en utilisant le tableau professeurs */
-                                                professeurs.map((professeur) => (
-                                                    /*si le cours n'a pas de professeur, on affiche une case vide*/
-                                                    cours.enseignants.length === 0 ? (
-                                                        <TdScenario key={professeur.id}></TdScenario>
-                                                    ) : (
-                                                        /*sinon */
-                                                        /*on cvérifie si le professeur enseigne le cours*/
-                                                        enseignantMatch = cours.enseignants.find(enseignant => enseignant.id === professeur.id),
-
-                                                        enseignantMatch ? (
-                                                            addCours(cours, professeur),
-                                                            <TdScenario key={professeur.id}>{professeur.pivot.nbGroupes}</TdScenario>
-                                                        ) : (
-                                                            <TdScenario key={professeur.id}></TdScenario>
-                                                        )
-                                                    )
-
+                                                // Pour chaque professeur, on affiche la pondération du cours en utilisant le tableau professeurs 
+                                                TbProfesseurs.map((professeur, indexProfesseur) => (
+                                                    repartitionMatch = TbAttribution.find(attribution => attribution.idCours === cours.id && attribution.idProfesseur === professeur.id),
+                                                    repartitionMatch ?
+                                                        <TdScenario key={indexCours + ',' + indexProfesseur}>{repartitionMatch.nbGroupes}</TdScenario>
+                                                        : <TdScenario key={indexCours + ',' + indexProfesseur}></TdScenario>
                                                 ))
                                             }
                                         </TrScenario>
@@ -441,79 +461,132 @@ function DetailsScenario() {
                                 < TrTitreScenario >
                                     <TdScenario></TdScenario>
                                     <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
                                     <TdScenario>Libération / Conge</TdScenario>
                                     <TdScenario>ETC</TdScenario>
                                 </TrTitreScenario>
 
                                 {
-                                    //     scenarioRepartition.aEteValide === undefined ? (
-                                    //         <TrScenario>
-                                    //             <TdScenario></TdScenario>
-                                    //             <TdScenario></TdScenario>
-                                    //             <TdScenario></TdScenario>
-                                    //             <TdScenario></TdScenario>
-                                    //             <TdScenario>Le scénario n'a pas été chargé</TdScenario>
-                                    //         </TrScenario>
-                                    //     ) : (
-                                    //         <>
-                                    //             {
-                                    //                 professeurs.map((professeur) => (
-                                    //                     //pour chaque professeur, on cherche les libérations
-                                    //                     professeur.liberations.map((liberation) => (
-                                    //                         //si le professeur a une libération, on l'ajoute au tableau
-                                    //                         liberation.pivot.utilisateur_id === professeur.id_enseignant ? (
-                                    //                             addLiberation(liberation)
-                                    //                         ) : (
-                                    //                             //sinon on ne fait rien
-                                    //                             null
-                                    //                         )
-                                    //                     ))
-                                    //                 ))
-                                    //             }
+                                    scenarioRepartition.aEteValide === undefined ? (
+                                        <TrScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario>Le scénario n'a pas été chargé</TdScenario>
+                                        </TrScenario>
+                                    ) : (
+                                        <>
+                                            {
+                                                // affiche chaque libération
+                                                TbLiberations.map((liberation, indexLiberation) => (
+                                                    //Pour chaque libération, on affiche l'ETC total 
+                                                    liberationTotal = 0,
+                                                    TbProfesseurs.map((professeur) => (
+                                                        liberationMatch = TbLiberations.find(attribution => attribution.idProfesseur === professeur.id),
+                                                        liberationMatch ? 
+                                                            liberationTotal += parseFloat(liberationMatch.tempsAloue)
+                                                            : liberationTotal += 0
+                                                    )),
+                                                    <TrScenario key={liberation.id}>
+                                                        <TdScenario></TdScenario>
+                                                        <TdScenario></TdScenario>
+                                                        <TdScenario></TdScenario>
+                                                        <TdScenario>{liberation.motif}</TdScenario>
+                                                        <TdScenario>{liberationTotal}</TdScenario>
+                                                        {
+                                                            // Pour chaque professeur, on affiche ses libérations
+                                                            TbProfesseurs.map((professeur, indexProfesseur) => {
+                                                                // On cherche si le professeur a une libération
+                                                                liberationMatch = TbLiberations.find(attribution => attribution.idProfesseur === professeur.id);
+                                                                return (
+                                                                    // Si on a une libération, on affiche le temps alloué
+                                                                    liberationMatch ? (
+                                                                        tempsAloueLiberation = parseFloat(liberationMatch.tempsAloue),
+                                                                        <TdScenario key={indexLiberation + ',' + indexProfesseur}>
+                                                                            {tempsAloueLiberation.toFixed(3)}
+                                                                        </TdScenario>
+                                                                    ) : (
+                                                                        // Sinon on n'affiche rien
+                                                                        <TdScenario key={indexLiberation + ',' + indexProfesseur}></TdScenario>
+                                                                    )
+                                                                );
+                                                            })
+                                                        }
+                                                    </TrScenario>
+                                                ))
+                                            }
+                                        </>
+                                    )
 
-                                    //             {
-                                    //                 //on affiche les libérations
-                                    //                 liberations.map((liberation) => (
-                                    //                     <TrScenario key={liberation.id}>
-                                    //                         <TdScenario></TdScenario>
-                                    //                         <TdScenario></TdScenario>
-                                    //                         <TdScenario>{liberation.motif}</TdScenario>
-                                    //                         <TdScenario>{liberation.pivot.tempsAloue}</TdScenario>
-
-                                    //                         {
-                                    //                             //pour chaque professeur, on cherche les libérations
-                                    //                             professeurs.map((professeur) => (
-                                    //                                 professeur.id_enseignant === liberation.pivot.utilisateur_id ? (
-                                    //                                     <TdScenario key={professeur.id}>{liberation.pivot.tempsAloue}</TdScenario>
-                                    //                                 ) : (
-                                    //                                     <TdScenario key={professeur.id}></TdScenario>
-                                    //                                 )
-                                    //                             ))}
-                                    //                     </TrScenario>
-                                    //                 ))}
-                                    //         </>
-                                    //     )
-                                    // 
                                 }
 
-                                {//Partie pour les totaux}
-                                    <TrScenario>
-                                        <TdScenario></TdScenario>
-                                        <TdScenario></TdScenario>
-                                        <TdScenario></TdScenario>
-                                        <TdScenario>Calcul de CI</TdScenario>
-                                        {(() => {
-                                            coursParEnseignant.shift();
-                                            return coursParEnseignant.map((prof) => {
-                                                CITotal = 0;
-                                                console.log(prof);
-                                                prof.cours.map((cours) => {
-                                                        CITotal += parseInt(calculCI(1, cours.ponderation, (cours.tailleGroupes * cours.nbGroupes), (cours.tailleGroupes * cours.nbGroupes), 1));
-                                                });
-                                                return <TdScenario>{CITotal}</TdScenario>;
-                                            });
-                                        })()}
-                                    </TrScenario>}
+                                {//Partie pour les totaux
+                                }
+                                < TrTitreScenario >
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario>Totaux</TdScenario>
+                                </TrTitreScenario>
+
+                                <TrScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario>Calcul de CI</TdScenario>
+                                    {
+                                        // Pour chaque professeur, on affiche le total de CI
+                                        TbProfesseurs.map((professeur) => (
+                                            // On initialise le total de CI à 0
+                                            CITotal = 0,
+                                            // On récupère toutes les attributions du professeur
+                                            TbAttribution.map((attribution) => {
+                                                if (attribution.idProfesseur === professeur.id) {
+                                                    const coursMatch = TbCours.find(cours => cours.id === attribution.idCours);
+                                                    // On ajoute le CI du cours au total de CI
+                                                    CITotal += parseFloat(calculCIP(attribution.nbGroupes, coursMatch.ponderation, coursMatch.tailleGroupes, 1));
+
+                                                }
+                                            }),
+                                            TbLiberations.map((liberation) => {
+                                                if (liberation.idProfesseur === professeur.id) {
+                                                    // On ajoute le CI du cours au total de CI
+                                                    CITotal += parseFloat(calculCIL(liberation.tempsAloue));
+                                                }
+                                            }),
+                                            // On affiche le total de CI
+                                            <TdScenario key={'Ci de ' + professeur.nom}>{CITotal.toFixed(2)}</TdScenario>
+                                        ))
+                                    }
+                                </TrScenario>
+                                <TrScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario></TdScenario>
+                                    <TdScenario>Heures de cours</TdScenario>
+                                    {
+                                        // Pour chaque professeur, on affiche le total d'heures de cours
+                                        TbProfesseurs.map((professeur) => (
+                                            // On initialise le total d'heures de cours à 0
+                                            heuresCoursTotal = 0,
+                                            // On récupère toutes les attributions du professeur
+                                            TbAttribution.map((attribution) => {
+                                                if (attribution.idProfesseur === professeur.id) {
+                                                    const coursMatch = TbCours.find(cours => cours.id === attribution.idCours);
+                                                    // On ajoute le nombre d'heures de cours au total d'heures de cours
+                                                    heuresCoursTotal += attribution.nbGroupes * coursMatch.ponderation;
+                                                }
+                                            }),
+                                            // On affiche le total d'heures de cours
+                                            <TdScenario key={'Heures de cours de ' + professeur.nom}>{heuresCoursTotal.toFixed(2)}</TdScenario>
+                                        ))
+                                    }
+                                </TrScenario>
                             </tbody>
                         </TableScenario>
                     </DivTableau>
