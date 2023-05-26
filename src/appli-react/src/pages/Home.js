@@ -1,14 +1,14 @@
 /* --------------------------------- IMPORT --------------------------------- */
 
 /*import du composant ArticleTitle */
-import ArticleTitle from "../../components/forms/ArticleTitle"
+import ArticleTitle from "../components/forms/ArticleTitle"
 
 /* import pour créer le style */
 import styled from "styled-components"
 
 /* import des images */
-import Repartition_plusieurs from "../../assets/images/Home/Repartition_plusieurs.svg"
-import Tableau from "../../assets/images/Home/Tableau.svg"
+import Repartition_plusieurs from "../assets/images/Home/Repartition_plusieurs.svg"
+import Tableau from "../assets/images/Home/Tableau.svg"
 
 /* ---------------------------------- STYLE --------------------------------- */
 
@@ -43,7 +43,7 @@ function Home() {
                 </p>
                 <ImageArticle src={Repartition_plusieurs} alt="image article" />
             </ArticleStyle>
-            <ArticleTitle texte = {'Fonctionnement'}/>
+            <ArticleTitle texte={'Fonctionnement'} />
             <ArticleStyle>
                 <ImageArticle src={Tableau} alt="image article" />
                 <p>

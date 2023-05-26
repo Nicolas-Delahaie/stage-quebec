@@ -2,21 +2,21 @@
  * @todo Gérer la redirection en cas de deconnexion (pour ne pas avoir "erreur de serveur" lorsque on nest plus connecte)
  */
 import { useState, useEffect, useContext } from 'react'
-import { AppContext } from '../../utils/context/context';
+import { AppContext } from '../utils/context/context';
 
 import styled from 'styled-components'
 
-import CarteHorizontale from '../../components/layout/CarteHorizontale';
-import ArticleTitle from '../../components/forms/ArticleTitle';
+import CarteHorizontale from '../components/layout/CarteHorizontale';
+import ArticleTitle from '../components/forms/ArticleTitle';
 
 
-import Valider from '../../assets/images/Scenarios/Valider.svg'
-import Calendrier from '../../assets/images/Scenarios/Calendrier.svg'
+import Valider from '../assets/images/Scenarios/Valider.svg'
+import Calendrier from '../assets/images/Scenarios/Calendrier.svg'
 
-import { iconValide } from '../../assets/svg/iconValide.js'
-import { iconNonValide } from '../../assets/svg/iconNonValide.js'
+import { iconValide } from '../assets/svg/iconValide.js'
+import { iconNonValide } from '../assets/svg/iconNonValide.js'
 
-import { colors, fonts, Loader } from '../../utils/styles';
+import { colors, fonts, Loader } from '../utils/styles';
 
 const DivPageScenarios = styled.div`
     display: flex;

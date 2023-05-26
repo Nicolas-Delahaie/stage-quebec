@@ -2,13 +2,13 @@
  * @todo Mieux gérer l affichage des modifications 
  * @todo Prevoir des parametres d url faux (pas un chiffre bon par exemple)
  */
-import { ArticleTitle } from "../../components/forms";
+import { ArticleTitle } from "../components/forms";
 
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
-import { AppContext } from '../../utils/context/context';
+import { AppContext } from '../utils/context/context';
 
-import { Loader, colors, fonts } from "../../utils/styles";
+import { Loader, colors, fonts } from "../utils/styles";
 
 import styled from "styled-components";
 

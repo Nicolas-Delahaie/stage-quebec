@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
-import { AppContext } from '../../utils/context/context';
+import { AppContext } from '../utils/context/context';
 
 import styled from "styled-components";
 
-import { Loader, colors, fonts } from "../../utils/styles";
-import ArticleTitle from "../../components/forms/ArticleTitle";
-import CarteCours from "../../components/layout/CarteCours";
+import { Loader, colors, fonts } from "../utils/styles";
+import ArticleTitle from "../components/forms/ArticleTitle";
+import CarteCours from "../components/layout/CarteCours";
 
 
 /* ---------------------------------- STYLE --------------------------------- */

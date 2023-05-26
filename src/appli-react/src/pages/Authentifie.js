@@ -3,18 +3,18 @@
  */
 /* --------------------------------- IMPORT --------------------------------- */
 /* import du composant CarteAccueil */
-import CarteAccueil from "../../../components/layout/CarteAccueil"
+import CarteAccueil from "../components/layout/CarteAccueil"
 
 /* import pour créer le style */
 import styled from "styled-components"
 
 /* import des images */
-import Calendrier from "../../../assets/images/Authentifie/Calendrier.svg"
-import Repartir from "../../../assets/images/Authentifie/Repartir.svg"
-import Departements from "../../../assets/images/Authentifie/Departements.svg"
+import Calendrier from "../assets/images/Authentifie/Calendrier.svg"
+import Repartir from "../assets/images/Authentifie/Repartir.svg"
+import Departements from "../assets/images/Authentifie/Departements.svg"
 
 import { useContext } from "react"
-import { AppContext } from "../../../utils/context/context"
+import { AppContext } from "../utils/context/context"
 import { useState } from "react"
 
 /* ---------------------------------- STYLE --------------------------------- */

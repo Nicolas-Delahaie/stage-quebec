@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect, useContext, useRef } from "react";
-import { Loader, colors, fonts } from "../../utils/styles";
-import { AppContext } from '../../utils/context/context';
+import { Loader, colors, fonts } from "../utils/styles";
+import { AppContext } from '../utils/context/context';
 import styled from "styled-components";
 import toast, { Toaster } from 'react-hot-toast';
 
-import { ArticleTitle, Bouton } from "../../components/forms";
+import { ArticleTitle, Bouton } from "../components/forms";
 
 
 /* ---------------------------------- STYLE --------------------------------- */
