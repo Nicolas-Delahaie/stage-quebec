@@ -106,7 +106,7 @@ function Login() {
             if (rep.success) {
                 //Connexion pour 100 jours si on coche la case, sinon pour 24h
                 connexion(rep.datas.token, dureeSessionEnMin, rep.datas.type);
-                navigate("/authentifie");
+                navigate("/");
             }
             else {
                 setIsConnecting(false);

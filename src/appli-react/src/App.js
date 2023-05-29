@@ -11,7 +11,6 @@ import GlobalStyles from "./utils/styles/global";
 /* Import des pages */
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Authentifie from "./pages/Authentifie";
 import Scenarios from "./pages/scenarios";
 import DetailsScenario from "./pages/DetailsScenario";
 import Departements from "./pages/Departements";
@@ -34,7 +33,6 @@ function App() {
           <Routes>
             <Route exact path="/" element={<Home />} />
             <Route exact path="/login" element={<Login />} />
-            <Route exact path="/authentifie" element={<Authentifie />} />
             <Route exact path="/scenarios" element={<Scenarios />} />
             <Route exact path="/scenarios/:id" element={<DetailsScenario />} />
             <Route exact path="/departements" element={<Departements />} />

@@ -30,7 +30,6 @@ export const AppProvider = ({ children }) => {
      * @details Met egalement a jour la variable estConnecte 
      * @returns string, undefined
      */
-
     const getType = () => {
         return Cookies.get('userType');
     }
