@@ -24,12 +24,6 @@ class Departement extends Model
     {
         return $this->hasMany(CoursPropose::class, 'departement_id');
     }
-    public function coursProposesDetailles()
-    {
-        return $this->hasMany(CoursPropose::class, 'departement_id')
-            ->with("enseignants")
-            ->with("cours");
-    }
 
     public function scenarios()
     {

@@ -67,7 +67,7 @@ class ScenarioController extends Controller
         // Recuperation du scenario
         $scenario = Scenario::findOrFail($id)
             ->departement
-            ->coursProposesDetailles()
+            ->coursProposes()
             ->with([
                 "enseignants" => function ($query) {
                     $query->select("users.id", "users.name", "contraintes", "estCoordo");

@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/**
+ * Noms des routes :
+ * - snake case
+ * - _detaille lorsque les cles etrangeres sont developpees
+ */
+
 
 /* -------------------------------------------------------------------------- */
 /*                                DEPARTEMENT                                 */
@@ -20,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 use App\HTTP\Controllers\DepartementController;
 
 Route::get('/departements', [DepartementController::class, 'index'])->middleware(['tokenBon', 'responsable']);
-Route::get('/departementsDetailles', [DepartementController::class, 'indexDetaille'])->middleware(['tokenBon', 'responsable']);
+Route::get('/departements_detailles', [DepartementController::class, 'indexDetaille'])->middleware(['tokenBon', 'responsable']);
 Route::get('/departements/{id}', [DepartementController::class, 'show'])->middleware(['tokenBon', 'responsable']);
 Route::get('/departements/{id}/coordonnateur', [DepartementController::class, 'showCoordonnateur'])->middleware(['tokenBon', 'responsable']);
 Route::get('/departements/{id}/cours_proposes_detailles', [DepartementController::class, 'showCoursProposesDetailles'])->middleware(['tokenBon', 'responsable']);
@@ -34,8 +40,8 @@ Route::get('/departements/{id}/cours_proposes_detailles', [DepartementController
 use App\Http\Controllers\UserController;
 
 Route::get('/users', [UserController::class, 'index'])->middleware(['tokenBon', 'responsable']);
-Route::get('/user/scenariosCrees', [UserController::class, 'showUserScenariosCrees'])->middleware('tokenBon', 'responsable');
-Route::get('/user/details', [UserController::class, 'showUserDetails'])->middleware(['tokenBon']);
+Route::get('/user/scenarios_crees', [UserController::class, 'showUserScenariosCrees'])->middleware('tokenBon', 'responsable');
+Route::get('/user/detaille', [UserController::class, 'showUserDetails'])->middleware(['tokenBon']);
 Route::put('/user/contraintes', [UserController::class, 'updateUserContraintes'])->middleware('tokenBon');
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->middleware('tokenBon');
