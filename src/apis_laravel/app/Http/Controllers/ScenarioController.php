@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Scenario;
 use Illuminate\Http\Response;
+use Nette\Utils\DateTime;
 
 class ScenarioController extends Controller
 {
@@ -50,6 +51,10 @@ class ScenarioController extends Controller
             ->select('id', 'date_modif', 'utilisateur_id')
             ->get();
 
+            foreach ($modifications as $modification) {
+                $modification->date_modif = date('d/m/Y', strtotime($modification->date_modif));
+            }
+
         return response($modifications, 200);
     }
     /**
@@ -66,6 +71,7 @@ class ScenarioController extends Controller
             ->with([
                 "enseignants" => function ($query) {
                     $query->select("users.id", "users.name", "contraintes", "estCoordo");
+                    $query->with(['liberations']);
                 },
                 "cours" => function ($query) {
                     $query->select("cours.id", "nom");

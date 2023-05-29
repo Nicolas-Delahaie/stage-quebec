@@ -87,6 +87,7 @@ export const AppProvider = ({ children }) => {
         // -- PRE-TRAITEMENTS --
         // Verificaton de l authentification
         const token = Cookies.get('token');
+        console.log(token);
         if (needAuth && !token) {
             // Aucun utilisateur connecte
             setEstConnecte(false);

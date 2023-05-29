@@ -12,7 +12,7 @@ import GlobalStyles from "./utils/styles/global";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Scenarios from "./pages/scenarios";
-import DetailsScenario from "./pages/DetailsScenario";
+import DetailsScenario from "./pages/scenario/DetailsScenario";
 import Departements from "./pages/Departements";
 import DetailsDepartement from "./pages/DetailsDepartement";
 import Profil from "./pages/Profil";
