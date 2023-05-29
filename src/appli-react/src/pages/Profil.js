@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect, useContext, useRef } from "react";
-import { Loader, colors, fonts } from "../../utils/styles";
-import { AppContext } from '../../utils/context/context';
+import { Loader, colors, fonts } from "../utils/styles";
+import { AppContext } from '../utils/context/context';
 import styled from "styled-components";
 import toast, { Toaster } from 'react-hot-toast';
 
-import { ArticleTitle, Bouton } from "../../components/forms";
+import { ArticleTitle, Bouton } from "../components/forms";
 
 
 /* ---------------------------------- STYLE --------------------------------- */
@@ -111,6 +111,7 @@ function Profil() {
             method: "get",
         });
         setIsLoading(false);
+        console.log(rep);
 
         // -- Traitement du resultat --
         if (rep.success) {
@@ -155,8 +156,6 @@ function Profil() {
 
     const enregistrementContraintes = async () => {
         // -- Enregistrement des contraintes --
-        console.log(newContraintes.current.value);
-
         setIsSavingContraintes(true);
         const rep = await apiAccess({
             url: `http://localhost:8000/api/user/contraintes`,
@@ -213,7 +212,7 @@ function Profil() {
                         <DivContainerLiberations>
                             <H2Profil>Libérations</H2Profil>
                             {user.liberations.length === 0 ?
-                                <p>Vous n'avez aucune libération</p>
+                                <p>Vous n'avez aucune libération récente</p>
                                 :
                                 <DivLiberations>
                                     <H2Profil>Semestre</H2Profil>

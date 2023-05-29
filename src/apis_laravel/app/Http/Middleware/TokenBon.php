@@ -22,12 +22,12 @@ class TokenBon
         if (!$token) {
             return response(['error' => 'Un token d\'authentification est requis'], 401);
         }
-        if (strpos($token, "|") === false){
+        if (strpos($token, "|") === false) {
             return response(['error' => 'Token mal formé. Manque le "|"'], 400);
         }
 
         // Vérifiez si le token correspond à un token existant dans la base de données
-        $token = explode ("|", $token);
+        $token = explode("|", $token);
         $tokenLie = PersonalAccessToken::find($token[0]);
         if (!$tokenLie) {
             return response(['error' => 'Token inexistant en bdd'], 401);

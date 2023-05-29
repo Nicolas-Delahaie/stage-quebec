@@ -15,20 +15,24 @@ class Departement extends Model
         'nbEleves',
         'coordonnateur_id'
     ];
-    
-    public function coordonnateur(){
+
+    public function coordonnateur()
+    {
         return $this->belongsTo(User::class, "coordonnateur_id");
     }
-    public function coursProposes(){
+    public function coursProposes()
+    {
         return $this->hasMany(CoursPropose::class, 'departement_id');
     }
-    public function coursProposesDetailles(){
+    public function coursProposesDetailles()
+    {
         return $this->hasMany(CoursPropose::class, 'departement_id')
-        ->with("enseignants")
-        ->with("cours");
+            ->with("enseignants")
+            ->with("cours");
     }
 
-    public function scenarios(){
+    public function scenarios()
+    {
         return $this->hasMany(Scenario::class, "departement_id");
     }
 }

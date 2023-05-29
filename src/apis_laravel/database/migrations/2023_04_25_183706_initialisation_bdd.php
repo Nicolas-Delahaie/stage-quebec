@@ -53,14 +53,14 @@ return new class extends Migration
             $table->id();
             $table->string("nom", 255)->unique();
             $table->smallInteger("nbEleves");
-            $table->unsignedBigInteger("coordonnateur_id");
+            $table->unsignedBigInteger("coordonnateur_id")->nullable();
         });
         Schema::create("scenario", function (Blueprint $table) {
             $table->id();
             $table->boolean("aEteValide")->default(false);
             $table->unsignedSmallInteger("annee");
             $table->timestamps();
-            $table->unsignedBigInteger("proprietaire_id");
+            $table->unsignedBigInteger("proprietaire_id")->nullable();
             $table->unsignedBigInteger("departement_id");
         });        
         Schema::create("rdv", function(Blueprint $table){
@@ -73,7 +73,7 @@ return new class extends Migration
         Schema::create("modification", function(Blueprint $table){
             $table->id();
             $table->date("date_modif");
-            $table->unsignedBigInteger("utilisateur_id");
+            $table->unsignedBigInteger("utilisateur_id")->nullable();
             $table->unsignedBigInteger("scenario_id");
         });
         Schema::create("cours_propose", function (Blueprint $table){
@@ -109,65 +109,54 @@ return new class extends Migration
         //       A J O U T   R E F E R E N C E S       //
         // -------------------------------------------- //
         Schema::table("detail_modification", function (Blueprint $table) {
-            $table->foreign("professeur_id")->references("id")->on("users");
-            $table->foreign("cours_propose_id")->references("id")->on("cours_propose");
-            $table->foreign("modification_id")->references("id")->on("modification");
+            $table->foreign("professeur_id")->references("id")->on("users")
+                ->onDelete("cascade");
+            $table->foreign("cours_propose_id")->references("id")->on("cours_propose")
+                ->onDelete("cascade");
+            $table->foreign("modification_id")->references("id")->on("modification")
+                ->onDelete("cascade");
         });
         Schema::table("users", function (Blueprint $table) {
-            // Modification de users
-            $table->foreign("type_utilisateur_id")->references("id")->on("type_utilisateur");
-                // ->onDelete("set null")
-                // ->onUpdate("cascade");
+            $table->foreign("type_utilisateur_id")->references("id")->on("type_utilisateur")
+                ->onDelete("cascade");
         });
         Schema::table("departement", function (Blueprint $table) {
-            $table->foreign("coordonnateur_id")->references("id")->on("users");
-                // ->onDelete("SET NULL")
-                // ->onUpdate("CASCADE");
+            $table->foreign("coordonnateur_id")->references("id")->on("users")
+                ->onDelete("SET NULL");
         });
         Schema::table("scenario", function (Blueprint $table) {
-            $table->foreign("proprietaire_id")->references("id")->on("users");
-                // ->onDelete("SET NULL")
-                // ->onUpdate("CASCADE");
-            $table->foreign("departement_id")->references("id")->on("departement");
-                // ->onDelete("CASCADE")
-                // ->onUpdate("CASCADE");
+            $table->foreign("proprietaire_id")->references("id")->on("users")
+                ->onDelete("SET NULL");
+            $table->foreign("departement_id")->references("id")->on("departement")
+                ->onDelete("CASCADE");
         });        
         Schema::table("rdv", function(Blueprint $table){
-            $table->foreign("scenario_id")->references("id")->on("scenario");
-                // ->onDelete("CASCADE")
-                // ->onUpdate("CASCADE");
+            $table->foreign("scenario_id")->references("id")->on("scenario")
+                ->onDelete("CASCADE");
         });
         Schema::table("modification", function(Blueprint $table){
-            $table->foreign("utilisateur_id")->references("id")->on("users");
-                // ->onDelete("SET NULL")
-                // ->onUpdate("CASCADE");
-            $table->foreign("scenario_id")->references("id")->on("scenario");
-                // ->onDelete("SET NULL")
-                // ->onUpdate("CASCADE");
+            $table->foreign("utilisateur_id")->references("id")->on("users")
+                ->onDelete("SET NULL");
+            $table->foreign("scenario_id")->references("id")->on("scenario")
+                ->onDelete("CASCADE");
         });
         Schema::table("cours_propose", function (Blueprint $table){
-            $table->foreign("cours_id")->references("id")->on("cours");
-                // ->onDelete("CASCADE")
-                // ->onUpdate("CASCADE");
-            $table->foreign("departement_id")->references("id")->on("departement");
-                // ->onDelete("CASCADE")
-                // ->onUpdate("CASCADE");
+            $table->foreign("cours_id")->references("id")->on("cours")
+                ->onDelete("CASCADE");
+            $table->foreign("departement_id")->references("id")->on("departement")
+                ->onDelete("CASCADE");
         });
         Schema::table("enseigner", function(Blueprint $table){
             $table->foreign("cours_propose_id")->references("id")->on("cours_propose")
                 ->onDelete("CASCADE");
-                // ->onUpdate("CASCADE");
-            $table->foreign("professeur_id")->references("id")->on("users");
-                // ->onDelete("CASCADE")
-                // ->onUpdate("CASCADE");
+            $table->foreign("professeur_id")->references("id")->on("users")
+                ->onDelete("CASCADE");
         });
         Schema::table("alouer", function(Blueprint $table){
-            $table->foreign("utilisateur_id")->references("id")->on("users");
-                // ->onDelete("CASCADE")
-                // ->onUpdate("CASCADE");
-            $table->foreign("liberation_id")->references("id")->on("liberation");
-                // ->onDelete("CASCADE")
-                // ->onUpdate("CASCADE");
+            $table->foreign("utilisateur_id")->references("id")->on("users")
+                ->onDelete("CASCADE");
+            $table->foreign("liberation_id")->references("id")->on("liberation")
+                ->onDelete("CASCADE");
         });
         
     }

@@ -1,5 +1,6 @@
 /**
  * @todo Mieux gérer l affichage des modifications 
+ * @todo Prevoir des parametres d url faux (pas un chiffre bon par exemple)
  */
 import { ArticleTitle } from "../../components/forms";
 
@@ -167,7 +168,7 @@ function DetailsScenario() {
     const id = useParams().id;                                                      // Récupération de l'id du scénario dans l'url
     const [scenario, setScenario] = useState({});                                   // State des données générales du scénario
     const [modifications, setModifications] = useState({});                           // State des modifications du scénario
-    const [scenarioRepartition, setScenarioRepartition] = useState({});             // State de la répartition du scénario
+    const [scenarioRepartition, setScenarioRepartition] = useState(null);             // State de la répartition du scénario
     const [loading, setLoading] = useState(false);                                  // State du chargement de la page
     const { apiAccess } = useContext(AppContext);                                   // Récupération de la fonction permetant de faire des apels apis
 
@@ -179,6 +180,7 @@ function DetailsScenario() {
     var heuresCoursTotal = 0;                                // Variable pour le calcul des heures
     var liberationTotal = 0;                                // Variable pour le calcul des libérations
     var tempsAloueLiberation = 0;                           // Variable pour le calcul du temps alloué aux libérations
+
 
     /* -------------------------------- USEEFFECT ------------------------------- */
 
@@ -269,7 +271,6 @@ function DetailsScenario() {
 
     useEffect(() => {
         getInfos();
-        getModifications();
         getRepartition();
     }, []);
 
@@ -289,9 +290,9 @@ function DetailsScenario() {
      * @param {*} liberation liberation à ajouter au tableau
      * @returns un tableau avec les libérations
      */
-    const addLiberation = (liberation, idProfesseur) => {
+    const addLiberation = (liberation) => {
         var idLiberation = liberation.id;
-        var idProfesseur = idProfesseur;
+        var idProfesseur = liberation.pivot.utilisateur_id;
         var motifLiberation = liberation.motif;
         var annee = liberation.pivot.annee;
         var semestre = liberation.pivot.semestre;
@@ -367,7 +368,7 @@ function DetailsScenario() {
     }
 
     // mise en place des tableaux professeurs et cours
-    scenarioRepartition.id ? scenarioRepartition.departement.repartition.map((cours) => {
+    scenarioRepartition ? scenarioRepartition.map((cours) => {
         addCours(cours);
         cours.enseignants.map((enseignant) => {
             addProfesseur(enseignant);
@@ -376,14 +377,15 @@ function DetailsScenario() {
     }) : console.log("pas de scenarioRepartition");
 
     // mise en place du tableau des libérations
-    scenarioRepartition.id ? scenarioRepartition.departement.liberations.map((cours) => {
-        cours.map((enseignant) => {
+    scenarioRepartition ? scenarioRepartition.map((cours) => {
+        cours.enseignants.map((enseignant) => {
             enseignant.liberations.map((liberation) => {
-                addLiberation(liberation, enseignant.id_enseignant);
+                addLiberation(liberation);
             })
         })
     }) : console.log("pas de scenarioRepartition");
 
+    console.log(TbLiberations);
     /* ---------------------------- AUTRES FONCTIONS ---------------------------- */
 
     const [showInfos, setShowInfos] = useState(false);
@@ -397,6 +399,12 @@ function DetailsScenario() {
         setShowHistorique(!showHistorique);
     }
 
+    const afficherDate = (date) => {
+        const dateTime = new Date(date);
+        const options = { weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+        const formattedDateTime = dateTime.toLocaleDateString('fr-FR', options);
+        return formattedDateTime;
+    }
     /* ----------------------------------- DOM ---------------------------------- */
 
     return (
@@ -415,9 +423,8 @@ function DetailsScenario() {
                     </DivShow>
                     <DivInfosScenario showInfos={showInfos}>
                         <H2Scenario>Annee : {scenario.annee}</H2Scenario>
-                        <p>Date de création : {scenario.created_at}</p>
-                        <p>Dernière modification : {scenario.updated_at}</p>
-                        <H2Scenario>Propriétaire : {scenario.proprietaire.nom}</H2Scenario>
+                        <p>Date de création : {afficherDate(scenario.created_at)}</p>
+                        <H2Scenario>Propriétaire : {scenario.proprietaire.name}</H2Scenario>
                     </DivInfosScenario>
                     <DivShow>
                         <H1Scenario>Historique des modifications</H1Scenario>
@@ -436,14 +443,13 @@ function DetailsScenario() {
                                         modifications.map((modif) => (
                                             <div key={modif.id}>
                                                 <p>Date de dernière modification : {modif.date_modif}</p>
-                                                <p>Utilisateur aillant fait la modification : {modif.utilisateur_name}</p>
+                                                <p>Utilisateur aillant fait la modification : {modif.user.name}</p>
                                             </div>
                                         ))
                                     }
                                 </div>
                             )
                         }
-                        isLoadingRepartition && <Loader />
                     </DivInfosScenario>
                     <H1Scenario>Le scénario </H1Scenario>
                     <DivTableau>
@@ -458,7 +464,7 @@ function DetailsScenario() {
                                     <ThScenario>Nbre GR</ThScenario>
                                     <ThScenario>Nbre él. par groupe</ThScenario>
                                     {
-                                        scenarioRepartition.id === undefined ? (
+                                        !scenarioRepartition ? (
                                             <ThScenario></ThScenario>
                                         ) : (
                                             TbProfesseurs.map((professeur) => (
@@ -469,7 +475,7 @@ function DetailsScenario() {
                                 </TrScenario>
                             </thead>
                             <tbody>{
-                                scenarioRepartition.id === undefined ? (
+                                ! scenarioRepartition ?(
                                     <TrScenario>
                                         <TdScenario></TdScenario>
                                         <TdScenario></TdScenario>
@@ -503,8 +509,37 @@ function DetailsScenario() {
                             }
 
                                 {
-                                    //Partie pour les libérations
+                                    !scenarioRepartition? (
+                                        <TrScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario>Le scénario n'a pas été chargé</TdScenario>
+                                        </TrScenario>
+                                    ) : (
+                                        /* On affiche toutes les informations du cours du département */
+                                        scenarioRepartition.map((cours_propose,indexCours) => (
+                                            <TrScenario key={cours_propose.id}>
+                                                <TdScenario>{cours_propose.cours.nom}</TdScenario>
+                                                <TdScenario>{cours_propose.ponderation}</TdScenario>
+                                                <TdScenario>{cours_propose.tailleGroupes}</TdScenario>
+                                                <TdScenario>{cours_propose.nbGroupes}</TdScenario>
+                                                {
+                                                // Pour chaque professeur, on affiche la pondération du cours en utilisant le tableau professeurs 
+                                                TbProfesseurs.map((professeur, indexProfesseur) => (
+                                                    repartitionMatch = TbAttribution.find(attribution => attribution.idCours === cours_propose.id && attribution.idProfesseur === professeur.id),
+                                                    repartitionMatch ?
+                                                        <TdScenario key={indexCours + ',' + indexProfesseur}>{repartitionMatch.nbGroupes}</TdScenario>
+                                                        : <TdScenario key={indexCours + ',' + indexProfesseur}></TdScenario>
+                                                ))
+                                            }
+                                            </TrScenario>
+                                        ))
+                                    )
                                 }
+
+                                {/*Partie pour les libérations*/}
                                 < TrTitreScenario >
                                     <TdScenario></TdScenario>
                                     <TdScenario></TdScenario>
@@ -513,8 +548,9 @@ function DetailsScenario() {
                                     <TdScenario>ETC</TdScenario>
                                 </TrTitreScenario>
 
+                                {/*Partie pour les totaux*/}
                                 {
-                                    scenarioRepartition.aEteValide === undefined ? (
+                                    !scenarioRepartition? (
                                         null
                                     ) : (
                                         <>

@@ -2,123 +2,125 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-use Dotenv\Util\Str;
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-
-/** @todo retirer ça */
+use App\Models\User;
 
 class UserController extends Controller
 {
+    // ------- GET ------- /
+    /**
+     * @brief Renvoie tous les utilisateurs
+     * @return Response 200
+     */
     public function index()
     {
-        return User::all();
+        return response(User::all(), 200);
     }
-    public function showUserDetails(){
-        return Auth::user()->load(["type", "liberations", "coursEnseignes"])
-            ->makeHidden("type_utilisateur_id")
-            ->toJson();
-    }
-    public function showUserScenarios()
+    /**
+     * @brief Renvoie les scenarios d un utilisateur de maniere detaillee
+     * @pre Condition Avoir un token valide lie a un utilisateur 
+     * @return Response 200
+     */
+    public function showUserScenariosCrees()
     {
-        return Auth::user()->scenarios->toJson();
+        return response(Auth::user()->scenarios, 200);
+    }
+    /**
+     * @brief Renvoie un utilisateur de maniere detaillee 
+     * @pre Condition Avoir un token valide lie a un utilisateur 
+     * @return Response 200
+     */
+    public function showUserDetails()
+    {
+        $user = Auth::user()->load(["type", "liberations", "coursEnseignes"]);
+        return response($user, 200);
     }
 
-    public function show($id)
+    // ----- PUT -----
+    /**
+     * @brief Met a jour les contraintes de l utilisateur
+     * @pre Condition Avoir un token valide lie a un utilisateur 
+     * @param Request requete envoyee par le client avec :
+     * @param string contraintes string Contraintes de l'utilisateur
+     * @return Response 200, 500
+     */
+    public function updateUserContraintes(Request $request)
     {
-        return User::findOrFail($id);
-    }
-    public function showType($id)
-    {
-        return User::findOrFail($id)->type->toJson();
-    }
-    public function showLiberations($id)
-    {
-        return User::findOrFail($id)->liberations->toJson();
-    }
-    public function showModifications($id)
-    {
-        return User::findOrFail($id)->modifications->toJson();
-    }
-    public function showCours($id)
-    {
-        return User::findOrFail($id)->cours->toJson();
-    }
-    public function showScenarios($id)
-    {
-        return User::findOrFail($id)->scenarios->toJson();
-    }
-    
-    public function updateUserContraintes(Request $request){
         $user = Auth::user();
         $newContraintes = $request->input('contraintes');
-        if ($newContraintes === null){
+
+        // Transformation du corps
+        if ($newContraintes === null) {
+            // Laravel transforme les corps de requete vides ("") en null donc on le retraduit en chaine vide
             $newContraintes = "";
         }
-        $user->contraintes = $newContraintes;        
+
+        // Enregistrement
+        $user->contraintes = $newContraintes;
         $user->save();
 
-        return response(['message'=>'Contraintes bien modifiées'], 200);
+        return response(['message' => 'Contraintes bien modifiées'], 200);
     }
 
-
+    // ------- POST ------- /
     /**
      * @brief Identifie l utilisateur. Identifiants corrects : cree un token et lui renvoie
      * 
-     * @param email string Email de l'utilisateur
-     * @param password string Mot de passe en clair
-     * @param duration float Duree du token en minutes (entre 1 minute et 100 jours)
+     * @param Request requete envoyee par le client avec :
+     * @param string email string Email de l'utilisateur
+     * @param string password string Mot de passe en clair
+     * @param string duration float Duree du token en minutes (entre 1 minute et 100 jours)
      * 
-     * @return Response (Voir le code pour les differents cas)
-     * @return token string Token de l'utilisateur
+     * @return Response 299, 401, 422
+     * @return string token string Token de l'utilisateur
+     * @return string type string Type de l'utilisateur
      */
-    public function login(Request $request){
+    public function login(Request $request)
+    {
+        // -- Validation des parametres --
         try {
-            // -- Validation des parametres --
             $request->validate([
                 'email' => 'required|email',
                 'password' => 'required',
-                'duration' => 'required|numeric|between:1,144000'       //Entre 1 minute et 100 jours
+                'duration' => 'required|numeric|between:1,144000' //Entre 1 minute et 100 jours
             ]);
-
-            // -- Verification des identifiants --
-            $user = User::where('email', $request->email)->first();
-            if($user && Hash::check($request->password, $user->password)){
-                // -- Identifiants bons --
-                // Revocation des autres tokens
-                $user->tokens()->delete();
-
-                // Création du token
-                $token = $user->createToken('userToken');
-
-                // //Ajout de la date d'expiration
-                $date_expiration = now()->addMinutes($request->duration);
-                $token->accessToken->expires_at = $date_expiration;
-                $token->accessToken->save();
-
-                return response(['token' => $token->plainTextToken, 'idUser' => $user->id, 'type' => $user->type, 'message' => 'Utilisateur bien authentifié'], 299);
-            }
-            else{
-                // Mauvais identifiants
-                return response(['message' => 'Mot de passe ou mail incorrect'], 401);    
-            }
-        } 
-        catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             //Recupère l erreur de validation des champs
             return response(['message' => 'Mauvais format de reponse', 'errors' => $e->errors()], 422);
         }
-        catch (\Throwable $th) {
-            return response(['message' => "Erreur inattendue", 'error' => $th->getMessage()], 500);
-        }
-    }
 
-    public function disconnection(){
+        // -- Verification des identifiants --
+        $user = User::where('email', $request->email)->first();
+        if ($user && Hash::check($request->password, $user->password)) {
+            // -- Identifiants bons --
+            // Revocation des autres tokens
+            $user->tokens()->delete();
+
+            // Création du token
+            $token = $user->createToken('userToken');
+
+            // //Ajout de la date d'expiration
+            $date_expiration = now()->addMinutes($request->duration);
+            $token->accessToken->expires_at = $date_expiration;
+            $token->accessToken->save();
+
+            return response(['token' => $token->plainTextToken, 'type' => $user->type->nom, 'message' => 'Utilisateur bien authentifié'], 299);
+        } else {
+            // Mauvais identifiants
+            return response(['message' => 'Mot de passe ou mail incorrect'], 401);
+        }
+
+    }
+    /**
+     * @brief Déconnecte l'utilisateur lié au token
+     * @pre Condition Avoir un token valide lie a un utilisateur 
+     * @return Response 299
+     */
+    public function logout()
+    {
         $user = Auth::user();
         $user->tokens()->delete();
         return response(['message' => 'Utilisateur bien déconnecté'], 299);

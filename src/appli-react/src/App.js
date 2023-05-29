@@ -9,14 +9,14 @@ import { AppProvider } from "./utils/context/context";
 import GlobalStyles from "./utils/styles/global";
 
 /* Import des pages */
-import Home from "./pages/Home/Home";
-import Login from "./pages/Auth/Login";
-import Authentifie from "./pages/Home/Authentifie/Authentifie";
-import Scenarios from "./pages/scenarios/scenarios";
-import DetailsScenario from "./pages/scenarios/DetailsScenario";
-import Departements from "./pages/Departements/Departements";
-import DetailsDepartement from "./pages/Departements/DetailsDepartement";
-import Profil from "./pages/users/Profil";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Authentifie from "./pages/Authentifie";
+import Scenarios from "./pages/scenarios";
+import DetailsScenario from "./pages/scenario/DetailsScenario";
+import Departements from "./pages/Departements";
+import DetailsDepartement from "./pages/DetailsDepartement";
+import Profil from "./pages/Profil";
 import NotFound from "./pages/NotFound";
 
 /* Import des Layout */

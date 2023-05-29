@@ -1,17 +1,20 @@
+/**
+ * @todo gérer l'absence de type (également la non connexion)
+ */
 /* --------------------------------- IMPORT --------------------------------- */
 /* import du composant CarteAccueil */
-import CarteAccueil from "../../../components/layout/CarteAccueil"
+import CarteAccueil from "../components/layout/CarteAccueil"
 
 /* import pour créer le style */
 import styled from "styled-components"
 
 /* import des images */
-import Calendrier from "../../../assets/images/Authentifie/Calendrier.svg"
-import Repartir from "../../../assets/images/Authentifie/Repartir.svg"
-import Departements from "../../../assets/images/Authentifie/Departements.svg"
+import Calendrier from "../assets/images/Authentifie/Calendrier.svg"
+import Repartir from "../assets/images/Authentifie/Repartir.svg"
+import Departements from "../assets/images/Authentifie/Departements.svg"
 
 import { useContext } from "react"
-import { AppContext } from "../../../utils/context/context"
+import { AppContext } from "../utils/context/context"
 import { useState } from "react"
 
 /* ---------------------------------- STYLE --------------------------------- */
@@ -30,12 +33,10 @@ function Authentifie() {
     const { getType } = useContext(AppContext);
     const [type, setType] = useState(getType());
 
-    console.log(type);
-
     return (
         <DivAuthentifie>
             {(() => {
-                switch (type.slice(1,-1)) {
+                switch (type) {
                     case 'professeur':
                         return (
                             <>

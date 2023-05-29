@@ -12,8 +12,8 @@ export const BoutonStyle = styled.button`
     margin: 1rem;
 `;
 
-function Bouton({ OnClick, children }) {
-    return <BoutonStyle onClick={OnClick}>{children}</BoutonStyle>;
+function Bouton({ onClick, children }) {
+    return <BoutonStyle onClick={onClick}>{children}</BoutonStyle>;
 }
 
 export default Bouton;
