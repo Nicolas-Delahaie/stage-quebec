@@ -16,12 +16,11 @@ use \App\Models\Modification;
 use \App\Models\CoursPropose;
 use \App\Models\Enseigner;
 use \App\Models\Alouer;
-use \App\Models\Utilisateur;
 use \App\Models\Rdv;
-use \App\Models\Contrainte;
 use \App\Models\Cours;
 use \App\Models\Liberation;
 use \App\Models\DetailModification;
+use \App\Models\Repartition;
 
 
 class DatabaseSeeder extends Seeder
@@ -261,10 +260,25 @@ class DatabaseSeeder extends Seeder
                 }
             }
             foreach($details_modification as $val){DetailModification::create($val);}
+
+            $repartition = [];
+            foreach( Enseigner::all() as $enseigner){
+
+                $nbScenarios = $faker->numberBetween(1, count($enseigner->coursPropose->departement->scenarios));
+                $tbScenarios = $enseigner->coursPropose->departement->scenarios;
+                for ($i=0; $i < $nbScenarios; $i++) {
+                    array_push($repartition, [
+                        "id_enseigner" => $enseigner->id,
+                        "id_scenario" => $tbScenarios[$i]->id,
+                        "nbGroupes" => $faker->numberBetween(1, 4),
+                        "preparation" => $faker->numberBetween(1, 4),
+                    ]);
+                }
+            }
+            foreach($repartition as $val){Repartition::create($val);}
         }
         catch(\Exception $e){
             dd($e);
         }
     }
-    
 }
