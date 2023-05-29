@@ -254,10 +254,11 @@ function DetailsScenario() {
             method: "get",
         });
 
-        setIsLoadingRepartition(false);
+        setIsLoadingRepartition(true);
 
         if (rep.success) {
             setScenarioRepartition(rep.datas);
+            setIsLoadingRepartition(false);
         }
         else {
             /** @todo Gerer l erreur */
@@ -425,23 +426,24 @@ function DetailsScenario() {
                         </ButtonShow>
                     </DivShow>
                     <DivInfosScenario showInfos={showHistorique}>
-                    {
-                        modifications[0] === undefined ? (
-                            <p>Aucune modification n'a été apportée</p>
-                        ) : (
-                            <div>
-                                {
-                                    /*Pour chaque modification, on affiche la date de modification et l'utilisateur qui a fait la modification*/
-                                    modifications.map((modif) => (
-                                        <div key={modif.id}>
-                                            <p>Date de dernière modification : {modif.date_modif}</p>
-                                            <p>Utilisateur aillant fait la modification : {modif.utilisateur_name}</p>
-                                        </div>
-                                    ))
-                                }
-                            </div>
-                        )
-                    }
+                        {
+                            modifications[0] === undefined ? (
+                                <p>Aucune modification n'a été apportée</p>
+                            ) : (
+                                <div>
+                                    {
+                                        /*Pour chaque modification, on affiche la date de modification et l'utilisateur qui a fait la modification*/
+                                        modifications.map((modif) => (
+                                            <div key={modif.id}>
+                                                <p>Date de dernière modification : {modif.date_modif}</p>
+                                                <p>Utilisateur aillant fait la modification : {modif.utilisateur_name}</p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            )
+                        }
+                        isLoadingRepartition && <Loader />
                     </DivInfosScenario>
                     <H1Scenario>Le scénario </H1Scenario>
                     <DivTableau>
@@ -456,7 +458,7 @@ function DetailsScenario() {
                                     <ThScenario>Nbre GR</ThScenario>
                                     <ThScenario>Nbre él. par groupe</ThScenario>
                                     {
-                                        scenarioRepartition.aEteValide === undefined ? (
+                                        scenarioRepartition.id === undefined ? (
                                             <ThScenario></ThScenario>
                                         ) : (
                                             TbProfesseurs.map((professeur) => (
@@ -467,7 +469,7 @@ function DetailsScenario() {
                                 </TrScenario>
                             </thead>
                             <tbody>{
-                                scenarioRepartition.aEteValide === undefined ? (
+                                scenarioRepartition.id === undefined ? (
                                     <TrScenario>
                                         <TdScenario></TdScenario>
                                         <TdScenario></TdScenario>
@@ -513,14 +515,7 @@ function DetailsScenario() {
 
                                 {
                                     scenarioRepartition.aEteValide === undefined ? (
-                                        <TrScenario>
-                                            <TdScenario></TdScenario>
-                                            <TdScenario></TdScenario>
-                                            <TdScenario></TdScenario>
-                                            <TdScenario></TdScenario>
-                                            <TdScenario></TdScenario>
-                                            <TdScenario>Le scénario n'a pas été chargé</TdScenario>
-                                        </TrScenario>
+                                        null
                                     ) : (
                                         <>
                                             {
@@ -634,13 +629,16 @@ function DetailsScenario() {
                                 </TrScenario>
                             </tbody>
                         </TableScenario>
+
                     </DivTableau>
 
                 </DivDetailsScenario>
             )
             }
         </DivPageDetailsScenario >
+
     )
+
 }
 
 export default DetailsScenario
