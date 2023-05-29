@@ -16,7 +16,11 @@ class DepartementController extends Controller
     }
     public function indexDetaille()
     {
-        return Departement::with('coordonnateur')->get()->toJson();
+        return Departement::with([
+            'coordonnateur' => function ($query) {
+                $query->select('id', 'name');
+            },
+        ])->get()->toJson();
     }
     public function show($id)
     {
@@ -28,6 +32,16 @@ class DepartementController extends Controller
     }
     public function showCoursProposesDetailles($id)
     {
-        return Departement::findOrFail($id)->coursProposesDetailles->toJson();
+        return Departement::findOrFail($id)
+            ->coursProposes()
+            ->with([
+                "enseignants" => function ($query) {
+                    $query->select('users.id', 'name');
+                },
+                "cours" => function ($query) {
+                    $query->select('cours.id', 'nom');
+                },
+            ])
+            ->get();
     }
 }
