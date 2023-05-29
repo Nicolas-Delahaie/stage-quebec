@@ -13,9 +13,8 @@ import Calendrier from "../assets/images/Authentifie/Calendrier.svg"
 import Repartir from "../assets/images/Authentifie/Repartir.svg"
 import Departements from "../assets/images/Authentifie/Departements.svg"
 
-import { useContext } from "react"
+import { useContext, useState, useEffect } from "react"
 import { AppContext } from "../utils/context/context"
-import { useState } from "react"
 
 /* ---------------------------------- STYLE --------------------------------- */
 
@@ -33,9 +32,13 @@ function Authentifie() {
     const { getType } = useContext(AppContext);
     const [type, setType] = useState(getType());
 
+    useEffect(() => {
+        setType(getType());
+    }, [])
+
     return (
         <DivAuthentifie>
-            {(() => {
+            {type && (() => {
                 switch (type) {
                     case 'professeur':
                         return (
