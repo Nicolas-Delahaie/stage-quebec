@@ -393,23 +393,14 @@ function DetailsScenario() {
     }
 
     // mise en place des tableaux professeurs et cours
-    scenarioRepartition ? scenarioRepartition.map((repartition) => {
+    scenarioRepartition && scenarioRepartition.map((repartition) => {
         addRepartition(repartition);
         addCours(repartition.enseigner.cours_propose);
         addProfesseur(repartition.enseigner.professeur);
         repartition.enseigner.professeur.liberations.map((liberation) => {
             addLiberation(liberation, repartition.enseigner.professeur.id);
         })
-    }) : console.log("pas de scenarioRepartition");
-
-    // console.log("TbLiberations");
-    // console.log(TbLiberations);
-    // console.log("TbProfesseurs");
-    // console.log(TbProfesseurs);
-    console.log("TbCours");
-    console.log(TbCours);
-    console.log("TbRepartition");
-    console.log(TbRepartition);
+    }) 
 
     /* ---------------------------- AUTRES FONCTIONS ---------------------------- */
 
@@ -431,6 +422,9 @@ function DetailsScenario() {
         return formattedDateTime;
     }
     /* ----------------------------------- DOM ---------------------------------- */
+
+    console.log('tbRepartition');
+    console.log(TbRepartition);
 
     return (
         <DivPageDetailsScenario>
@@ -514,7 +508,6 @@ function DetailsScenario() {
 
 
                                     TbCours.map((cours, indexCours) => (
-                                        console.log(indexCours),
                                         <TrScenario key={cours.id}>
                                             <TdScenario>{cours.nom}</TdScenario>
                                             <TdScenario>{cours.ponderation}</TdScenario>
@@ -564,7 +557,7 @@ function DetailsScenario() {
                                                         ))
 
                                                     )),
-                                                    <TrScenario key={liberation.id}>
+                                                    <TrScenario key={liberation.motif}>
                                                         <TdScenario></TdScenario>
                                                         <TdScenario></TdScenario>
                                                         <TdScenario></TdScenario>
@@ -617,20 +610,18 @@ function DetailsScenario() {
                                             // On initialise le total de CI à 0
                                             CITotal = 0,
                                             // On récupère toutes les Repartitions du professeur
-                                            TbRepartition.map((Repartition) => {
-                                                if (Repartition.idProfesseur === professeur.id) {
-                                                    const coursMatch = TbCours.find(cours => cours.id === Repartition.idCours);
+                                            TbRepartition.map((repartition) => {
+                                                if (repartition.idProfesseur === professeur.id) {
+                                                    const coursMatch = TbCours.find(cours => cours.id === repartition.idCours);
                                                     // On ajoute le CI du cours au total de CI
-                                                    CITotal += parseFloat(calculCIP(Repartition.nbGroupes, coursMatch.ponderation, coursMatch.tailleGroupes, 1));
+                                                    CITotal += parseFloat(calculCIP(repartition.nbGroupes, coursMatch.ponderation, coursMatch.tailleGroupes, repartition.preparation));
 
                                                 }
                                             }),
-                                            TbLiberations.map((liberation) => {
-                                                if (liberation.idProfesseur === professeur.id) {
-                                                    // On ajoute le CI du cours au total de CI
-                                                    CITotal += parseFloat(calculCIL(liberation.tempsAloue));
-                                                }
-                                            }),
+                                            professeur.liberations.map((liberation) => (
+                                                // On ajoute le CI de la libération au total de CI
+                                                CITotal += parseFloat(calculCIL(Number(liberation.pivot.tempsAloue)))
+                                            )),
                                             // On affiche le total de CI
                                             <TdScenario key={'Ci de ' + professeur.nom}>{CITotal.toFixed(2)}</TdScenario>
                                         ))
