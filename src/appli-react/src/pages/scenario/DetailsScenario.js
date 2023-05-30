@@ -402,14 +402,14 @@ function DetailsScenario() {
         })
     }) : console.log("pas de scenarioRepartition");
 
-    console.log("TbLiberations");
-    console.log(TbLiberations);
-    console.log("TbProfesseurs");
-    console.log(TbProfesseurs);
+    // console.log("TbLiberations");
+    // console.log(TbLiberations);
+    // console.log("TbProfesseurs");
+    // console.log(TbProfesseurs);
     console.log("TbCours");
     console.log(TbCours);
-    // console.log("TbRepartition");
-    // console.log(TbRepartition);
+    console.log("TbRepartition");
+    console.log(TbRepartition);
 
     /* ---------------------------- AUTRES FONCTIONS ---------------------------- */
 
@@ -514,6 +514,7 @@ function DetailsScenario() {
 
 
                                     TbCours.map((cours, indexCours) => (
+                                        console.log(indexCours),
                                         <TrScenario key={cours.id}>
                                             <TdScenario>{cours.nom}</TdScenario>
                                             <TdScenario>{cours.ponderation}</TdScenario>
@@ -534,37 +535,6 @@ function DetailsScenario() {
                                     ))
                                 )
                             }
-
-                                {
-                                    !scenarioRepartition ? (
-                                        <TrScenario>
-                                            <TdScenario></TdScenario>
-                                            <TdScenario></TdScenario>
-                                            <TdScenario></TdScenario>
-                                            <TdScenario></TdScenario>
-                                            <TdScenario>Le scénario n'a pas été chargé</TdScenario>
-                                        </TrScenario>
-                                    ) : (
-                                        /* On affiche toutes les informations du cours du département */
-                                        TbCours.map((cours_propose, indexCours) => (
-                                            <TrScenario key={cours_propose.id}>
-                                                <TdScenario>{cours_propose.nom}</TdScenario>
-                                                <TdScenario>{cours_propose.ponderation}</TdScenario>
-                                                <TdScenario>{cours_propose.tailleGroupes}</TdScenario>
-                                                <TdScenario>{cours_propose.nbGroupes}</TdScenario>
-                                                {
-                                                    // Pour chaque professeur, on affiche la pondération du cours en utilisant le tableau professeurs 
-                                                    TbProfesseurs.map((professeur, indexProfesseur) => (
-                                                        repartitionMatch = TbRepartition.find(Repartition => Repartition.idCours === cours_propose.id && Repartition.idProfesseur === professeur.id),
-                                                        repartitionMatch ? (
-                                                            <TdScenario key={indexCours + ',' + indexProfesseur}>{repartitionMatch.nbGroupes}</TdScenario>)
-                                                            : <TdScenario key={indexCours + ',' + indexProfesseur}></TdScenario>
-                                                    ))
-                                                }
-                                            </TrScenario>
-                                        ))
-                                    )
-                                }
 
                                 {/*Partie pour les libérations*/}
                                 < TrTitreScenario >
