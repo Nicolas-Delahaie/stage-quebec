@@ -65,6 +65,7 @@ class ScenarioController extends Controller
     public function showRepartition($id)
     {
         // Recuperation du scenario
+<<<<<<< HEAD
         $scenario = Scenario::findOrFail($id)
             ->departement
             ->coursProposesDetailles()
@@ -78,7 +79,12 @@ class ScenarioController extends Controller
                 }
             ])
             ->get();
+=======
+        $scenario = Scenario::findOrFail($id);
+        
+        $repartition = $scenario->repartitions;
+>>>>>>> preMaster
 
-        return response($scenario, 200);
+        return response($repartition, 200);
     }
 }

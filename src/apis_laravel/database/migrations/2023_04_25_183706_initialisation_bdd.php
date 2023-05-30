@@ -102,6 +102,13 @@ return new class extends Migration
             $table->unsignedDecimal("tempsAloue", 5, 5);
             $table->timestamps();
         });
+        Schema::create("repartition",function(Blueprint $table){
+            $table->id();
+            $table->unsignedBigInteger("id_enseigner");
+            $table->unsignedBigInteger("id_scenario");
+            $table->unsignedTinyInteger("nbGroupes");
+            $table->unsignedTinyInteger("preparation");
+        });
     
 
 
@@ -158,7 +165,12 @@ return new class extends Migration
             $table->foreign("liberation_id")->references("id")->on("liberation")
                 ->onDelete("CASCADE");
         });
-        
+        Schema::table("repartition",function(Blueprint $table){
+            $table->foreign("id_enseigner")->references("id")->on("enseigner")
+                ->onDelete("CASCADE");
+            $table->foreign("id_scenario")->references("id")->on("scenario")
+                ->onDelete("CASCADE");
+        });
     }
 
     /**
@@ -168,13 +180,11 @@ return new class extends Migration
     {
         // DESACTIVATION REFERENCES
         Schema::disableForeignKeyConstraints();
-         
 
         // SUPPRESSION TABLES CREES
-        $nomsTables = array("details_modification", "alouer", "liberation", "cours", "cours_propose", "enseigner", "rdv",  "modification", "organiser", "type_utilisateur","departement","scenario");
+        $nomsTables = array("detail_modification", "alouer", "liberation", "cours", "cours_propose", "enseigner", "rdv", "modification", "organiser", "type_utilisateur","departement","scenario","repartition");
         foreach($nomsTables as $nomTable){Schema::dropIfExists($nomTable);}
 
-        
         // SUPPRESSION MODIFICATIONS
         if (Schema::hasColumn("users", "type_utilisateur_id")){
             Schema::table('users', function (Blueprint $table) {
