@@ -75,19 +75,22 @@ class ScenarioController extends Controller
                 $query->with([
                     'coursPropose' => function ($query) {
                         $query->with([
-                            'enseignants' => function ($query) {
-                                $query->with([
-                                    'liberations' => function ($query) {
-                                        $query->select('motif');
-                                    },
-                                ])
-                                ->select('name');
+                            'cours' => function ($query) {
+                                $query->select('id', 'nom');
+                            }
+                        ])
+                        ->select('id', 'tailleGroupes', 'nbGroupes', 'cours_id');
+                    },
+                    'professeur' => function ($query) {
+                        $query->with([
+                            'liberations' => function ($query) {
+                                $query->select('motif');
                             },
                         ])
-                        ->select('id', 'tailleGroupes', 'nbGroupes');
+                        ->select('id', 'name');
                     }
                 ])
-                ->select('id', 'cours_propose_id');
+                ->select('id', 'cours_propose_id','professeur_id');
             }
         ])
         ->select('id', 'id_enseigner', 'nbGroupes', 'preparation')

@@ -20,4 +20,9 @@ class Enseigner extends Model
     {
         return $this->belongsTo(CoursPropose::class, 'cours_propose_id');
     }
+
+    public function professeur()
+    {
+        return $this->belongsTo(User::class, 'professeur_id');
+    }
 }

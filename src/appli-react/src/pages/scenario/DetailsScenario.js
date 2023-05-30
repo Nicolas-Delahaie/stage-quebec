@@ -280,7 +280,7 @@ function DetailsScenario() {
     var TbLiberations = [];                                    // Tableau des libérations
     var TbProfesseurs = [];                                 // Tableau des professeurs   
     var TbCours = [];                                         // Tableau des cours
-    var TbAttribution = [];                            // Tableau des attirbution de cours
+    var TbRepartition = [];                            // Tableau des attirbution de cours
 
     var repartitionMatch = false;                        // Variable de comparaison pour la répartition
     var liberationMatch = false;                         // Variable de comparaison pour les libérations
@@ -319,20 +319,19 @@ function DetailsScenario() {
      * @returns un tableau avec les professeurs
      */
     const addProfesseur = (professeur) => {
-        var idProfesseur = professeur.id;
         var nomProfesseur = professeur.name;
         var professeurExiste = false;
 
         // Recherche de première occurence du professeur
         TbProfesseurs.forEach(prof => {
-            if (prof.id == idProfesseur) {
+            if (prof.nom == nomProfesseur) {
                 professeurExiste = true;
             }
         });
 
         // Si le professeur n'existe pas, on l'ajoute au tableau
         if (!professeurExiste) {
-            TbProfesseurs.push({ 'id': idProfesseur, 'nom': nomProfesseur });
+            TbProfesseurs.push({ 'nom': nomProfesseur });
         }
 
     }
@@ -356,24 +355,22 @@ function DetailsScenario() {
 
     /**
      * 
-     * @param {*} attribution quel cours est enseigné par quel professeur
-     * @returns TbAttribution un tableau avec les attributions
+     * @param {*} Repartition quel cours est enseigné par quel professeur
+     * @returns TbRepartition un tableau avec les Repartitions
      */
-    const addAttribution = (attribution) => {
-        var idCours = attribution.cours_propose_id;
-        var idProfesseur = attribution.professeur_id;
-        var nbGoupes = attribution.nbGroupes
+    const addRepartition = (repartition) => {
+        var idCours = repartition.enseigner.cours_propose_id;
+        var idProfesseur = repartition.enseigner.cours_propose.enseignants.name
+        var nbGoupes = repartition.nbGroupes
+        var preparation = repartition.preparation;
 
-        return TbAttribution.push({ 'idCours': idCours, 'idProfesseur': idProfesseur, 'nbGroupes': nbGoupes });
+        return TbRepartition.push({ 'idCours': idCours, 'idProfesseur': idProfesseur, 'nbGroupes': nbGoupes, 'preparation': preparation });
     }
 
     // mise en place des tableaux professeurs et cours
-    scenarioRepartition ? scenarioRepartition.map((cours) => {
-        addCours(cours);
-        cours.enseignants.map((enseignant) => {
-            addProfesseur(enseignant);
-            addAttribution(enseignant.pivot);
-        })
+    scenarioRepartition ? scenarioRepartition.map((repartition) => {
+        addRepartition(repartition);
+        addProfesseur(repartition.enseigner.cours_propose.enseignant);
     }) : console.log("pas de scenarioRepartition");
 
     // mise en place du tableau des libérations
@@ -497,7 +494,7 @@ function DetailsScenario() {
                                             {
                                                 // Pour chaque professeur, on affiche la pondération du cours en utilisant le tableau professeurs 
                                                 TbProfesseurs.map((professeur, indexProfesseur) => (
-                                                    repartitionMatch = TbAttribution.find(attribution => attribution.idCours === cours.id && attribution.idProfesseur === professeur.id),
+                                                    repartitionMatch = TbRepartition.find(Repartition => Repartition.idCours === cours.id && Repartition.idProfesseur === professeur.id),
                                                     repartitionMatch ?
                                                         <TdScenario key={indexCours + ',' + indexProfesseur}>{repartitionMatch.nbGroupes}</TdScenario>
                                                         : <TdScenario key={indexCours + ',' + indexProfesseur}></TdScenario>
@@ -528,7 +525,7 @@ function DetailsScenario() {
                                                 {
                                                 // Pour chaque professeur, on affiche la pondération du cours en utilisant le tableau professeurs 
                                                 TbProfesseurs.map((professeur, indexProfesseur) => (
-                                                    repartitionMatch = TbAttribution.find(attribution => attribution.idCours === cours_propose.id && attribution.idProfesseur === professeur.id),
+                                                    repartitionMatch = TbRepartition.find(Repartition => Repartition.idCours === cours_propose.id && Repartition.idProfesseur === professeur.id),
                                                     repartitionMatch ?
                                                         <TdScenario key={indexCours + ',' + indexProfesseur}>{repartitionMatch.nbGroupes}</TdScenario>
                                                         : <TdScenario key={indexCours + ',' + indexProfesseur}></TdScenario>
@@ -560,7 +557,7 @@ function DetailsScenario() {
                                                     //Pour chaque libération, on affiche l'ETC total 
                                                     liberationTotal = 0,
                                                     TbProfesseurs.map((professeur) => (
-                                                        liberationMatch = TbLiberations.find(attribution => attribution.idProfesseur === professeur.id),
+                                                        liberationMatch = TbLiberations.find(Repartition => Repartition.idProfesseur === professeur.id),
                                                         liberationMatch ?
                                                             liberationTotal += parseFloat(liberationMatch.tempsAloue)
                                                             : liberationTotal += 0
@@ -575,7 +572,7 @@ function DetailsScenario() {
                                                             // Pour chaque professeur, on affiche ses libérations
                                                             TbProfesseurs.map((professeur, indexProfesseur) => {
                                                                 // On cherche si le professeur a une libération
-                                                                liberationMatch = TbLiberations.find(attribution => attribution.idProfesseur === professeur.id);
+                                                                liberationMatch = TbLiberations.find(Repartition => Repartition.idProfesseur === professeur.id);
                                                                 return (
                                                                     // Si on a une libération, on affiche le temps alloué
                                                                     liberationMatch ? (
@@ -619,12 +616,12 @@ function DetailsScenario() {
                                         TbProfesseurs.map((professeur) => (
                                             // On initialise le total de CI à 0
                                             CITotal = 0,
-                                            // On récupère toutes les attributions du professeur
-                                            TbAttribution.map((attribution) => {
-                                                if (attribution.idProfesseur === professeur.id) {
-                                                    const coursMatch = TbCours.find(cours => cours.id === attribution.idCours);
+                                            // On récupère toutes les Repartitions du professeur
+                                            TbRepartition.map((Repartition) => {
+                                                if (Repartition.idProfesseur === professeur.id) {
+                                                    const coursMatch = TbCours.find(cours => cours.id === Repartition.idCours);
                                                     // On ajoute le CI du cours au total de CI
-                                                    CITotal += parseFloat(calculCIP(attribution.nbGroupes, coursMatch.ponderation, coursMatch.tailleGroupes, 1));
+                                                    CITotal += parseFloat(calculCIP(Repartition.nbGroupes, coursMatch.ponderation, coursMatch.tailleGroupes, 1));
 
                                                 }
                                             }),
@@ -650,12 +647,12 @@ function DetailsScenario() {
                                         TbProfesseurs.map((professeur) => (
                                             // On initialise le total d'heures de cours à 0
                                             heuresCoursTotal = 0,
-                                            // On récupère toutes les attributions du professeur
-                                            TbAttribution.map((attribution) => {
-                                                if (attribution.idProfesseur === professeur.id) {
-                                                    const coursMatch = TbCours.find(cours => cours.id === attribution.idCours);
+                                            // On récupère toutes les Repartitions du professeur
+                                            TbRepartition.map((Repartition) => {
+                                                if (Repartition.idProfesseur === professeur.id) {
+                                                    const coursMatch = TbCours.find(cours => cours.id === Repartition.idCours);
                                                     // On ajoute le nombre d'heures de cours au total d'heures de cours
-                                                    heuresCoursTotal += attribution.nbGroupes * coursMatch.ponderation;
+                                                    heuresCoursTotal += Repartition.nbGroupes * coursMatch.ponderation;
                                                 }
                                             }),
                                             // On affiche le total d'heures de cours
