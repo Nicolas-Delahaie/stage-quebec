@@ -65,26 +65,34 @@ class ScenarioController extends Controller
     public function showRepartition($id)
     {
         // Recuperation du scenario
-<<<<<<< HEAD
-        $scenario = Scenario::findOrFail($id)
-            ->departement
-            ->coursProposesDetailles()
-            ->with([
-                "enseignants" => function ($query) {
-                    $query->select("users.id", "users.name", "contraintes", "estCoordo");
-                    $query->with(['liberations']);
-                },
-                "cours" => function ($query) {
-                    $query->select("cours.id", "nom");
-                }
-            ])
-            ->get();
-=======
+
         $scenario = Scenario::findOrFail($id);
         
-        $repartition = $scenario->repartitions;
->>>>>>> preMaster
 
+        $repartition = $scenario->repartitions()
+        ->with([
+            'enseigner' => function ($query) {
+                $query->with([
+                    'coursPropose' => function ($query) {
+                        $query->with([
+                            'enseignants' => function ($query) {
+                                $query->with([
+                                    'liberations' => function ($query) {
+                                        $query->select('motif');
+                                    },
+                                ])
+                                ->select('name');
+                            },
+                        ])
+                        ->select('id', 'tailleGroupes', 'nbGroupes');
+                    }
+                ])
+                ->select('id', 'cours_propose_id');
+            }
+        ])
+        ->select('id', 'id_enseigner', 'nbGroupes', 'preparation')
+        ->get();
+        
         return response($repartition, 200);
     }
 }

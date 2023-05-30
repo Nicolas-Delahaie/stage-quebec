@@ -26,7 +26,6 @@ class CoursPropose extends Model
         return $this->belongsTo(Departement::class, "departement_id");
     }
     public function enseignants(){
-        return $this->belongsToMany(User::class, "enseigner", "cours_propose_id", "professeur_id")
-            ->withPivot("nbGroupes");
+        return $this->belongsToMany(User::class, "enseigner", "cours_propose_id", "professeur_id");
     }
 }
