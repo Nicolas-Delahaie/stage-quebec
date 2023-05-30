@@ -79,7 +79,7 @@ class ScenarioController extends Controller
                                 $query->select('id', 'nom');
                             }
                         ])
-                        ->select('id', 'tailleGroupes', 'nbGroupes', 'cours_id');
+                        ->select('id', 'tailleGroupes', 'nbGroupes','ponderation', 'cours_id');
                     },
                     'professeur' => function ($query) {
                         $query->with([

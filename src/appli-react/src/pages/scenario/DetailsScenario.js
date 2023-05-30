@@ -290,9 +290,8 @@ function DetailsScenario() {
      * @param {*} liberation liberation à ajouter au tableau
      * @returns un tableau avec les libérations
      */
-    const addLiberation = (liberation) => {
-        var idLiberation = liberation.id;
-        var idProfesseur = liberation.pivot.utilisateur_id;
+    const addLiberation = (liberation,professeurId) => {
+        var idProfesseur = professeurId;
         var motifLiberation = liberation.motif;
         var annee = liberation.pivot.annee;
         var semestre = liberation.pivot.semestre;
@@ -301,7 +300,7 @@ function DetailsScenario() {
 
         // Recherche de première occurence de la libération
         TbLiberations.forEach(lib => {
-            if (lib.id == idLiberation) {
+            if (lib == liberation) {
                 libExiste = true;
             }
         }
@@ -309,7 +308,7 @@ function DetailsScenario() {
 
         // Si la libération n'existe pas, on l'ajoute au tableau
         if (!libExiste) {
-            TbLiberations.push({ 'id': idLiberation, 'idProfesseur': idProfesseur, 'motif': motifLiberation, 'annee': annee, 'semestre': semestre, 'tempsAloue': tempsAloue });
+            TbLiberations.push({ 'idProfesseur': idProfesseur, 'motif': motifLiberation, 'annee': annee, 'semestre': semestre, 'tempsAloue': tempsAloue });
         }
     }
 
@@ -319,19 +318,20 @@ function DetailsScenario() {
      * @returns un tableau avec les professeurs
      */
     const addProfesseur = (professeur) => {
+        var idProfesseur = professeur.id;
         var nomProfesseur = professeur.name;
         var professeurExiste = false;
 
         // Recherche de première occurence du professeur
         TbProfesseurs.forEach(prof => {
-            if (prof.nom == nomProfesseur) {
+            if (prof.id == idProfesseur) {
                 professeurExiste = true;
             }
         });
 
         // Si le professeur n'existe pas, on l'ajoute au tableau
         if (!professeurExiste) {
-            TbProfesseurs.push({ 'nom': nomProfesseur });
+            TbProfesseurs.push({ 'id': idProfesseur,'nom': nomProfesseur });
         }
 
     }
@@ -343,10 +343,10 @@ function DetailsScenario() {
      */
     const addCours = (cours) => {
         var idCours = cours.id;
-        var nomCours = cours.cours.nom;
+        var tailleGroupes = cours.tailleGroupes;
         var nbGroupes = cours.nbGroupes;
         var ponderation = cours.ponderation;
-        var tailleGroupes = cours.tailleGroupes;
+        var nomCours = cours.cours.nom;
         var nbEtudiantsTotal = tailleGroupes * nbGroupes;
 
         return TbCours.push({ 'id': idCours, 'nom': nomCours, 'nbGroupes': nbGroupes, 'ponderation': ponderation, 'tailleGroupes': tailleGroupes, 'nbEtudiantsTotal': nbEtudiantsTotal });
@@ -360,7 +360,7 @@ function DetailsScenario() {
      */
     const addRepartition = (repartition) => {
         var idCours = repartition.enseigner.cours_propose_id;
-        var idProfesseur = repartition.enseigner.cours_propose.enseignants.name
+        var idProfesseur = repartition.enseigner.professeur.id;
         var nbGoupes = repartition.nbGroupes
         var preparation = repartition.preparation;
 
@@ -370,17 +370,13 @@ function DetailsScenario() {
     // mise en place des tableaux professeurs et cours
     scenarioRepartition ? scenarioRepartition.map((repartition) => {
         addRepartition(repartition);
-        addProfesseur(repartition.enseigner.cours_propose.enseignant);
-    }) : console.log("pas de scenarioRepartition");
-
-    // mise en place du tableau des libérations
-    scenarioRepartition ? scenarioRepartition.map((cours) => {
-        cours.enseignants.map((enseignant) => {
-            enseignant.liberations.map((liberation) => {
-                addLiberation(liberation);
-            })
+        addCours(repartition.enseigner.cours_propose);
+        addProfesseur(repartition.enseigner.professeur);
+        repartition.enseigner.professeur.liberations.map((liberation) => {
+            addLiberation(liberation, repartition.enseigner.professeur.id);
         })
     }) : console.log("pas de scenarioRepartition");
+
 
     console.log(TbLiberations);
     /* ---------------------------- AUTRES FONCTIONS ---------------------------- */
@@ -516,9 +512,9 @@ function DetailsScenario() {
                                         </TrScenario>
                                     ) : (
                                         /* On affiche toutes les informations du cours du département */
-                                        scenarioRepartition.map((cours_propose,indexCours) => (
+                                        TbCours.map((cours_propose,indexCours) => (
                                             <TrScenario key={cours_propose.id}>
-                                                <TdScenario>{cours_propose.cours.nom}</TdScenario>
+                                                <TdScenario>{cours_propose.nom}</TdScenario>
                                                 <TdScenario>{cours_propose.ponderation}</TdScenario>
                                                 <TdScenario>{cours_propose.tailleGroupes}</TdScenario>
                                                 <TdScenario>{cours_propose.nbGroupes}</TdScenario>
