@@ -5,15 +5,15 @@
 //Elements graphiques
 import styled from 'styled-components'
 import toast, { Toaster } from "react-hot-toast"
-import { Input, InputSubmit } from "../../components/forms"
+import { Input, InputSubmit } from "../components/forms"
 
-import { Loader, colors, fonts } from "../../utils/styles"
+import { Loader, colors, fonts } from "../utils/styles"
 
 //Autre
 import { useState, useEffect } from "react"
 import { redirect, useNavigate } from "react-router-dom"
 import { useContext } from "react"
-import { AppContext } from "../../utils/context/context"
+import { AppContext } from "../utils/context/context"
 
 
 const DivAuthentification = styled.div`
@@ -105,8 +105,8 @@ function Login() {
             // -- Traitement de la reponse --
             if (rep.success) {
                 //Connexion pour 100 jours si on coche la case, sinon pour 24h
-                connexion(rep.datas.token, dureeSessionEnMin);
-                navigate("/authentifie");
+                connexion(rep.datas.token, dureeSessionEnMin, rep.datas.type);
+                navigate("/");
             }
             else {
                 setIsConnecting(false);

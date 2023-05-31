@@ -1,5 +1,4 @@
 /**
- * @todo Ajouter le script de deconnexion laravel au front
  * @todo faire en sorte que toutes les pages se re-rendent lorsque estConnecte est modifié 
  */
 import { createContext } from 'react';  //Pour generer le contexte
@@ -31,50 +30,38 @@ export const AppProvider = ({ children }) => {
      * @details Met egalement a jour la variable estConnecte 
      * @returns string, undefined
      */
-    const getUserToken = () => {
-        return Cookies.get('token');
-    }
-
     const getType = () => {
-        let type = Cookies.get('type');
-        if (type) {
-            return type;
-        }
-        else {
-            return undefined;
-        }
-    }
-
-    const getUserId = () => {
-        let id = Cookies.get('idUser');
-        if (id) {
-            return id;
-        }
-        else {
-            return undefined;
-        }
+        return Cookies.get('userType');
     }
 
     /**
      * @brief Connecte l utilsisateur
      * @details Cree le cookie de tokken et met a jour la variable estConnecte 
      */
-    const connexion = (token, dureeSessionEnMin, userId, userType) => {
+    const connexion = (token, dureeSessionEnMin, userType) => {
         const dureeSessionEnH = dureeSessionEnMin / 60;
         const dureeSessionEnJ = dureeSessionEnH / 24;
         Cookies.set("token", token, { expires: dureeSessionEnJ });
-        Cookies.set("userId", userId, { expires: dureeSessionEnJ });
-        Cookies.set("userType", userType, {expires: dureeSessionEnJ});
+        Cookies.set("userType", userType, { expires: dureeSessionEnJ });
         setEstConnecte(true);
     }
     /**
      * @brief Deconnecte l utilsisateur
      * @details Supprime le cookie de tokken et met a jour la variable estConnecte 
      */
-    const deconnexion = () => {
+    const deconnexionFront = () => {
         Cookies.remove('token');
-        navigate("/login");
+        Cookies.remove('userType');
         setEstConnecte(false);
+    }
+    const deconnexion = async () => {
+        // Deconnexion back
+        const rep = await apiAccess({
+            url: "http://localhost:8000/api/logout",
+            method: "post",
+        });
+        // Dexonnexion front
+        deconnexionFront();
     }
 
     /**
@@ -99,7 +86,8 @@ export const AppProvider = ({ children }) => {
     }) => {
         // -- PRE-TRAITEMENTS --
         // Verificaton de l authentification
-        const token = getUserToken();
+        const token = Cookies.get('token');
+        console.log(token);
         if (needAuth && !token) {
             // Aucun utilisateur connecte
             setEstConnecte(false);
@@ -119,7 +107,6 @@ export const AppProvider = ({ children }) => {
 
         // -- TRAITEMENT --
         console.log(url);
-        console.log(token);
         const res = await fetch(url, {
             method: method,
             headers: {
@@ -149,7 +136,7 @@ export const AppProvider = ({ children }) => {
             // La requete a echoue
             if (res.status === 401) {
                 // Le tokken n est plus valide mais existe encore en local
-                deconnexion();
+                deconnexionFront();
             }
 
             return {
@@ -163,7 +150,7 @@ export const AppProvider = ({ children }) => {
 
 
     return (
-        <AppContext.Provider value={{ deconnexion, connexion, estConnecte, apiAccess, getUserId, getType, getUserToken }}>
+        <AppContext.Provider value={{ deconnexion, connexion, estConnecte, apiAccess, getType }}>
             {children}
         </AppContext.Provider>
     );

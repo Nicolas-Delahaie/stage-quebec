@@ -29,4 +29,7 @@ class Scenario extends Model
     public function modifications(){
         return $this->hasMany(Modification::class, "scenario_id");
     }
+    public function repartitions(){
+        return $this->hasMany(Repartition::class, "id_scenario");
+    }
 }
