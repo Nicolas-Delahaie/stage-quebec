@@ -14,6 +14,7 @@ import { Loader, colors, fonts } from "../../utils/styles";
 import styled from "styled-components";
 
 import { calculCIP, calculCIL } from "./calculCI";
+import { TdScenario, TdScenarioComponent } from "./TdScenario";
 
 /* ---------------------------------- STYLE --------------------------------- */
 
@@ -140,27 +141,6 @@ const TrScenario = styled.tr`
     }
 `;
 
-const TdScenario = styled.td`
-    font-size: 0.9rem;
-    max-width: 5rem;
-    height: 2rem;
-    overflow : scroll;
-    boder-collapse: collapse;
-    border: 1px solid ${colors.bleuFonce};
-    text-align: center;
-    &:nth-child(-n+5) {
-        font-family: ${fonts.titre};
-        background-color: ${colors.grisClair};
-    }
-    &:hover {
-        background-color: ${colors.jauneClair};
-    }
-
-    ::-webkit-scrollbar {
-        display: none;
-    }
-`;
-
 const TrTitreScenario = styled(TrScenario)`
     font-family: ${fonts.titre};
     font-size: 1rem;
@@ -174,7 +154,6 @@ function DetailsScenario() {
     const [scenario, setScenario] = useState({});                                   // State des données générales du scénario
     const [modifications, setModifications] = useState({});                           // State des modifications du scénario
     const [scenarioRepartition, setScenarioRepartition] = useState(null);             // State de la répartition du scénario
-    const [loading, setLoading] = useState(false);                                  // State du chargement de la page
     const { apiAccess } = useContext(AppContext);                                   // Récupération de la fonction permetant de faire des apels apis
 
 
@@ -267,15 +246,14 @@ function DetailsScenario() {
 
     /* ---------------------------- INITIALISATIONS DES TABLEAUX ---------------------------- */
 
+    var repartitionMatch = false;                        // Variable de comparaison pour la répartition
+    var liberationEstAffiche = false;                    // Variable pour savoir si la libération est affichée
+    var liberationTotaleProf = 0;                        // Variable pour le calcul de la libération totale d'un professeur
 
     var TbLiberations = [];                                    // Tableau des libérations
     var TbProfesseurs = [];                                 // Tableau des professeurs   
     var TbCours = [];                                         // Tableau des cours
     var TbRepartition = [];                            // Tableau des attirbution de cours
-
-    var repartitionMatch = false;                        // Variable de comparaison pour la répartition
-    var liberationEstAffiche = false;                    // Variable pour savoir si la libération est affichée
-    var liberationTotaleProf = 0;                        // Variable pour le calcul de la libération totale d'un professeur
     /**
      * 
      * @param {*} liberation liberation à ajouter au tableau
@@ -406,6 +384,7 @@ function DetailsScenario() {
         const formattedDateTime = dateTime.toLocaleDateString('fr-FR', options);
         return formattedDateTime;
     }
+
     /* ----------------------------------- DOM ---------------------------------- */
 
     return (
@@ -533,13 +512,34 @@ function DetailsScenario() {
                                                     <TdScenario>{cours.tailleGroupes}</TdScenario>
 
                                                     {
-                                                        // Pour chaque professeur, on affiche la pondération du cours en utilisant le tableau professeurs 
-                                                        TbProfesseurs.map((professeur, indexProfesseur) => (
-                                                            repartitionMatch = TbRepartition.find(Repartition => Repartition.idCours === cours.id && Repartition.idProfesseur === professeur.id),
-                                                            repartitionMatch ?
-                                                                <TdScenario key={indexCours + ',' + indexProfesseur}>{repartitionMatch.nbGroupes}</TdScenario>
-                                                                : <TdScenario key={indexCours + ',' + indexProfesseur}></TdScenario>
-                                                        ))
+                                                        // Pour chaque professeur, on affiche la pondération du cours en utilisant le tableau professeurs
+                                                        TbProfesseurs.map((professeur, indexProfesseur) => {
+                                                            const repartitionMatch = TbRepartition.find(
+                                                                (Repartition) =>
+                                                                    Repartition.idCours === cours.id && Repartition.idProfesseur === professeur.id
+                                                            );
+                                                            return repartitionMatch ? (
+                                                                <TdScenarioComponent
+                                                                    key={indexProfesseur + ',' + indexCours}
+                                                                    indexCours={indexCours}
+                                                                    indexProfesseur={indexProfesseur}
+                                                                    nbGroupes={repartitionMatch.nbGroupes}
+                                                                    TbCours={TbCours}
+                                                                    TbProfesseurs={TbProfesseurs}
+                                                                    TbRepartition={TbRepartition}
+                                                                />
+                                                            ) : (
+                                                                <TdScenarioComponent
+                                                                    key={indexProfesseur + ',' + indexCours}
+                                                                    indexCours={indexCours}
+                                                                    indexProfesseur={indexProfesseur}
+                                                                    nbGroupes={''}
+                                                                    TbCours={TbCours}
+                                                                    TbProfesseurs={TbProfesseurs}
+                                                                    TbRepartition={TbRepartition}
+                                                                />
+                                                            );
+                                                        })
                                                     }
                                                 </TrScenario>
                                             ))
