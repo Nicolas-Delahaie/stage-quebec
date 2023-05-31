@@ -27,6 +27,7 @@ use App\HTTP\Controllers\DepartementController;
 
 Route::get('/departements', [DepartementController::class, 'index'])->middleware(['tokenBon', 'responsable']);
 Route::get('/departements_detailles', [DepartementController::class, 'indexDetaille'])->middleware(['tokenBon', 'responsable']);
+Route::get('/departements/enseignants', [DepartementController::class, 'indexWithEnseignants'])->middleware(['tokenBon', 'responsable']);
 Route::get('/departements/{id}', [DepartementController::class, 'show'])->middleware(['tokenBon', 'responsable']);
 Route::get('/departements/{id}/coordonnateur', [DepartementController::class, 'showCoordonnateur'])->middleware(['tokenBon', 'responsable']);
 Route::get('/departements/{id}/cours_proposes_detailles', [DepartementController::class, 'showCoursProposesDetailles'])->middleware(['tokenBon', 'responsable']);
@@ -40,9 +41,11 @@ Route::get('/departements/{id}/cours_proposes_detailles', [DepartementController
 use App\Http\Controllers\UserController;
 
 Route::get('/users', [UserController::class, 'index'])->middleware(['tokenBon', 'responsable']);
+Route::get('/users/responsables', [UserController::class, 'indexResponsables'])->middleware(['tokenBon', 'responsable']);
 Route::get('/user/scenarios_crees', [UserController::class, 'showUserScenariosCrees'])->middleware('tokenBon', 'responsable');
 Route::get('/user/detaille', [UserController::class, 'showUserDetails'])->middleware(['tokenBon']);
 Route::put('/user/contraintes', [UserController::class, 'updateUserContraintes'])->middleware('tokenBon');
+Route::get('/users/{id}/liberations', [UserController::class, 'showLiberations'])->middleware(['tokenBon', 'responsable']);
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->middleware('tokenBon');
 // Route::get('/users/{id}', [UserController::class,'show'])->middleware('tokenBon');

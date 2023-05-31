@@ -7,6 +7,7 @@ import { AppProvider } from "./utils/context/context";
 
 /* Import des styles */
 import GlobalStyles from "./utils/styles/global";
+import './utils/styles/index.css';
 
 /* Import des pages */
 import Home from "./pages/Home";
@@ -16,6 +17,7 @@ import DetailsScenario from "./pages/scenario/DetailsScenario";
 import Departements from "./pages/Departements";
 import DetailsDepartement from "./pages/DetailsDepartement";
 import Profil from "./pages/Profil";
+import Liberations from "./pages/Liberations";
 import NotFound from "./pages/NotFound";
 
 /* Import des Layout */
@@ -38,6 +40,7 @@ function App() {
             <Route exact path="/departements" element={<Departements />} />
             <Route exact path="/departements/:id" element={<DetailsDepartement />} />
             <Route exact path="/profil" element={<Profil />} />
+            <Route exact path="/liberations" element={<Liberations />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes >

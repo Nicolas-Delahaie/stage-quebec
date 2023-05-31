@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect, useContext, useRef } from "react";
 import { Loader, colors, fonts } from "../utils/styles";
 import { AppContext } from '../utils/context/context';
+import TableauLiberations from "../components/layout/TableauLiberations";
 import styled from "styled-components";
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -73,25 +74,6 @@ const SubmitProfil = styled.input`
     margin: 1rem;
 `;
 
-const DivContainerLiberations = styled.div`
-    padding: 1rem;
-`;
-
-const DivLiberations = styled.div`
-    display:grid; 
-    grid-template-columns:1fr 1fr 1fr;
-    border: 1px solid black;
-    justify-items: center;
-`;
-const DivLiberation = styled.div`
-    width:100%;
-    border-top: 1px solid black;
-    border-left: 1px solid black;
-    text-align: center;
-    box-sizing: border-box;
-    padding: 0.5rem;
-`;
-
 /* ----------------------------------- DOM ---------------------------------- */
 
 function Profil() {
@@ -115,36 +97,7 @@ function Profil() {
 
         // -- Traitement du resultat --
         if (rep.success) {
-            const datas = rep.datas;
-
-            if (datas.liberations.length !== 0) {
-                // Si l utilisateur a des liberations
-                // On ne garde que les libérations de l'année d'avant et celles de l'année à venir a afficher (6 semestres)
-                const annneeActuelle = new Date().getFullYear();
-                const anneesProches = [annneeActuelle - 1, annneeActuelle, annneeActuelle + 1];
-                datas.liberationsTriees = [];
-                anneesProches.forEach((annee) => {
-                    for (let semestre = 1; semestre <= 2; semestre++) {
-                        datas.liberationsTriees.push({ annee: annee, semestre: semestre, liberations: [] });
-                    }
-                });
-
-                // Agencement des liberations dans leur semestre
-                datas.liberationsTriees.forEach((liberationTriee) => {
-                    // On regarde chaque liberation pour trouver celles qui correspondent a l annee et au semestre
-                    datas.liberations.forEach((liberation) => {
-                        if ((liberation.pivot.annee === liberationTriee.annee || liberation.pivot.annee === null) &&
-                            (liberation.pivot.semestre === liberationTriee.semestre || liberation.pivot.semestre === null)) {
-                            // La liberation concerne cette annee et ce semestre
-                            liberationTriee.liberations.push(liberation);
-                        }
-                    })
-                });
-            }
-
-
-
-            setUser(datas);
+            setUser(rep.datas);
         }
         else {
             setErreur(rep.erreur);
@@ -209,33 +162,15 @@ function Profil() {
                                 }
                             </FromProfil>
                         </DivContraintes>
-                        <DivContainerLiberations>
+                        <div>
                             <H2Profil>Libérations</H2Profil>
                             {user.liberations.length === 0 ?
                                 <p>Vous n'avez aucune libération récente</p>
                                 :
-                                <DivLiberations>
-                                    <H2Profil>Semestre</H2Profil>
-                                    <H2Profil>1</H2Profil>
-                                    <H2Profil>2</H2Profil>
-                                    {
-                                        user.liberationsTriees.map((liberationTriee) => {
-                                            return <>
-                                                {liberationTriee.semestre === 1 && <h3> {liberationTriee.annee}-{liberationTriee.annee + 1}</h3 >}
-                                                <DivLiberation>
-                                                    {
-                                                        liberationTriee.liberations.map((liberation) => {
-                                                            return <p>{liberation.motif} ({(liberation.pivot.tempsAloue * 100).toFixed(1)}%)</p>
-                                                        })
-                                                    }
-                                                </DivLiberation>
-                                            </>
-                                        })
-                                    }
-                                </DivLiberations>
+                                <TableauLiberations liberations={user.liberations} />
                             }
                             <Bouton>Voir toutes mes libérations</Bouton>
-                        </DivContainerLiberations>
+                        </div>
                     </DivInfos>
                 </>
             }

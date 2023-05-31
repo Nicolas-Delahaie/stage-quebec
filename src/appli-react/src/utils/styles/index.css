@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital@1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans+SC&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Imprima&display=swap');
+
+:root {
+    --bleu-fonce: #00296B;
+    --bleu-moyen: #003F88;
+    --bleu-clair: #00509D;
+    --bleu-tres-clair: #E6F2FF;
+    --jaune-fonce: #FDC500;
+    --jaune-clair: #FFD500;
+    --jaune-tres-clair: #FFF2CC;
+    --blanc: #FFFFFF;
+    --noir: #000000;
+    --gris: #C4C4C4;
+    --gris-clair: #F2F2F2;
+    --vert: #00A651;
+    --rouge: #E60000;
+
+    --font-titre: 'Josefin Sans';
+    --font-sous-titre: 'Alegreya Sans SC';
+    --font-texte: 'Imprima';
+}
+
+/* -------------- GLOABL -------------- */
+* p,
+* span,
+* a {
+    color: var(--bleu-fonce);
+    font-family: var(--font-texte);
+}
+
+
+
+/* -------------- COMPOSANTS -------------- */
+.bouton {
+    background-color: var(--jaune-fonce);
+    color: var(--bleu-fonce);
+    font-size: 1.5rem;
+    text-decoration: none;
+    font-family: var(--font-titre);
+    font-weight: bold;
+    border-radius: 1rem;
+}
+
+
+/* -------------- TABLEAU LIBERATIONS -------------- */
+.TableauLiberations {
+    display: grid;
+    grid-template-columns: min-content 1fr 1fr;
+    border: 5px solid var(--bleu-fonce);
+    border-radius: 50px;
+    justify-items: center;
+    overflow: hidden;
+    margin: 20px;
+}
+
+.TableauLiberations>.anneeActuelle {
+    text-decoration: underline;
+}
+
+.TableauLiberations>h2 {
+    font-family: var(--font-sous-titre);
+    color: var(--bleu-fonce);
+    align-self: center;
+    white-space: nowrap;
+    padding: 0px 20px;
+}
+
+.TableauLiberations>div {
+    width: 100%;
+    border: 1px solid var(--bleu-fonce);
+    text-align: center;
+}
+
+
+/* -------------- PAGE LIBERATIONS -------------- */
+.Liberations>.gridSelection {
+    display: grid;
+    grid-template-columns: min-content min-content;
+}
+
+.Liberations>.gridSelection>div {
+    margin-right: 30px;
+}
+
+.Liberations h1 {
+    font-family: var(--font-titre);
+    color: var(--bleu-fonce);
+}
+
+.Liberations h2 {
+    font-family: var(--font-sous-titre);
+    color: var(--bleu-fonce);
+}
+
+.Liberations>.gridSelection>div>div {
+    display: grid;
+    grid-template-columns: min-content 1fr;
+}
+
+.Liberations>button {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+}
+
+.Liberations>.tableauLiberations {
+    width: 80vw;
+}

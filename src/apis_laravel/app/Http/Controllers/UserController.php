@@ -19,11 +19,27 @@ class UserController extends Controller
     {
         return response(User::all(), 200);
     }
+    public function indexResponsables()
+    {
+        $users = User::whereHas('type', function ($query) {
+            $query->where('nom', 'responsable');
+        })
+            ->select('id', 'name')
+            ->get()
+            ->sortBy('name')
+            ->values();
+
+        return $users;
+    }
     /**
      * @brief Renvoie les scenarios d un utilisateur de maniere detaillee
      * @pre Condition Avoir un token valide lie a un utilisateur 
      * @return Response 200
      */
+    public function showLiberations($id)
+    {
+        return User::findOrFail($id)->liberations;
+    }
     public function showUserScenariosCrees()
     {
         return response(Auth::user()->scenarios, 200);
