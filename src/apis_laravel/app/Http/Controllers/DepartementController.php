@@ -20,7 +20,7 @@ class DepartementController extends Controller
             'coordonnateur' => function ($query) {
                 $query->select('id', 'name');
             },
-        ])->get()->toJson();
+        ])->get();
     }
     public function indexWithEnseignants()
     {
@@ -57,7 +57,7 @@ class DepartementController extends Controller
     }
     public function showCoordonnateur($id)
     {
-        return Departement::findOrFail($id)->coordonnateur->toJson();
+        return Departement::findOrFail($id)->coordonnateur;
     }
     public function showCoursProposesDetailles($id)
     {

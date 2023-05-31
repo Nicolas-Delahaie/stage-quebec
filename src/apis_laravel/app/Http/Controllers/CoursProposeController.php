@@ -12,14 +12,13 @@ class CoursProposeController extends Controller
     /**
      * @brief Supprime un cours propose
      * @param $id du cours propose
-     * @return Response 200, 404, 500
+     * @return Response 204, 404
      */
     public function delete($id)
     {
         $cours = CoursPropose::findOrFail($id);
         $cours->delete();
-
-        return response(['message' => 'Suppression réussie'], 200);
+        return response()->noContent();
     }
 
     // ------- PUT ------- /
@@ -30,7 +29,7 @@ class CoursProposeController extends Controller
      * @param string ponderation
      * @param string tailleGroupes
      * @param int nbGroupes
-     * @return Response 200, 404, 422, 500
+     * @return Response 204, 404, 422
      */
     public function update($id, Request $request)
     {
@@ -53,7 +52,6 @@ class CoursProposeController extends Controller
             'nbGroupes' => $request->input('nbGroupes')
         ]);
 
-        return response(['message' => 'Validation réussie'], 200);
-
+        return response()->noContent();
     }
 }

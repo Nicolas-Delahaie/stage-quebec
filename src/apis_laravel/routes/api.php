@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
  * Noms des routes :
  * - snake case
  * - _detaille lorsque les cles etrangeres sont developpees
+ * - _attribut lorsqu un attribut est developpe
  */
 
 
@@ -27,7 +28,7 @@ use App\HTTP\Controllers\DepartementController;
 
 Route::get('/departements', [DepartementController::class, 'index'])->middleware(['tokenBon', 'responsable']);
 Route::get('/departements_detailles', [DepartementController::class, 'indexDetaille'])->middleware(['tokenBon', 'responsable']);
-Route::get('/departements/enseignants', [DepartementController::class, 'indexWithEnseignants'])->middleware(['tokenBon', 'responsable']);
+Route::get('/departements_enseignants', [DepartementController::class, 'indexWithEnseignants'])->middleware(['tokenBon', 'responsable']);
 Route::get('/departements/{id}', [DepartementController::class, 'show'])->middleware(['tokenBon', 'responsable']);
 Route::get('/departements/{id}/coordonnateur', [DepartementController::class, 'showCoordonnateur'])->middleware(['tokenBon', 'responsable']);
 Route::get('/departements/{id}/cours_proposes_detailles', [DepartementController::class, 'showCoursProposesDetailles'])->middleware(['tokenBon', 'responsable']);

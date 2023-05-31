@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Enseigner;
+use App\Models\User;
+use App\Models\CoursPropose;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -14,10 +16,11 @@ class enseignerController extends Controller
      * @param Request $request
      * @param int professeur_id id du professeur
      * @param int cours_propose_id id du cours propose
-     * @return Response 201, 409, 500
+     * @return Response 204, 404, 409, 500
      */
     public function store(Request $request)
     {
+        // Verificatoin de la validite des parametres
         try {
             $request->validate([
                 'professeur_id' => 'required|integer|min:0|max:65535',
@@ -27,9 +30,12 @@ class enseignerController extends Controller
             //Recupère l erreur de validation des champs
             return response(['message' => 'Mauvais parametres', 'errors' => $e->errors()], 422);
         }
-
         $prof_id = $request->input('professeur_id');
         $cours_propose_id = $request->input('cours_propose_id');
+
+        // Verification de l existence des cles etrangeres
+        User::findOrFail($prof_id);
+        CoursPropose::findOrFail($cours_propose_id);
 
         $existeDeja = Enseigner::where('professeur_id', $prof_id)
             ->where('cours_propose_id', $cours_propose_id)
@@ -45,7 +51,7 @@ class enseignerController extends Controller
         ]);
         $nouveauCours->save();
 
-        return response(['message' => 'Enregistrement réussi'], 201);
+        return response()->noContent();
     }
 
     // ------- DELETE ------- /
@@ -76,6 +82,6 @@ class enseignerController extends Controller
         }
         $enregistrement->delete();
 
-        return response(['message' => 'Suppression réussie'], 200);
+        return response()->noContent();
     }
 }

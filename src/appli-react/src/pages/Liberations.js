@@ -28,7 +28,7 @@ function Liberations() {
     const initDepts = async () => {
         // Recuperation des departements
         const rep = await apiAccess({
-            url: "http://localhost:8000/api/departements/enseignants",
+            url: "http://localhost:8000/api/departements_enseignants",
         });
 
         if (rep.success) {
