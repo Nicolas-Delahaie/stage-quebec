@@ -79,7 +79,7 @@ return new class extends Migration
         Schema::create("cours_propose", function (Blueprint $table){
             $table->id();
             $table->unsignedTinyInteger("ponderation");
-            $table->unsignedTinyInteger("tailleGroupes")->default(0);
+            $table->unsignedFloat("tailleGroupes")->default(0);
             $table->unsignedSmallInteger("nbGroupes")->default(0);
             $table->unsignedBigInteger("cours_id");
             $table->unsignedBigInteger("departement_id");
