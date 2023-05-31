@@ -107,7 +107,7 @@ function Profil() {
         // -- Recuperation des infos du professeur --
         setIsLoading(true);
         const rep = await apiAccess({
-            url: `http://localhost:8000/api/user/details`,
+            url: `http://localhost:8000/api/user/detaille`,
             method: "get",
         });
         setIsLoading(false);

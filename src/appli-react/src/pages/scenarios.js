@@ -64,7 +64,7 @@ function Scenarios() {
         // -- Recuperation des scenarios --
         setIsLoadingContexte(true);
         const rep = await apiAccess({
-            url: `http://localhost:8000/api/user/scenariosCrees`,
+            url: `http://localhost:8000/api/user/scenarios_crees`,
             method: "get",
         });
         setIsLoadingContexte(false);

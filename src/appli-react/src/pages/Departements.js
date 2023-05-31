@@ -84,21 +84,21 @@ function Departements() {
     const { apiAccess } = useContext(AppContext);
 
     const [isLoading, setIsLoading] = useState(null);
-    const [departement, setDepartement] = useState(null);
+    const [departements, setDepartements] = useState(null);
     const [erreur, setErreur] = useState(null)
 
     const getDepartements = async () => {
         // -- Recuperation --
         setIsLoading(true);
         const resultat = await apiAccess({
-            url: `http://localhost:8000/api/departementsDetailles`,
+            url: `http://localhost:8000/api/departements_detailles`,
             method: "get",
         });
         setIsLoading(false);
 
         // -- Analyse --
         if (resultat.success) {
-            setDepartement(resultat.datas);
+            setDepartements(resultat.datas);
         }
         else {
             setErreur(resultat.erreur);
@@ -114,10 +114,10 @@ function Departements() {
             <ArticleTitle texte="Départements" />
             {erreur && <h1>{erreur}</h1>}
             {isLoading && <Loader />}
-            {departement &&
+            {departements &&
                 <StyledDepartements>
                     {
-                        departement.map((departement) => (
+                        departements.map((departement) => (
                             <CarteHorizontale
                                 key={departement.id}
                                 titre={departement.nom}
