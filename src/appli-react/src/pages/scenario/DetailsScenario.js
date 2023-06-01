@@ -14,6 +14,7 @@ import { Loader, colors, fonts } from "../../utils/styles";
 import styled from "styled-components";
 
 import { calculCIP, calculCIL } from "./calculCI";
+import { TdScenario, TdScenarioComponent } from "./TdScenario";
 
 /* ---------------------------------- STYLE --------------------------------- */
 
@@ -26,17 +27,22 @@ const DivPageDetailsScenario = styled.div`
     margin: 1rem auto;
 `;
 
+const DivGrid = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 1rem 0rem;
+    width: 100%;
+`;
+
 const DivDetailsScenario = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
     width: 80%;
-    margin: 1rem auto;
-    padding: 1rem;
-`;
-
-const DivTableau = styled.div`
+    `;
+    
+    const DivTableau = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -59,7 +65,6 @@ const DivTableau = styled.div`
 const DivShow = styled.div`
     display: flex;
     align-items: center;
-    justify-content: center;
 `;
 
 const ButtonShow = styled.button`
@@ -83,6 +88,7 @@ const H1Scenario = styled.h1`
     font-family: ${fonts.titre};
     color: ${colors.bleuFonce};
     margin-right: 1rem;
+    margin: 0rem;
 
     &:after {
         content: "";
@@ -102,19 +108,17 @@ const H2Scenario = styled.h2`
 const TableScenario = styled.table`
     margin: 1rem auto;
     border-collapse: collapse;
-    border: 1px solid ${colors.bleuFonce};
-
+    border: 1px solid ${colors.gris};
     overflow-x: scroll;
-`;
+    `;
 
 const ThScenario = styled.th`
     font-size: 0.9rem;
-    max-width: 3rem;
-    width: fit-content;
+    width: 2.5rem;
     font-family: ${fonts.titre};
     color: ${colors.bleuFonce};
     background-color: ${colors.jauneFonce};
-    border: 1px solid ${colors.bleuFonce};
+    border: 1px solid ${colors.noir};
 `;
 
 const ThScenarioProfesseur = styled(ThScenario)`
@@ -126,9 +130,10 @@ const ThScenarioProfesseur = styled(ThScenario)`
 
 const TrScenario = styled.tr`
     font-size: 0.9rem;
+    width: 100%;
     font-family: ${fonts.texte};
     border-collapse: collapse;
-    border: 1px solid ${colors.bleuFonce};
+    border: 1px solid ${colors.gris};
     /*&:nth-child(even) {
         background-color: ${colors.gris};
     }
@@ -137,27 +142,6 @@ const TrScenario = styled.tr`
     }*/
     &:hover {
         background-color: ${colors.jauneTresClair};
-    }
-`;
-
-const TdScenario = styled.td`
-    font-size: 0.9rem;
-    max-width: 5rem;
-    height: 2rem;
-    overflow : scroll;
-    boder-collapse: collapse;
-    border: 1px solid ${colors.bleuFonce};
-    text-align: center;
-    &:nth-child(-n+5) {
-        font-family: ${fonts.titre};
-        background-color: ${colors.grisClair};
-    }
-    &:hover {
-        background-color: ${colors.jauneClair};
-    }
-
-    ::-webkit-scrollbar {
-        display: none;
     }
 `;
 
@@ -174,7 +158,6 @@ function DetailsScenario() {
     const [scenario, setScenario] = useState({});                                   // State des données générales du scénario
     const [modifications, setModifications] = useState({});                           // State des modifications du scénario
     const [scenarioRepartition, setScenarioRepartition] = useState(null);             // State de la répartition du scénario
-    const [loading, setLoading] = useState(false);                                  // State du chargement de la page
     const { apiAccess } = useContext(AppContext);                                   // Récupération de la fonction permetant de faire des apels apis
 
 
@@ -267,15 +250,13 @@ function DetailsScenario() {
 
     /* ---------------------------- INITIALISATIONS DES TABLEAUX ---------------------------- */
 
+    var liberationEstAffiche = false;                    // Variable pour savoir si la libération est affichée
+    var liberationTotaleProf = 0;                        // Variable pour le calcul de la libération totale d'un professeur
 
     var TbLiberations = [];                                    // Tableau des libérations
     var TbProfesseurs = [];                                 // Tableau des professeurs   
     var TbCours = [];                                         // Tableau des cours
-    var TbRepartition = [];                            // Tableau des attirbution de cours
-
-    var repartitionMatch = false;                        // Variable de comparaison pour la répartition
-    var liberationEstAffiche = false;                    // Variable pour savoir si la libération est affichée
-    var liberationTotaleProf = 0;                        // Variable pour le calcul de la libération totale d'un professeur
+    const [TbRepartition, setTbRepartition] = useState([])                            // Tableau des attirbution de cours
     /**
      * 
      * @param {*} liberation liberation à ajouter au tableau
@@ -357,6 +338,7 @@ function DetailsScenario() {
      * @returns TbRepartition un tableau avec les Repartitions
      */
     const addRepartition = (repartition) => {
+        var idRepartition = repartition.id;
         var idCours = repartition.enseigner.cours_propose_id;
         var idProfesseur = repartition.enseigner.professeur.id;
         var nbGoupes = repartition.nbGroupes
@@ -372,7 +354,7 @@ function DetailsScenario() {
 
         // Si la repartition n'existe pas, on l'ajoute au tableau
         if (!repartitionExiste) {
-            TbRepartition.push({ 'idCours': idCours, 'idProfesseur': idProfesseur, 'nbGroupes': nbGoupes, 'preparation': preparation });
+            TbRepartition.push({ 'id': idRepartition, 'idCours': idCours, 'idProfesseur': idProfesseur, 'nbGroupes': nbGoupes, 'preparation': preparation });
         }
 
     }
@@ -406,6 +388,7 @@ function DetailsScenario() {
         const formattedDateTime = dateTime.toLocaleDateString('fr-FR', options);
         return formattedDateTime;
     }
+
     /* ----------------------------------- DOM ---------------------------------- */
 
     return (
@@ -413,76 +396,6 @@ function DetailsScenario() {
             <Toaster />
             <ArticleTitle texte="Détails du scénario" />
             <DivDetailsScenario>
-                <DivShow>
-                    <H1Scenario data-testis="titreDep">Informations générales</H1Scenario>
-                    <ButtonShow onClick={toggleShowInfos} showInfos={showInfos}>
-                        <img width="35" height="35" src="https://img.icons8.com/ios/50/circled-chevron-down.png" alt="circled-chevron-down" />
-                    </ButtonShow>
-                </DivShow>
-                {
-                    isLoadingScenario ? (
-                        <DivInfosScenario showInfos={showInfos}>
-                            <Loader />
-                        </DivInfosScenario>
-                    ) : (
-
-                        <>
-                            <DivInfosScenario showInfos={showInfos}>
-                                {
-                                    erreurScenario ? (
-                                        <p>Une erreur est survenue lors du chargement des informations du scénario</p>
-                                    ) : (
-                                        <>
-                                            <H2Scenario>Nom : {scenario.departement.nom}</H2Scenario>
-                                            <H2Scenario>Annee : {scenario.annee}</H2Scenario>
-                                            <p>Date de création : {afficherDate(scenario.created_at)}</p>
-                                            <H2Scenario>Propriétaire : {scenario.proprietaire.name}</H2Scenario>
-                                        </>
-                                    )
-                                }
-
-                            </DivInfosScenario>
-                        </>
-                    )
-                }
-
-                <DivShow>
-                    <H1Scenario>Historique des modifications</H1Scenario>
-                    <ButtonShow onClick={toggleShowHistorique} showInfos={showHistorique}>
-                        <img width="35" height="35" src="https://img.icons8.com/ios/50/circled-chevron-down.png" alt="circled-chevron-down" />
-                    </ButtonShow>
-                </DivShow>
-                {
-                    isLoadingModifications ? (
-                        <DivInfosScenario showInfos={showHistorique}>
-                            <Loader />
-                        </DivInfosScenario>
-                    ) : (
-                        <>
-                            <DivInfosScenario showInfos={showHistorique}>
-                                {
-                                    erreurModifications ? (
-                                        <p>Aucune modification n'a été apportée</p>
-                                    ) : (
-                                        <div>
-                                            {
-                                                /*Pour chaque modification, on affiche la date de modification et l'utilisateur qui a fait la modification*/
-                                                modifications.map((modif) => (
-                                                    <div key={modif.id}>
-                                                        <p>Date de dernière modification : {modif.date_modif}</p>
-                                                        <p>Utilisateur aillant fait la modification : {modif.user.name}</p>
-                                                    </div>
-                                                ))
-                                            }
-                                        </div>
-                                    )
-                                }
-                            </DivInfosScenario>
-                        </>
-                    )
-                }
-
-                <H1Scenario>Le scénario </H1Scenario>
                 {
                     isLoadingRepartition ? (
                         <Loader />
@@ -533,13 +446,26 @@ function DetailsScenario() {
                                                     <TdScenario>{cours.tailleGroupes}</TdScenario>
 
                                                     {
-                                                        // Pour chaque professeur, on affiche la pondération du cours en utilisant le tableau professeurs 
-                                                        TbProfesseurs.map((professeur, indexProfesseur) => (
-                                                            repartitionMatch = TbRepartition.find(Repartition => Repartition.idCours === cours.id && Repartition.idProfesseur === professeur.id),
-                                                            repartitionMatch ?
-                                                                <TdScenario key={indexCours + ',' + indexProfesseur}>{repartitionMatch.nbGroupes}</TdScenario>
-                                                                : <TdScenario key={indexCours + ',' + indexProfesseur}></TdScenario>
-                                                        ))
+                                                        TbProfesseurs.map((professeur, indexProfesseur) => {
+                                                            const repartitionMatch = TbRepartition.find(
+                                                                (Repartition) =>
+                                                                    Repartition.idCours === cours.id && Repartition.idProfesseur === professeur.id
+                                                            );
+                                                            return repartitionMatch ? (
+                                                                <TdScenarioComponent
+                                                                    key={indexProfesseur + ',' + indexCours}
+                                                                    indexCours={indexCours}
+                                                                    indexProfesseur={indexProfesseur}
+                                                                    nbGroupes={repartitionMatch.nbGroupes}
+                                                                    TbCours={TbCours}
+                                                                    TbProfesseurs={TbProfesseurs}
+                                                                    TbRepartition={TbRepartition}
+                                                                    fonctionUpdateRepartition={setTbRepartition}
+                                                                />
+                                                            ) : (
+                                                                <TdScenario key={indexProfesseur + ',' + indexCours}></TdScenario>
+                                                            );
+                                                        })
                                                     }
                                                 </TrScenario>
                                             ))
@@ -614,7 +540,6 @@ function DetailsScenario() {
                                             <TdScenario></TdScenario>
                                             <TdScenario>Totaux</TdScenario>
                                         </TrTitreScenario>
-
                                         <TrScenario>
                                             <TdScenario></TdScenario>
                                             <TdScenario></TdScenario>
@@ -675,6 +600,79 @@ function DetailsScenario() {
                         </>
                     )
                 }
+                <DivGrid>
+                    <div>
+                        <DivShow>
+                            <H1Scenario data-testis="titreDep">Informations générales</H1Scenario>
+                            <ButtonShow onClick={toggleShowInfos} showInfos={showInfos}>
+                                <img width="35" height="35" src="https://img.icons8.com/ios/50/circled-chevron-down.png" alt="circled-chevron-down" />
+                            </ButtonShow>
+                        </DivShow>
+                        {
+                            isLoadingScenario ? (
+                                <DivInfosScenario showInfos={showInfos}>
+                                    <Loader />
+                                </DivInfosScenario>
+                            ) : (
+
+                                <>
+                                    <DivInfosScenario showInfos={showInfos}>
+                                        {
+                                            erreurScenario ? (
+                                                <p>Une erreur est survenue lors du chargement des informations du scénario</p>
+                                            ) : (
+                                                <>
+                                                    <H2Scenario>Nom : {scenario.departement.nom}</H2Scenario>
+                                                    <H2Scenario>Annee : {scenario.annee}</H2Scenario>
+                                                    <p>Date de création : {afficherDate(scenario.created_at)}</p>
+                                                    <H2Scenario>Propriétaire : {scenario.proprietaire.name}</H2Scenario>
+                                                </>
+                                            )
+                                        }
+
+                                    </DivInfosScenario>
+                                </>
+                            )
+                        }
+                    </div>
+                    <div>
+                        <DivShow>
+                            <H1Scenario>Historique des modifications</H1Scenario>
+                            <ButtonShow onClick={toggleShowHistorique} showInfos={showHistorique}>
+                                <img width="35" height="35" src="https://img.icons8.com/ios/50/circled-chevron-down.png" alt="circled-chevron-down" />
+                            </ButtonShow>
+                        </DivShow>
+                        {
+                            isLoadingModifications ? (
+                                <DivInfosScenario showInfos={showHistorique}>
+                                    <Loader />
+                                </DivInfosScenario>
+                            ) : (
+                                <>
+                                    <DivInfosScenario showInfos={showHistorique}>
+                                        {
+                                            erreurModifications || modifications.length === 0 ? (
+                                                <p>Aucune modification n'a été apportée</p>
+                                            ) : (
+                                                <div>
+                                                    {
+                                                        /*Pour chaque modification, on affiche la date de modification et l'utilisateur qui a fait la modification*/
+                                                        modifications.map((modif) => (
+                                                            <div key={modif.id}>
+                                                                <p>Date de dernière modification : {modif.date_modif}</p>
+                                                                <p>Utilisateur aillant fait la modification : {modif.user.name}</p>
+                                                            </div>
+                                                        ))
+                                                    }
+                                                </div>
+                                            )
+                                        }
+                                    </DivInfosScenario>
+                                </>
+                            )
+                        }
+                    </div>
+                </DivGrid>
             </DivDetailsScenario>
         </DivPageDetailsScenario >
     )

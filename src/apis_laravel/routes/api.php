@@ -73,6 +73,7 @@ Route::put('/cours_proposes/{id}', [CoursProposeController::class, 'update'])->m
 /*                                  ENSEIGNER                                 */
 /* -------------------------------------------------------------------------- */
 use App\Http\Controllers\EnseignerController;
+use App\Http\Controllers\RepartitionController;
 
 Route::post('/enseigner', [EnseignerController::class, 'store'])->middleware(['tokenBon', 'responsable']);
 Route::delete('/enseigner', [EnseignerController::class, 'delete'])->middleware(['tokenBon', 'responsable']);
@@ -91,6 +92,11 @@ Route::get('scenarios/{id}/repartition', [ScenarioController::class, 'showRepart
 // Route::get('scenarios/{id}/departement', [ScenarioController::class, 'showDepartement'])->middleware('tokenBon');
 // Route::get('scenarios/{id}/proprietaire', [ScenarioController::class, 'showProprietaire'])->middleware('tokenBon');
 // Route::get('scenarios/{id}/rdvs', [ScenarioController::class, 'showRDVs'])->middleware('tokenBon');
+
+/* -------------------------------------------------------------------------- */
+/*                                 REPARTTION                                 */
+/* -------------------------------------------------------------------------- */
+Route::post('repartition/{id}', [RepartitionController::class, 'update'])->middleware('tokenBon');
 
 
 /* -------------------------------------------------------------------------- */
