@@ -253,7 +253,7 @@ function DetailsScenario() {
     var TbLiberations = [];                                    // Tableau des libérations
     var TbProfesseurs = [];                                 // Tableau des professeurs   
     var TbCours = [];                                         // Tableau des cours
-    var TbRepartition = [];                            // Tableau des attirbution de cours
+    const [TbRepartition, setTbRepartition] = useState([])                            // Tableau des attirbution de cours
     /**
      * 
      * @param {*} liberation liberation à ajouter au tableau
@@ -335,6 +335,7 @@ function DetailsScenario() {
      * @returns TbRepartition un tableau avec les Repartitions
      */
     const addRepartition = (repartition) => {
+        var idRepartition = repartition.id;
         var idCours = repartition.enseigner.cours_propose_id;
         var idProfesseur = repartition.enseigner.professeur.id;
         var nbGoupes = repartition.nbGroupes
@@ -350,7 +351,7 @@ function DetailsScenario() {
 
         // Si la repartition n'existe pas, on l'ajoute au tableau
         if (!repartitionExiste) {
-            TbRepartition.push({ 'idCours': idCours, 'idProfesseur': idProfesseur, 'nbGroupes': nbGoupes, 'preparation': preparation });
+            TbRepartition.push({ 'id': idRepartition, 'idCours': idCours, 'idProfesseur': idProfesseur, 'nbGroupes': nbGoupes, 'preparation': preparation });
         }
 
     }
@@ -512,7 +513,6 @@ function DetailsScenario() {
                                                     <TdScenario>{cours.tailleGroupes}</TdScenario>
 
                                                     {
-                                                        // Pour chaque professeur, on affiche la pondération du cours en utilisant le tableau professeurs
                                                         TbProfesseurs.map((professeur, indexProfesseur) => {
                                                             const repartitionMatch = TbRepartition.find(
                                                                 (Repartition) =>
@@ -527,17 +527,10 @@ function DetailsScenario() {
                                                                     TbCours={TbCours}
                                                                     TbProfesseurs={TbProfesseurs}
                                                                     TbRepartition={TbRepartition}
+                                                                    fonctionUpdateRepartition={setTbRepartition}
                                                                 />
                                                             ) : (
-                                                                <TdScenarioComponent
-                                                                    key={indexProfesseur + ',' + indexCours}
-                                                                    indexCours={indexCours}
-                                                                    indexProfesseur={indexProfesseur}
-                                                                    nbGroupes={''}
-                                                                    TbCours={TbCours}
-                                                                    TbProfesseurs={TbProfesseurs}
-                                                                    TbRepartition={TbRepartition}
-                                                                />
+                                                                <TdScenario key={indexProfesseur + ',' + indexCours}></TdScenario>
                                                             );
                                                         })
                                                     }

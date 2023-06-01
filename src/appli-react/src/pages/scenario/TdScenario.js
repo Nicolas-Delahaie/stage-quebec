@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import { colors, fonts } from '../../utils/styles';
 import { useState, useRef, useEffect } from 'react';
+import { AppContext } from '../../utils/context/context';
+import { useContext } from 'react';
+import { Toaster, toast } from 'react-hot-toast';
 
 export const TdScenario = styled.td`
     font-size: 0.9rem;
@@ -43,26 +46,81 @@ const InputTdScenario = styled.input`
 `;
 
 
-export function TdScenarioComponent({ indexCours, indexProfesseur, nbGroupes, TbCours, TbProfesseurs, TbRepartition }) {
+export function TdScenarioComponent({ indexCours, indexProfesseur, nbGroupes, TbCours, TbProfesseurs, TbRepartition, fonctionUpdateRepartition }) {
     const [estClicker, setEstClicker] = useState(false);
+    const [resultatUpdate, setResultatUpdate] = useState(0);
     const inputRef = useRef(null);
-    var repartitionMatch
+    const { apiAccess } = useContext(AppContext);
+
+    const findRepartition = (indexCours, indexProfesseur, TbCours, TbProfesseurs, TbRepartition) => {
+        var repartitionFind = TbRepartition.find(
+            (rep) =>
+                rep.idCours === TbCours[indexCours].id && rep.idProfesseur === TbProfesseurs[indexProfesseur].id,
+        )
+        if (repartitionFind === undefined) {
+            toast.error("Erreur : Impossible de modifié un cours non attribué");
+        }
+        else {
+            return repartitionFind;
+        }
+    }
 
     const clickTest = () => {
-
-        repartitionMatch = TbRepartition.find(
-                (rep) =>
-                    rep.idCours === TbCours[indexCours].id && rep.idProfesseur === TbProfesseurs[indexProfesseur].id,
-            )
         setEstClicker(!estClicker);
     };
 
-    const entreTest = (e) => {
-        var value = e.target.value;
+    const updateRepartitionInArray = (resultatUpdate, TbRepartition) => {
+        const updatedArray = TbRepartition.map((repartition) => {
+            if (repartition.id === resultatUpdate.id) {
+                return resultatUpdate;
+            }
+            return repartition;
+        });
+
+        return updatedArray;
+    };
+
+    const entreTest = (e, nbGroupes) => {
         if (e.key === 'Enter') {
+            const repartitionMatch = findRepartition(indexCours, indexProfesseur, TbCours, TbProfesseurs, TbRepartition);
+            const value = Number(e.target.value);
             setEstClicker(!estClicker);
+            if (value > 0 && value !== nbGroupes) {
+                updateRepartition(repartitionMatch.id, value);
+                const resultatUpdate = {
+                    ...repartitionMatch,
+                    nbGroupes: value,
+                };
+
+                console.log('TbRepartition avant la fonction');
+                console.log(TbRepartition);
+                const updatedArray = updateRepartitionInArray(resultatUpdate, TbRepartition);
+                console.log('TbRepartition après la fonction');
+                console.log(updatedArray);
+                fonctionUpdateRepartition(updatedArray);
+            }
         }
-    }
+    };
+
+    const updateRepartition = async (idRepartition, nouveauNbGroupes) => {
+        try {
+            toast.loading('Enregistrement...');
+            const rep = await apiAccess({
+                url: `http://localhost:8000/api/repartition/${idRepartition}?nbGroupes=${nouveauNbGroupes}`,
+                method: 'POST',
+            });
+            toast.dismiss();
+
+            if (rep.success) {
+                setResultatUpdate(rep.datas);
+                toast.success('Modification enregistrée');
+            } else {
+                toast.error("Erreur : " + rep.erreur);
+            }
+        } catch (error) {
+            toast.error("Une erreur est survenue : " + error.message);
+        }
+    };
 
     useEffect(() => {
         if (estClicker && inputRef.current) {
@@ -70,10 +128,12 @@ export function TdScenarioComponent({ indexCours, indexProfesseur, nbGroupes, Tb
         }
     }, [estClicker]);
 
+
     return (
         estClicker ? (
             <TdScenario onClick={clickTest}>
-                <InputTdScenario ref={inputRef} type="number" placeholder={nbGroupes} onKeyDown={entreTest} />
+                <Toaster />
+                <InputTdScenario ref={inputRef} type="number" placeholder={nbGroupes} onKeyDown={(e) => entreTest(e, nbGroupes)} />
             </TdScenario>
         ) : (
             <TdScenario onClick={clickTest}>
