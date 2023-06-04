@@ -1,78 +1,12 @@
-import { useParams } from "react-router-dom";
+// Librairies
 import { useState, useEffect, useContext, useRef } from "react";
-import { Loader, colors, fonts } from "../utils/styles";
-import { AppContext } from '../utils/context/context';
-import TableauLiberations from "../components/layout/TableauLiberations";
-import styled from "styled-components";
 import toast, { Toaster } from 'react-hot-toast';
+import { AppContext } from '../utils/context/context';
 
-import { ArticleTitle, Bouton } from "../components/forms";
+// Composants
+import Loader from '../components/Loader';
+import TableauLiberations from "../components/TableauLiberations";
 
-
-/* ---------------------------------- STYLE --------------------------------- */
-
-const DivPageProfil = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: ${props => props.isLoading ? "center" : "flex-start"};
-    justify-content: ${props => props.isLoading ? "center" : "flex-start"};
-    min-height: 80.5vh;
-    padding: 1rem auto;
-`;
-
-const DivInfos = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 1rem 2rem;
-`;
-
-const DivContraintes = styled.div`
-    padding: 1rem;
-`;
-
-const FromProfil = styled.form`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    width: 50%;
-    height: 50%;
-`;
-
-const H2Profil = styled.h2`
-    font-family: ${fonts.titre};
-    color: ${colors.bleuFonce};
-    font-size: 1.5rem;
-    margin: 1rem 0;
-`;
-
-const TextareaProfil = styled.textarea`
-    height: 100%;
-    width: calc(50vw - 3rem);
-
-    cursor: text;
-    border: none;
-    box-shadow: 0px 5px 10px 0px ${colors.gris};
-    border-radius: 0.5rem;
-    font-family: ${fonts.texte};
-    padding: 0.5rem;
-    margin: 0.25rem 0;
-    color: ${colors.bleuMoyen};
-    &:focus{
-        outline: none;
-    }
-`;
-
-const SubmitProfil = styled.input`
-    background-color: ${colors.jauneFonce};
-    color: ${colors.bleuFonce};
-    text-decoration: none;
-    font-family: ${fonts.titre};
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    border-radius: 1rem;
-    margin: 1rem;
-`;
 
 /* ----------------------------------- DOM ---------------------------------- */
 
@@ -139,42 +73,50 @@ function Profil() {
 
 
     return (
-        <DivPageProfil isLoading={isLoading}>
+        <div id="profil" className={isLoading ? "loading" : "notLoading"}>
             <Toaster />
             {erreur && <h1>{erreur}</h1>}
             {isLoading && <Loader />}
             {user &&
                 <>
-                    <ArticleTitle texte="Mon profil" />
-                    <DivInfos>
-                        <DivContraintes>
-                            <H2Profil>Informations globales</H2Profil>
+                    <h1>Mon profil</h1>
+                    <div className="infos">
+                        <div>
+                            <h2>Informations globales</h2>
                             <p>{user.name}</p>
                             <p>{user.email}</p>
                             <p>{user.type.nom}</p>
-                            <H2Profil>Contraintes</H2Profil>
-                            <FromProfil onSubmit={(e) => { enregistrementContraintes(); e.preventDefault(); }}>
-                                <TextareaProfil defaultValue={user.contraintes} ref={newContraintes} placeholder={user.contraintes === "" ? "Saisissez vos contraintes" : undefined} onKeyDown={handleKeyPress} />
+                            <h2>Contraintes</h2>
+                            <form onSubmit={(e) => { enregistrementContraintes(); e.preventDefault(); }} className="formContraintes">
+                                <textarea className="contraintes"
+                                    defaultValue={user.contraintes}
+                                    ref={newContraintes}
+                                    placeholder={user.contraintes === "" ? "Saisissez vos contraintes" : undefined}
+                                    onKeyDown={handleKeyPress}
+                                    rows="6"
+                                />
                                 {isSavingContraintes ?
                                     <Loader />
                                     :
-                                    <SubmitProfil type="submit" value="Modifier"></SubmitProfil>
+                                    <input className="bouton"
+                                        type="submit"
+                                        value="Modifier" />
                                 }
-                            </FromProfil>
-                        </DivContraintes>
+                            </form>
+                        </div>
                         <div>
-                            <H2Profil>Libérations</H2Profil>
+                            <h2>Libérations</h2>
                             {user.liberations.length === 0 ?
                                 <p>Vous n'avez aucune libération récente</p>
                                 :
                                 <TableauLiberations liberations={user.liberations} />
                             }
-                            <Bouton>Voir toutes mes libérations</Bouton>
+                            <button className="bouton">Voir toutes mes libérations</button>
                         </div>
-                    </DivInfos>
+                    </div>
                 </>
             }
-        </ DivPageProfil>
+        </ div>
     );
 }
 

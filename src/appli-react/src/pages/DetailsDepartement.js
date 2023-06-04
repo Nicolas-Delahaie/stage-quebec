@@ -1,74 +1,12 @@
+// Librairies
 import { useParams } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
+
+// Composants
 import { AppContext } from '../utils/context/context';
+import Loader from '../components/Loader.js';
+import CarteCours from "../components/CarteCours";
 
-import styled from "styled-components";
-
-import { Loader, colors, fonts } from "../utils/styles";
-import ArticleTitle from "../components/forms/ArticleTitle";
-import CarteCours from "../components/layout/CarteCours";
-
-
-/* ---------------------------------- STYLE --------------------------------- */
-
-const DivPageDetailsDepartement = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 80.5vh;
-    margin: 1rem auto;
-`;
-
-const DivDetailsDepartement = styled(DivPageDetailsDepartement)`
-    align-items: flex-start;
-    width: 80%;
-    min-height: auto;
-`;
-
-const DivListe = styled.div`
-    display: grid;
-    width:100%;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 1rem;
-`;
-
-const H1Departements = styled.h1`
-    font-size: 2.5rem;
-    font-family: ${fonts.titre};
-    color: ${colors.bleuFonce};
-
-    &:after{
-        content: "";
-        display: block;
-        width: 100%;
-        height: 2px;
-        background-color: ${colors.jauneFonce};
-    }
-`;
-
-const H2DetailsDepartement = styled.h3`
-    margin: 3rem 0rem;
-    font-size: 1.5rem;
-    font-weight: bold;
-    width: fit-content;
-    color: ${colors.bleuFonce};
-    font-family: ${fonts.titre};
-
-    &:after{
-        content: "";
-        display: block;
-        width: 100%;
-        height: 2px;
-        background-color: ${colors.jauneFonce};
-    }
-`;
-
-const H3Coordonnateur = styled.h3`
-    font-size: 1.5rem;
-    font-family: ${fonts.sousTitre};
-    color: ${colors.bleuMoyen};
-`;
 
 /* ----------------------------------- DOM ---------------------------------- */
 
@@ -163,36 +101,36 @@ function DetailsDepartement() {
 
 
     return (
-        <DivPageDetailsDepartement>
+        <div className="departement">
             {loadingDepartement && <Loader />}
-            {erreurDepartement && <H2DetailsDepartement>Erreur : {erreurDepartement}</H2DetailsDepartement>}
+            {erreurDepartement && <h1>Erreur : {erreurDepartement}</h1>}
             {departement &&
                 <>
-                    <ArticleTitle texte={departement.nom} />
-                    <DivDetailsDepartement>
+                    <h1>{departement.nom}</h1>
+                    <div>
                         {loadingCoordo && <Loader />}
                         {erreurCoordo && <h1>Erreur : {erreurCoordo}</h1>}
-                        {coordo && <H3Coordonnateur>Coordonné par : {coordo.name}</H3Coordonnateur>}
+                        {coordo && <p>Coordonné par : {coordo.name}</p>}
 
-                        <H2DetailsDepartement>Cours proposés par le département </H2DetailsDepartement>
+                        <h2>Cours proposés par le département </h2>
                         {loadingCoursProposes && <Loader />}
                         {erreurCoursProposes && <h1>Erreur : {erreurCoursProposes}</h1>}
                         {coursProposes && professeursAssignables &&
                             <>
-                                <DivListe>
+                                <div id="coursProposes">
                                     {
                                         coursProposes?.map((coursPropose) => (
                                             <CarteCours key={coursPropose.id} coursPropose={coursPropose} idDepartement={departement.id} allCours={coursProposes} setAllCours={setCoursProposes} professeursAssignables={professeursAssignables} />
                                         ))
                                     }
-                                </DivListe>
+                                </div>
                             </>
                         }
 
-                    </DivDetailsDepartement>
+                    </div>
                 </>
             }
-        </DivPageDetailsDepartement>
+        </div>
     )
 }
 

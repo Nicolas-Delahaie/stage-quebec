@@ -1,6 +1,6 @@
 // Composants
-import TableauLiberations from "../components/layout/TableauLiberations";
-import { Loader } from "../utils/styles";
+import TableauLiberations from "../components/TableauLiberations";
+import Loader from '../components/Loader.js';
 
 // Librairies
 import { useEffect, useContext, useState } from "react";
@@ -120,78 +120,84 @@ function Liberations() {
         }
     }
     return (
-        <div className="Liberations">
+        <div id="Liberations">
             <h1>Liberations</h1>
-            <div className="gridSelection">
-                <div>
-                    <h2>Professeur</h2>
-                    {erreurDept && <p>{erreurDept}</p>}
-                    {departements && enseignants &&
-                        <div>
-                            <span>Departement</span>
-                            <select onChange={updateEnseignants}>
-                                {
-                                    departements.map((departement, idDept) => {
-                                        return <option key={departement.id} value={idDept}>{departement.nom}</option>
-                                    })
-                                }
-                            </select>
-
-                            <span>Nom</span>
-                            <select onChange={(e) => getLiberations(e, "enseignant")}>
-                                {
-                                    enseignants.map((enseignant, idEnseignant) => {
-                                        return <option key={enseignant.id} value={idEnseignant}>{enseignant.name}</option>
-                                    })
-                                }
-                            </select>
-
-                        </div>
-                    }
-                </div>
-                <div>
-                    <h2>Responsable</h2>
-                    {erreurResponsables && <p>{erreurResponsables}</p>}
-                    {responsables &&
-                        <div>
-                            <span>Nom</span>
-                            {responsables &&
-                                <select onChange={(e) => getLiberations(e, "responsable")}>
+            <div className="container">
+                <div className="choixPersonnel">
+                    <div className="professeur">
+                        <h2>Professeur</h2>
+                        {erreurDept && <p>{erreurDept}</p>}
+                        {departements && enseignants &&
+                            <div>
+                                <span>Departement</span>
+                                <select onChange={updateEnseignants}>
                                     {
-                                        responsables.map((responsable, idResponsable) => {
-                                            return <option key={responsable.id} value={idResponsable}>{responsable.name}</option>
+                                        departements.map((departement, idDept) => {
+                                            return <option key={departement.id} value={idDept}>{departement.nom}</option>
                                         })
                                     }
                                 </select>
+
+                                <span>Nom</span>
+                                <select onChange={(e) => getLiberations(e, "enseignant")}>
+                                    {
+                                        enseignants.map((enseignant, idEnseignant) => {
+                                            return <option key={enseignant.id} value={idEnseignant}>{enseignant.name}</option>
+                                        })
+                                    }
+                                </select>
+
+                            </div>
+                        }
+                    </div>
+                    <div className="responsable">
+                        <h2>Responsable</h2>
+                        {erreurResponsables && <p>{erreurResponsables}</p>}
+                        {responsables &&
+                            <div>
+                                <span>Nom</span>
+                                {responsables &&
+                                    <select onChange={(e) => getLiberations(e, "responsable")}>
+                                        {
+                                            responsables.map((responsable, idResponsable) => {
+                                                return <option key={responsable.id} value={idResponsable}>{responsable.name}</option>
+                                            })
+                                        }
+                                    </select>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div className={"zoneLiberations " + (loadingLiberations && "loading")}>
+                    {loadingLiberations && <Loader />}
+                    {liberations &&
+                        <>
+                            {nomSelectionnee &&
+                                <div className="divH2">
+                                    <h2>Libérations de {nomSelectionnee}</h2>
+                                </div>
                             }
-                        </div>
+                            <div className="zoneAnnees">
+                                <h3>Avant</h3>
+                                <h3>Après</h3>
+
+                                <div className="modifAnnee">
+                                    <button onClick={() => modifAnnee("avant", -1)} className="bouton">-</button>
+                                    <span> {anneesAvant} </span>
+                                    <button onClick={() => modifAnnee("avant", 1)} className="bouton">+</button>
+                                </div>
+                                <div className="modifAnnee">
+                                    <button onClick={() => modifAnnee("apres", -1)} className="bouton">-</button>
+                                    <span> {anneesApres} </span>
+                                    <button onClick={() => modifAnnee("apres", 1)} className="bouton">+</button>
+                                </div>
+                            </div>
+                            <TableauLiberations liberations={liberations} anneesAvant={anneesAvant} anneesApres={anneesApres} />
+                        </>
                     }
                 </div>
             </div>
-            {nomSelectionnee && <h2>Libérations de {nomSelectionnee}</h2>}
-            {loadingLiberations && <Loader />}
-            {liberations &&
-                <>
-                    <span>Annees avant </span>
-                    <button onClick={() => modifAnnee("avant", -1)} className="bouton">-</button>
-                    <span> {anneesAvant} </span>
-                    <button onClick={() => modifAnnee("avant", 1)} className="bouton">+</button>
-                    {/* <input type="number" value={anneesAvant} onChange={(e) => modifAnnee("avant", e.target.value)} /> */}
-
-                    <br />
-                    <span>Annees apres </span>
-                    <button onClick={() => modifAnnee("apres", -1)} className="bouton">-</button>
-                    <span> {anneesApres} </span>
-                    <button onClick={() => modifAnnee("apres", 1)} className="bouton">+</button>
-                    {/* <input type="number" value={anneesApres} onChange={(e) => modifAnnee("apres", e.target.value)} /> */}
-
-
-                    <br />
-                    <div className="tableauLiberations">
-                        <TableauLiberations liberations={liberations} anneesAvant={anneesAvant} anneesApres={anneesApres} />
-                    </div>
-                </>
-            }
         </div>
     );
 }

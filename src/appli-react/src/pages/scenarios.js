@@ -1,53 +1,22 @@
 /**
  * @todo Gérer la redirection en cas de deconnexion (pour ne pas avoir "erreur de serveur" lorsque on nest plus connecte)
  */
+// Librairies
 import { useState, useEffect, useContext } from 'react'
 import { AppContext } from '../utils/context/context';
 
-import styled from 'styled-components'
+// Composants
+import CarteHorizontale from '../components/CarteHorizontale';
+import Loader from '../components/Loader.js';
 
-import CarteHorizontale from '../components/layout/CarteHorizontale';
-import ArticleTitle from '../components/forms/ArticleTitle';
-
-
+// Images
 import Valider from '../assets/images/Scenarios/Valider.svg'
 import Calendrier from '../assets/images/Scenarios/Calendrier.svg'
 
 import { iconValide } from '../assets/svg/iconValide.js'
 import { iconNonValide } from '../assets/svg/iconNonValide.js'
 
-import { colors, fonts, Loader } from '../utils/styles';
 
-const DivPageScenarios = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding : 2rem 0rem;
-`;
-
-const PScenarios = styled.p`
-    font-size: 1rem;
-    margin: 0rem 0rem 0rem 1rem;
-`;
-
-const H3Scenarios = styled.h3`
-    font-size: 1.25rem;
-    font-family: ${fonts.titre};
-    color: ${colors.bleuFonce};
-    margin: 0rem 0rem 0rem 1rem;
-`;
-
-const DivValidation = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-`;
-
-const ImgIcon = styled.img`
-    margin: 0.75rem;
-`;
 
 function Scenarios() {
     const { apiAccess } = useContext(AppContext);
@@ -56,9 +25,6 @@ function Scenarios() {
     const [isLoadingContexte, setIsLoadingContexte] = useState(false);
     const [isLoadingScenarios, setIsLoadingScenarios] = useState(false);
     const [scenariosDetailles, setScenariosDetailles] = useState(null);
-
-    let urlImage = Calendrier;
-    let icon = iconValide;
 
     const getScenarios = async () => {
         // -- Recuperation des scenarios --
@@ -116,13 +82,13 @@ function Scenarios() {
     }, [])
 
 
-    return <DivPageScenarios>
-        <ArticleTitle texte=" Vos Scénarios" />
+    return <div id="scenarios">
+        <h1>Vos Scénarios</h1>
         {erreurContexte && <h2>{erreurContexte}</h2>}
         {isLoadingContexte ?
             <Loader />
             :
-            <>
+            <div className="container">
                 {scenariosDetailles && scenariosDetailles.map(scenario => (
                     <CarteHorizontale
                         key={scenario.id}
@@ -130,21 +96,22 @@ function Scenarios() {
                         titre={"Département " + scenario.departement.nom}
                         texteBouton="Voir le scénario"
                         lien={`/scenarios/${scenario.id}`}>
-                        <PScenarios>Propriétaire : {scenario.proprietaire.nom}</PScenarios>
-                        <PScenarios>Année :{scenario.annee}</PScenarios>
-                        <PScenarios>Dernière modification : {scenario.updated_at}</PScenarios>
-                        <PScenarios>Date de création : {scenario.created_at}</PScenarios>
-                        <DivValidation>
-                            <H3Scenarios>Validé par le responsable : </H3Scenarios>
-                            <ImgIcon src={scenario.aEteValide ? icon = iconValide : icon = iconNonValide} />
-                        </DivValidation>
+                        <p>Propriétaire : {scenario.proprietaire.nom}<br />
+                            Année :{scenario.annee}<br />
+                            Dernière modification : {scenario.updated_at}<br />
+                            Date de création : {scenario.created_at}<br />
+                        </p>
+                        <div className="zoneValidation">
+                            <h3>Validé par le responsable : </h3>
+                            <img src={scenario.aEteValide ? iconValide : iconNonValide} className="icone" />
+                        </div>
                     </CarteHorizontale>
                 ))}
                 {isLoadingScenarios && <Loader />}
                 {scenariosDetailles && !isLoadingScenarios && scenariosDetailles.length === 0 && <h2>Vous n'avez aucun scénario</h2>}
-            </>
+            </div>
         }
-    </DivPageScenarios>
+    </div>
 }
 
 export default Scenarios

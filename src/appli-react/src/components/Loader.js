@@ -1,25 +1,13 @@
-import { colors } from "./colors";
-import styled from "styled-components";
+import "../styles/composants.scss";
+/**@warning Inutile de le mettre partout puisque header l importe deja */
 
-const StyledLoader = styled.svg`
-fill:none;
-
-stroke-linecap:bevel;
-stroke-linejoin:round;
-stroke-width:2px;
-
-stroke:${colors.jauneClair};
-width: 100px;
-height: 100px;
-`;
-
-export function Loader() {
+function Loader() {
     return (
-        <StyledLoader viewBox="-25 -25 100 100">
+        <svg viewBox="-25 -25 100 100" id="loader">
             <defs>
                 <linearGradient id="gr-simple" x1="0" y1="0" x2="100%" y2="100%">
                     <stop stopColor="rgba(255,255,255,.7)" offset="10%" />
-                    <stop stopColor="rgba(255,255,255,.7)"offset="90%" />
+                    <stop stopColor="rgba(255,255,255,.7)" offset="90%" />
                 </linearGradient>
             </defs>
             <circle className="cls-1" cx="26" cy="27" r="26" stroke="url(#gr-simple)" />
@@ -32,6 +20,7 @@ export function Loader() {
                     to="360 26 27"
                     repeatCount="indefinite" />
             </path>
-        </StyledLoader>
+        </svg>
     )
 }
+export default Loader;

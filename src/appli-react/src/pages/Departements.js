@@ -1,17 +1,15 @@
 /* --------------------------------- IMPORT --------------------------------- */
-/*import pour les fonctionnalités*/
+// Librairies
 import { useState, useEffect, useContext } from "react"
+
+// Fichiers
 import { AppContext } from '../utils/context/context';
 
-/* import pour le style */
-import styled from "styled-components"
-import { Loader } from "../utils/styles"
+// Composants
+import Loader from '../components/Loader.js';
+import CarteHorizontale from "../components/CarteHorizontale"
 
-/* import des composants */
-import CarteHorizontale from "../components/layout/CarteHorizontale"
-import ArticleTitle from "../components/forms/ArticleTitle"
-
-/* import des images */
+// Images
 import Administation from "../assets/images/Departements/Administration.svg"
 import analyses_biomedicales from "../assets/images/Departements/analyses_biomedicales.svg"
 import architecture from "../assets/images/Departements/architecture.svg"
@@ -33,22 +31,6 @@ import sciences_humaines from "../assets/images/Departements/sciences_humaines.s
 import Soins_infirmiers from "../assets/images/Departements/Soins_infirmiers.svg"
 import techniques_travail_social from "../assets/images/Departements/techniques_travail_social.svg"
 
-/* --------------------------------- STYLES --------------------------------- */
-
-const StyledDepartements = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-`
-
-const DivPageDepartements = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 80.5vh;
-`;
 
 /* -------------------- FONCTIONS DE LA PAGE DEPARTEMENTS ------------------- */
 function rechercheImage(nomDepartement) {
@@ -110,12 +92,12 @@ function Departements() {
     }, [])
 
     return (
-        <DivPageDepartements>
-            <ArticleTitle texte="Départements" />
+        <div id="departements">
+            <h1>Départements</h1>
             {erreur && <h1>{erreur}</h1>}
             {isLoading && <Loader />}
             {departements &&
-                <StyledDepartements>
+                <div>
                     {
                         departements.map((departement) => (
                             <CarteHorizontale
@@ -125,14 +107,16 @@ function Departements() {
                                 urlImage={rechercheImage(departement.nom)}
                                 lien={`/departements/${departement.id}`}
                             >
-                                <p>Coordonnateur : {departement.coordonnateur.name}</p>
-                                <p>Nombre d'étudiant : {departement.nbEleves}</p>
+                                <p>
+                                    Coordonnateur : {departement.coordonnateur.name}<br />
+                                    Nombre d'étudiant : {departement.nbEleves}
+                                </p>
                             </CarteHorizontale>
                         ))
                     }
-                </StyledDepartements>
+                </div>
             }
-        </DivPageDepartements>
+        </div>
     )
 }
 

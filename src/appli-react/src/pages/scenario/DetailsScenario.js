@@ -2,16 +2,19 @@
  * @todo Mieux gérer l affichage des modifications 
  * @todo Prevoir des parametres d url faux (pas un chiffre bon par exemple)
  */
-import { ArticleTitle } from "../../components/forms";
 
+// Librairies
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { AppContext } from '../../utils/context/context';
 import { Toaster, toast } from "react-hot-toast";
 
-import { Loader, colors, fonts } from "../../utils/styles";
+// Composants
+import Loader from '../../components/Loader.js';
 
+// Style
 import styled from "styled-components";
+import { colors, fonts } from "../../utils/styles";
 
 import { calculCIP, calculCIL } from "./calculCI";
 import { TdScenario, TdScenarioComponent } from "./TdScenario";
@@ -394,7 +397,7 @@ function DetailsScenario() {
     return (
         <DivPageDetailsScenario>
             <Toaster />
-            <ArticleTitle texte="Détails du scénario" />
+            <h1 className="titrePrincipal">Détails du scénario</h1>
             <DivDetailsScenario>
                 {
                     isLoadingRepartition ? (

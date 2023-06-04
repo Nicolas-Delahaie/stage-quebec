@@ -1,0 +1,317 @@
+/* -------------- PAGE PROFIL -------------- */
+#profil {
+    display: flex;
+    flex-direction: column;
+    min-height: 80vh;
+
+    .infos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin: 0 4rem;
+    }
+
+    .formContraintes {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .contraintes {
+        width: 80%;
+        cursor: text;
+        border: none;
+        box-shadow: 0px 5px 10px 0px var(--gris);
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        margin: 0.25rem 0;
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
+
+/* -------------- PAGE LOGIN -------------- */
+#login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80.5vh;
+
+
+    form {
+        display: grid;
+        grid-template-columns: 1fr 150px;
+        align-items: center;
+
+        input[type="email"],
+        input[type="password"] {
+            margin-left: 10px;
+        }
+
+        input[type="checkbox"] {
+            justify-self: center;
+        }
+    }
+
+    .ligneFormulaire {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .erreur {
+        grid-column: span 2;
+        color: red;
+        text-align: center;
+    }
+
+    .btnValider {
+        grid-column: span 2;
+        width: 60%;
+        justify-self: center;
+    }
+}
+
+
+/* -------------- PAGE LIBERATIONS -------------- */
+#Liberations {
+    min-height: 80vh;
+
+    .container {
+        display: grid;
+        padding: 0px 15%;
+
+        .choixPersonnel {
+            display: flex;
+            border: 2px solid var(--bleu-fonce);
+            border-radius: 1rem;
+            padding: 1rem 2rem;
+            width: min-content;
+            justify-self: center;
+
+            .responsable,
+            .professeur {
+                &>div {
+                    display: grid;
+                    grid-template-columns: min-content 1fr;
+                    align-items: center;
+                }
+            }
+
+            .responsable {
+                margin: 0px 4rem;
+            }
+        }
+
+        .zoneLiberations {
+            .divH2 {
+                display: flex;
+                justify-content: center;
+
+                h2 {
+                    margin-bottom: 0;
+                }
+            }
+
+            .zoneAnnees {
+                display: grid;
+                grid-template-columns: min-content min-content;
+                justify-content: center;
+                justify-items: center;
+
+                div {
+                    display: flex;
+                    flex-direction: column;
+                    width: min-content;
+                }
+
+                h3,
+                h4 {
+                    margin-bottom: 0;
+                    align-self: center;
+                }
+
+                .modifAnnee {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    align-items: center;
+                    padding: 0px 1rem;
+
+                    span {
+                        margin: 0px;
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+
+/* -------------- PAGE ACCUEIL -------------- */
+#accueil {
+    #authentifie {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        min-height: 80vh;
+    }
+
+    #nonAuthentifie {
+        section {
+            padding: 1rem 3rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            justify-items: center;
+        }
+
+        img {
+            width: 40vw;
+            height: auto;
+            margin: 0 2rem;
+        }
+    }
+}
+
+
+/* -------------- SCENARIOS -------------- */
+// PAGE SCENARIOS
+#scenarios {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 80vh;
+
+    .container {
+        width: 60%;
+        display: flex;
+        flex-direction: column;
+        align-items: center; // Pour le loader
+
+        .zoneValidation {
+            display: flex;
+            align-items: center;
+        }
+
+        .icone {
+            margin-left: 1rem;
+        }
+    }
+}
+
+// PAGE DETAILS SCENARIO
+#detailsScenario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 80.5vh;
+    margin: 1rem auto;
+
+
+    &>div {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        width: 80%;
+        margin: 1rem auto;
+        padding: 1rem;
+    }
+
+    .repartition {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        overflow: auto;
+
+
+        &::-webkit-scrollbar {
+            height: 0.5rem;
+        }
+
+        &::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: var(--jaune-fonce);
+            border-radius: 1rem;
+        }
+    }
+
+    .divTitre {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btnTitre {
+        transition: all 0.3s ease-in-out;
+        background-color: transparent;
+        border: none;
+    }
+
+    .btnDeveloppe {
+        transform: rotate(180deg);
+    }
+
+    .btnNonDeveloppe {
+        transform: rotate(0deg);
+    }
+}
+
+
+/* -------------- DEPARTEMENTS -------------- */
+// PAGE DETAILS DEPARTEMENT
+.departement {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 80.5vh;
+    margin: 1rem auto;
+
+    &>div {
+        align-items: flex-start;
+        width: 80%;
+        min-height: auto;
+    }
+
+    #coursProposes {
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 1rem;
+    }
+
+    p {
+        font-size: 1.5rem;
+        font-family: var(--font-sous-titre);
+        color: var(--bleu-fonce);
+    }
+}
+
+// PAGE DEPARTEMENTS
+#departements {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 80.5vh;
+
+    &>div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 60%;
+    }
+}

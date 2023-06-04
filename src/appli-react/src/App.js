@@ -6,8 +6,9 @@ import { Route } from "react-router";
 import { AppProvider } from "./utils/context/context";
 
 /* Import des styles */
-import GlobalStyles from "./utils/styles/global";
-import './utils/styles/index.css';
+import './styles/index.scss';
+import './styles/pages.scss';
+import './styles/composants.scss';
 
 /* Import des pages */
 import Home from "./pages/Home";
@@ -21,8 +22,8 @@ import Liberations from "./pages/Liberations";
 import NotFound from "./pages/NotFound";
 
 /* Import des Layout */
-import Header from "./components/layout/Header";
-import Footer from "./components/layout/Footer";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 
 function App() {
@@ -30,7 +31,6 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <AppProvider>
-          <GlobalStyles />
           <Header />
           <Routes>
             <Route exact path="/" element={<Home />} />

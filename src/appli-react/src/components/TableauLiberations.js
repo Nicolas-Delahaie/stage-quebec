@@ -59,20 +59,20 @@ function TableauLiberation({ liberations, anneesAvant = 1, anneesApres = 1 }) {
 
     return (
         <div className="TableauLiberations">
-            <h2>Semestre</h2>
-            <h2>1</h2>
-            <h2>2</h2>
+            <h3>Semestre</h3>
+            <h3>1</h3>
+            <h3>2</h3>
             {
                 anneesAAfficher.map((annee) => {
                     // Pour chaque annee (ligne)
                     return (
                         <React.Fragment key={annee}>
-                            <h2 className={annee === anneeActuelle ? "anneeActuelle" : undefined}>{annee}-{annee + 1}</h2 >
+                            <h3 className={annee === anneeActuelle ? "anneeActuelle" : undefined}>{annee}-{annee + 1}</h3 >
                             {
                                 [1, 2].map((semestre) => {
                                     // Pour chaque semestre (case)
                                     return (
-                                        <div key={annee + semestre}>
+                                        <div key={annee + semestre} className="case">
                                             {
                                                 liberationsDuSemestre(annee, semestre).map((liberation) => {
                                                     // Pour chaque liberation (ligne d une case)

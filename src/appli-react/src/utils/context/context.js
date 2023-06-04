@@ -53,15 +53,16 @@ export const AppProvider = ({ children }) => {
         Cookies.remove('token');
         Cookies.remove('userType');
         setEstConnecte(false);
+        navigate("/");
     }
     const deconnexion = async () => {
+        // Dexonnexion front
+        deconnexionFront();
         // Deconnexion back
         const rep = await apiAccess({
             url: "http://localhost:8000/api/logout",
             method: "post",
         });
-        // Dexonnexion front
-        deconnexionFront();
     }
 
     /**

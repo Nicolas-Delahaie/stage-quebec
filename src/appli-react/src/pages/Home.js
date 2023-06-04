@@ -1,8 +1,7 @@
 /* --------------------------------- IMPORT --------------------------------- */
 
 // FORM et LAYOUT
-import ArticleTitle from "../components/forms/ArticleTitle"
-import CarteAccueil from "../components/layout/CarteAccueil"
+import CarteAccueil from "../components/CarteAccueil"
 
 // IMAGES 
 import Repartition_plusieurs from "../assets/images/Home/Repartition_plusieurs.svg"
@@ -12,30 +11,9 @@ import Repartir from "../assets/images/Authentifie/Repartir.svg"
 import Departements from "../assets/images/Authentifie/Departements.svg"
 
 // LIBRAIRIES
-import styled from "styled-components"
 import { useContext, useState, useEffect } from "react"
 import { AppContext } from "../utils/context/context"
 
-/* ---------------------------------- STYLE --------------------------------- */
-
-const ArticleStyle = styled.div`
-    padding: 1rem 3rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    justify-items: center;
-`;
-const ImageArticle = styled.img`
-    width: 40vw;
-    height: auto;
-    margin: 0 2rem;
-`;
-const DivAuthentifie = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    height: 100%;
-`;
 
 /* ----------------------------------- DOM ---------------------------------- */
 
@@ -48,62 +26,54 @@ function Home() {
     }, [])
 
     return (
-        estConnecte ?
-            <DivAuthentifie>
-                {(() => {
-                    switch (type) {
-                        case 'professeur':
-                            return (
-                                <>
-                                    <CarteAccueil urlImage={Repartir} titre={'Voir mes scénarios'} texteBouton={'Mes scénarios'} lien={'/scenarios'} />
-                                    <CarteAccueil urlImage={Calendrier} titre={'Gérer mes contraintes'} texteBouton={'Mes contraintes'} lien={'/profil'} />
-                                </>
-                            )
-                        case 'responsable':
-                            return (
-                                <>
-                                    <CarteAccueil urlImage={Repartir} titre={'Voir mes scénarios'} texteBouton={'Mes scénarios'} lien={'/scenarios'} />
-                                    <CarteAccueil urlImage={Calendrier} titre={'Gérer mes contraintes'} texteBouton={'Mes contraintes'} lien={'/profil'} />
-                                    <CarteAccueil urlImage={Departements} titre={'Voir les départements'} texteBouton={'Les départements'} lien={'/departements/'} />
-                                </>
-                            )
-                        default:
-                            return (
-                                <>
-                                    <CarteAccueil urlImage={Repartir} titre={'Voir mes scénarios'} texteBouton={'Mes scénarios'} lien={'/scenarios'} />
-                                    <CarteAccueil urlImage={Calendrier} titre={'Gérer mes contraintes'} texteBouton={'Mes contraintes'} lien={'/profil'} />
-                                </>
-                            )
-                    }
-                })()}
-            </DivAuthentifie>
-            :
-            <div>
-                <ArticleTitle texte={'Présentation'} />
-                <ArticleStyle>
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
-                        Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
-                        Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
-                        Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
-                        Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
-                    </p>
-                    <ImageArticle src={Repartition_plusieurs} alt="image article" />
-                </ArticleStyle>
-                <ArticleTitle texte={'Fonctionnement'} />
-                <ArticleStyle>
-                    <ImageArticle src={Tableau} alt="image article" />
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
-                        Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
-                        Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
-                        Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
-                        Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
-                    </p>
-                </ArticleStyle>
-            </div>
+        <div id="accueil">
+            {
+                estConnecte ?
+                    <div id="authentifie">
+                        {type === "administrateur" && <h2>Admin</h2>}
+                        {type === "responsable" &&
+                            <>
+                                <CarteAccueil urlImage={Repartir} titre={'Voir mes scénarios'} texteBouton={'Mes scénarios'} lien={'/scenarios'} />
+                                <CarteAccueil urlImage={Calendrier} titre={'Gérer mes contraintes'} texteBouton={'Mes contraintes'} lien={'/profil'} />
+                                <CarteAccueil urlImage={Departements} titre={'Voir les départements'} texteBouton={'Les départements'} lien={'/departements/'} />
+                            </>
+                        }
+                        {type === "professeur" &&
+                            <>
+                                <CarteAccueil urlImage={Repartir} titre={'Voir mes scénarios'} texteBouton={'Mes scénarios'} lien={'/scenarios'} />
+                                <CarteAccueil urlImage={Calendrier} titre={'Gérer mes contraintes'} texteBouton={'Mes contraintes'} lien={'/profil'} />
+                            </>
+                        }
+                    </div>
+                    :
+                    <div id="nonAuthentifie">
+                        <h1 className>Présentation</h1>
+                        <section>
+                            <p>
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
+                                Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
+                                Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
+                                Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
+                                Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
+                            </p>
+                            <img src={Repartition_plusieurs} alt="image article" />
+                        </section>
+                        <h2>Fonctionnement</h2>
+                        <section>
+                            <img src={Tableau} alt="image article" />
+                            <p>
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
+                                Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
+                                Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
+                                Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
+                                Quisquam, voluptatum. Quisquam, voluptatum. Quisquam, voluptatum.
+                            </p>
+                        </section>
+                    </div>
+            }
+        </div>
     )
 }
 export default Home

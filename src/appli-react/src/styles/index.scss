@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital@1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans+SC&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Imprima&display=swap');
+
+:root {
+    --bleu-fonce: #00296B;
+    --bleu-moyen: #003F88;
+    --bleu-clair: #00509D;
+    --bleu-tres-clair: #E6F2FF;
+    --jaune-fonce: #FDC500;
+    --jaune-clair: #FFD500;
+    --jaune-tres-clair: #FFF2CC;
+    --blanc: #FFFFFF;
+    --noir: #000000;
+    --gris: #C4C4C4;
+    --gris-clair: #F2F2F2;
+    --vert: #00A651;
+    --rouge: #E60000;
+
+    --font-titre: 'Josefin Sans';
+    --font-sous-titre: 'Alegreya Sans SC';
+    --font-texte: 'Imprima';
+}
+
+/* --------------------------------------------- */
+/*                     GLOABL                    */
+/* --------------------------------------------- */
+// Styles globaux a toute l application
+* {
+    cursor: url("../assets/svg/cursor.svg"), auto;
+    font-family: var(--font-texte);
+    color: var(--bleu-fonce);
+    user-select: none; //Pour que le texte ne soit pas selectionnable
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+
+/* --------------------------------------------- */
+/*             ELEMENTS HTML BASIQUES            */
+/* --------------------------------------------- */
+// Comportements par defaut des elements html
+// -- Titres -- //
+h2,
+h3,
+h4,
+h5,
+h6 {
+    width: fit-content;
+    font-family: var(--font-sous-titre);
+}
+
+h1 {
+    font-family: var(--font-titre);
+    text-align: center;
+    width: 100%;
+
+    &::after {
+        content: "";
+        display: block;
+        width: auto;
+        height: 3px;
+        background-color: var(--jaune-fonce);
+        margin: 0.5rem auto;
+    }
+}
+
+h2:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: var(--jaune-fonce);
+}
+
+// -- BOUTONS -- //
+button {
+    @extend .ModeleBouton;
+}
+
+input[type="submit"] {
+    @extend .ModeleBouton;
+}
+
+// -- INPUTS -- //
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="email"] {
+    @extend .ModeleInputsHorizontaux;
+    cursor: text;
+}
+
+select {
+    @extend .ModeleInputsHorizontaux;
+    cursor: pointer;
+}
+
+/* --------------------------------------------- */
+/*           MODELES (non instanciable)          */
+/* --------------------------------------------- */
+// Classe utilisables uniquement dans le scss
+.ModeleBouton {
+    background-color: var(--jaune-fonce);
+    color: var(--bleu-fonce);
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    margin: 0.3rem;
+    cursor: pointer;
+    width: fit-content;
+    transition: background-color all 0.2s ease-in-out;
+
+    &:hover {
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3), 0px 0px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    &:active {
+        box-shadow: none;
+        transform: translateY(2px);
+    }
+}
+
+.ModeleInputsHorizontaux {
+    height: 1.5rem;
+    border: none;
+    box-shadow: 0px 5px 10px 0px var(--gris);
+    border-radius: 0.5rem;
+    padding: 0rem 0.3rem;
+    margin: 0.25rem;
+    color: var(--bleu-moyen);
+
+    &::placeholder {
+        color: var(--gris);
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+
+
+/* --------------------------------------------- */
+/*             CLASSES PERSONNALISEES            */
+/* --------------------------------------------- */
+// Classe utilisables directement dans le html
+.btnLien {
+    // Les boutons utilisant Link notament
+    @extend .ModeleBouton;
+    margin: 1rem;
+}
+
+
+/* --------------------------------------------- */
+/*                     LAYOUTS                   */
+/* --------------------------------------------- */
+// Classe utilisables directement dans le html
+// Tout ce qui peut aider a positionner des elements
+.loading {
+    // lorsqu on doit afficher le loader
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
