@@ -12,6 +12,17 @@ use App\Models\Repartition;
 class ScenarioController extends Controller
 {
     // ------- GET ------- /
+    public function indexDetaille()
+    {
+        return Scenario::with([
+            "proprietaire" => function ($query) {
+                $query->select('id', 'name');
+            },
+            "departement" => function ($query) {
+                $query->select('id', 'nom');
+            }
+        ])->get();
+    }
     /**
      * @brief Retourne tous les scenarios de maniere detaillee 
      * @details triés par scénario validé puis par année puis par date de modification
