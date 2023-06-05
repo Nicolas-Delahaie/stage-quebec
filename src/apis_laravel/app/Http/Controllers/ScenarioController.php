@@ -16,7 +16,7 @@ class ScenarioController extends Controller
     {
         return Scenario::with([
             "proprietaire" => function ($query) {
-                $query->select('id', 'name');
+                $query->select('id', 'nom', 'prenom');
             },
             "departement" => function ($query) {
                 $query->select('id', 'nom');
