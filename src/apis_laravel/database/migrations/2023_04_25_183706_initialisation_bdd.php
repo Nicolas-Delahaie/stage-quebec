@@ -37,6 +37,8 @@ return new class extends Migration {
             $table->unsignedTinyInteger("nb_groupes");
             $table->unsignedSmallInteger("taille_groupes");
             $table->unsignedSmallInteger("ponderation");
+            $table->unsignedBigInteger("departement_id");
+            $table->unique(["nom", "departement_id"]);
         });
         Schema::create("cours_enseigne", function (Blueprint $table) {
             $table->id();
@@ -59,9 +61,8 @@ return new class extends Migration {
         });
         Schema::create("detail_modification", function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger("oldPonderation")->nullable();
-            $table->unsignedTinyInteger("newPonderation")->nullable();
-            $table->unsignedBigInteger("professeur_id");
+            $table->unsignedTinyInteger("oldValeur")->nullable();
+            $table->unsignedTinyInteger("newValeur")->nullable();
             $table->unsignedBigInteger("cours_enseigne_id");
             $table->unsignedBigInteger("modification_id");
         });
@@ -75,6 +76,7 @@ return new class extends Migration {
             $table->id();
             $table->boolean("aEteValide")->default(false);
             $table->unsignedSmallInteger("annee");
+            $table->unsignedTinyInteger("session");
             $table->timestamps();
             $table->unsignedBigInteger("departement_id");
         });
@@ -97,6 +99,10 @@ return new class extends Migration {
             $table->foreign("liberation_id")->references("id")->on("liberation")
                 ->onDelete("CASCADE");
         });
+        Schema::table("cours", function (Blueprint $table) {
+            $table->foreign("departement_id")->references("id")->on("departement")
+                ->onDelete("cascade");
+        });
         Schema::table("cours_enseigne", function (Blueprint $table) {
             $table->foreign("cours_id")->references("id")->on("cours")
                 ->onDelete("cascade");
@@ -118,8 +124,6 @@ return new class extends Migration {
                 ->onDelete("CASCADE");
         });
         Schema::table("detail_modification", function (Blueprint $table) {
-            $table->foreign("professeur_id")->references("id")->on("users")
-                ->onDelete("cascade");
             $table->foreign("cours_enseigne_id")->references("id")->on("cours_enseigne")
                 ->onDelete("cascade");
             $table->foreign("modification_id")->references("id")->on("modification")
