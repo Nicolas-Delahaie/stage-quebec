@@ -87,7 +87,7 @@ class ScenarioController extends Controller
                                     $query->select('motif');
                                 },
                             ])
-                                ->select('id', 'name');
+                                ->select('id', 'name', 'statut');
                         }
                     ])
                         ->select('id', 'cours_propose_id', 'professeur_id');
@@ -97,5 +97,20 @@ class ScenarioController extends Controller
             ->get();
 
         return $repartition;
+    }
+
+    public function showProfesseurs($id){
+        return Scenario::findOrFail($id)->
+        with(['departement' => function($query){
+            $query->with(['professeurs' => function($query){
+                $query->with(['liberations' => function($query){
+                    $query->select('motif');
+                }])
+                ->select('id', 'name', 'statut', 'departement_id');
+            }])
+            ->select('id', 'nom');
+        }])
+        ->select('id', 'departement_id')
+        ->get();
     }
 }

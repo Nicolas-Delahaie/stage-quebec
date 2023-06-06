@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'statut',
         'contraintes',
         'type_utilisateur_id'
     ];
@@ -42,6 +43,10 @@ class User extends Authenticatable
     }
     public function scenarios(){
         return $this->hasMany(Scenario::class, 'proprietaire_id');
+    }
+
+    public function departement(){
+        return $this->belongsTo(Departement::class, 'departement_id');
     }
 
 

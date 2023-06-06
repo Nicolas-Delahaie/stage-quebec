@@ -39,4 +39,10 @@ class RepartitionController extends Controller
 
         return response($repartition, 200);
     }
+
+    public function delete($id){
+        $repartition = Repartition::findOrFail($id);
+        $repartition->delete();
+        return response(["message" => 'Répartition supprimée'], 200);
+    }
 }

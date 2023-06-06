@@ -87,6 +87,7 @@ use App\Http\Controllers\ScenarioController;
 Route::get('scenarios/{id}/detaille', [ScenarioController::class, 'showDetails'])->middleware('tokenBon');
 Route::get('scenarios/{id}/modifications', [ScenarioController::class, 'showModifications'])->middleware('tokenBon');
 Route::get('scenarios/{id}/repartition', [ScenarioController::class, 'showRepartition'])->middleware('tokenBon');
+Route::get('scenarios/{id}/professeurs', [ScenarioController::class, 'showProfesseurs'])->middleware('tokenBon');
 // Route::get('scenarios', [ScenarioController::class, 'index'])->middleware('tokenBon');
 // Route::get('scenarios/{id}', [ScenarioController::class, 'show'])->middleware('tokenBon');
 // Route::get('scenarios/{id}/departement', [ScenarioController::class, 'showDepartement'])->middleware('tokenBon');
@@ -96,7 +97,8 @@ Route::get('scenarios/{id}/repartition', [ScenarioController::class, 'showRepart
 /* -------------------------------------------------------------------------- */
 /*                                 REPARTTION                                 */
 /* -------------------------------------------------------------------------- */
-Route::post('repartition/{id}', [RepartitionController::class, 'update'])->middleware('tokenBon');
+Route::post('repartition/{id}', [RepartitionController::class, 'update'])->middleware(['tokenBon', 'responsable']);
+Route::delete('repartition/{id}', [RepartitionController::class, 'delete'])->middleware(['tokenBon', 'responsable']);
 
 
 /* -------------------------------------------------------------------------- */

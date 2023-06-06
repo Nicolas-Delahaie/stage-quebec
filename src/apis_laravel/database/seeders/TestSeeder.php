@@ -66,24 +66,35 @@ class TestSeeder extends Seeder
             foreach($liberation as $val){Liberation::create($val);}
 
             // TABLES AVEC 1 DEPENDANCE
+
+
+            // TABLES AVEC 2 DEPENDANCES
+            $departement=[
+                ["nom" => "Informatique", "coordonnateur_id" => null, "nbEleves" => 100]
+            ];
+
+            foreach($departement as $val){Departement::create($val);}
+
             $user =[
                 
-                ["name" => "Béland", "email" => "s.beland@gmail.com" , "password" => bcrypt("password"), "type_utilisateur_id" => 1],
-                ["name" => "McGrail", "email" => "p.mcgrail@gmail.com" , "password" => bcrypt("password"), "type_utilisateur_id" => 1],
-                ["name" => "Neveu", "email" => "s.neveu@gmail.com" , "password" => bcrypt("password"), "type_utilisateur_id" => 1],
-                ["name" => "Trudeau", "email" => "g.trudeau@gmail.com" , "password" => bcrypt("password"), "type_utilisateur_id" => 1],
-                ["name" => "Guérin", "email" => "f.guerin@gmail.com" , "password" => bcrypt("password"), "type_utilisateur_id" => 1],
-                ["name" => "Bessette", "email" => "k.bessette@gmail.com" , "password" => bcrypt("password"), "type_utilisateur_id" => 1],
-                ["name" => "Bouthillier", "email" => "m.bouthillier@gmail.com" , "password" => bcrypt("password"), "type_utilisateur_id" => 1],
-                ["name" => "Huot", "email" => "s.huot@gmail.com" , "password" => bcrypt("password"), "type_utilisateur_id" => 1],
-                ["name" => "Fortin", "email" => "o.fortin@gmail.com" , "password" => bcrypt("password"), "type_utilisateur_id" => 1],
-                ["name" => "ProfA", "email" => "p.profA@gmail.com" , "password" => bcrypt("password"), "type_utilisateur_id" => 1],
-                ["name" => "Root","email" => "root@root.root","password" => bcrypt("root"),"type_utilisateur_id" => 1],
+                ["name" => "Béland", "email" => "s.beland@gmail.com" , "password" => bcrypt("password"), "statut" => "P", "type_utilisateur_id" => 1, "departement_id" => 1],
+                ["name" => "McGrail", "email" => "p.mcgrail@gmail.com" , "password" => bcrypt("password"), "statut" => "P", "type_utilisateur_id" => 1, "departement_id" => 1],
+                ["name" => "Neveu", "email" => "s.neveu@gmail.com" , "password" => bcrypt("password"), "statut" => "P", "type_utilisateur_id" => 1, "departement_id" => 1],
+                ["name" => "Trudeau", "email" => "g.trudeau@gmail.com" , "password" => bcrypt("password"), "statut" => "P", "type_utilisateur_id" => 1, "departement_id" => 1],
+                ["name" => "Guérin", "email" => "f.guerin@gmail.com" , "password" => bcrypt("password"), "statut" => "P", "type_utilisateur_id" => 1, "departement_id" => 1],
+                ["name" => "Bessette", "email" => "k.bessette@gmail.com" , "password" => bcrypt("password"), "statut" => "P", "type_utilisateur_id" => 1, "departement_id" => 1],
+                ["name" => "Bouthillier", "email" => "m.bouthillier@gmail.com" , "password" => bcrypt("password"), "statut" => "TP", "type_utilisateur_id" => 1, "departement_id" => 1,"estCoordo" => true],
+                ["name" => "Huot", "email" => "s.huot@gmail.com" , "password" => bcrypt("password"), "statut" => "TP", "type_utilisateur_id" => 1, "departement_id" => 1],
+                ["name" => "Fortin", "email" => "o.fortin@gmail.com" , "password" => bcrypt("password"), "statut" => "TP", "type_utilisateur_id" => 1, "departement_id" => 1],
+                ["name" => "ProfA", "email" => "p.profA@gmail.com" , "password" => bcrypt("password"), "statut" => "TP", "type_utilisateur_id" => 1, "departement_id" => 1],
+                ["name" => "ProfB", "email" => "p.profB@gmail.com" , "password" => bcrypt("password"), "statut" => "TP", "type_utilisateur_id" => 1, "departement_id" => 1],
+                ["name" => "Root","email" => "root@root.root","password" => bcrypt("root"), "statut" => "P", "type_utilisateur_id" => 1, "departement_id" => 1],
 
             ];
             foreach($user as $val){\App\Models\User::create($val);}
 
-            // TABLES AVEC 2 DEPENDANCES
+            Departement::where('id', 1)->update(['coordonnateur_id' => 7]);
+
             $alouer =[
                 ["tempsAloue" => 0.355, "annee" =>2023, "semestre" => 1, "utilisateur_id" => 7, "liberation_id" => 2],
                 ["tempsAloue" => 0.100, "annee" =>2023, "semestre" => 1, "utilisateur_id" => 7, "liberation_id" => 3],
@@ -94,12 +105,6 @@ class TestSeeder extends Seeder
                 ["tempsAloue" => 0.100, "annee" =>2023, "semestre" => 1, "utilisateur_id" => 2, "liberation_id" => 7],
             ];
             foreach($alouer as $val){Alouer::create($val);}
-
-            $departement=[
-                ["nom" => "Informatique", "coordonnateur_id" => 7, "nbEleves" => 100]
-            ];
-
-            foreach($departement as $val){Departement::create($val);}
 
             $coursProposes=[
                 ["cours_id" => 1, "departement_id" => 1, "ponderation" => 3, "tailleGroupes" => 19.75, "nbGroupes" => 4],
@@ -128,6 +133,8 @@ class TestSeeder extends Seeder
             ];
 
             foreach($scenario as $val){Scenario::create($val);}
+
+            
 
             // TABLES AVEC 4 DEPENDANCES
             $enseigner = [
