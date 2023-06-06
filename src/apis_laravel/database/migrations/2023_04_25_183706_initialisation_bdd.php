@@ -33,7 +33,18 @@ return new class extends Migration {
         });
         Schema::create("cours", function (Blueprint $table) {
             $table->id();
-            $table->string("nom", 255)->unique();
+            $table->string("nom", 255);
+            $table->unsignedTinyInteger("nb_groupes");
+            $table->unsignedSmallInteger("taille_groupes");
+            $table->unsignedSmallInteger("ponderation");
+        });
+        Schema::create("cours_enseigne", function (Blueprint $table) {
+            $table->id();
+            $table->unsignedTinyInteger("nb_groupes");
+            $table->unsignedBigInteger("cours_id");
+            $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger("scenario_id");
+            $table->unique(["cours_id", "user_id", "scenario_id"]);
         });
         Schema::create("type_utilisateur", function (Blueprint $table) {
             $table->id();
@@ -42,6 +53,7 @@ return new class extends Migration {
         Schema::create("modification", function (Blueprint $table) {
             $table->id();
             $table->date("date_modif");
+            $table->text("explications");
             $table->unsignedBigInteger("utilisateur_id")->nullable();
             $table->unsignedBigInteger("scenario_id");
         });
@@ -50,7 +62,7 @@ return new class extends Migration {
             $table->unsignedTinyInteger("oldPonderation")->nullable();
             $table->unsignedTinyInteger("newPonderation")->nullable();
             $table->unsignedBigInteger("professeur_id");
-            $table->unsignedBigInteger("cours_id");
+            $table->unsignedBigInteger("cours_enseigne_id");
             $table->unsignedBigInteger("modification_id");
         });
         Schema::create("departement", function (Blueprint $table) {
@@ -64,7 +76,6 @@ return new class extends Migration {
             $table->boolean("aEteValide")->default(false);
             $table->unsignedSmallInteger("annee");
             $table->timestamps();
-            $table->unsignedBigInteger("proprietaire_id")->nullable();
             $table->unsignedBigInteger("departement_id");
         });
         Schema::create("rdv", function (Blueprint $table) {
@@ -85,6 +96,14 @@ return new class extends Migration {
                 ->onDelete("CASCADE");
             $table->foreign("liberation_id")->references("id")->on("liberation")
                 ->onDelete("CASCADE");
+        });
+        Schema::table("cours_enseigne", function (Blueprint $table) {
+            $table->foreign("cours_id")->references("id")->on("cours")
+                ->onDelete("cascade");
+            $table->foreign("user_id")->references("id")->on("users")
+                ->onDelete("cascade");
+            $table->foreign("scenario_id")->references("id")->on("scenario")
+                ->onDelete("cascade");
         });
         Schema::table("users", function (Blueprint $table) {
             $table->foreign("type_utilisateur_id")->references("id")->on("type_utilisateur")
@@ -111,8 +130,6 @@ return new class extends Migration {
                 ->onDelete("SET NULL");
         });
         Schema::table("scenario", function (Blueprint $table) {
-            $table->foreign("proprietaire_id")->references("id")->on("users")
-                ->onDelete("SET NULL");
             $table->foreign("departement_id")->references("id")->on("departement")
                 ->onDelete("CASCADE");
         });
@@ -131,7 +148,7 @@ return new class extends Migration {
         Schema::disableForeignKeyConstraints();
 
         // SUPPRESSION TABLES CREES
-        $nomsTables = array("alouer", "liberation", "cours", "type_utilisateur", "modification", "detail_modification", "departement", "scenario", "rdv");
+        $nomsTables = array("alouer", "liberation", "cours", "cours_enseigne", "type_utilisateur", "modification", "detail_modification", "departement", "scenario", "rdv");
         foreach ($nomsTables as $nomTable) {
             Schema::dropIfExists($nomTable);
         }
