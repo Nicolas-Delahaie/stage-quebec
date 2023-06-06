@@ -17,14 +17,18 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $type = \App\Models\TypeUtilisateur::inRandomOrder()->first();
+        $departement_id = $type->nom === 'professeur' ? \App\Models\Departement::inRandomOrder()->first()->id : null;
         return [
             'prenom' => fake()->firstName(),
             'nom' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            // password
             'statut' => fake()->randomElement(['P', 'TP']),
             'contraintes' => fake()->paragraphs(1, true),
-            'type_utilisateur_id' => fake()->numberBetween(2, \App\Models\TypeUtilisateur::count()),
+            'type_utilisateur_id' => $type->id,
+            'departement_id' => $departement_id,
             'remember_token' => Str::random(10),
         ];
     }
@@ -34,7 +38,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

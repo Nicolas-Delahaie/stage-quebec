@@ -18,6 +18,9 @@ return new class extends Migration {
             $table->string('password');
             $table->string("contraintes", 511)->default("");
             $table->boolean("estCoordo")->default(false);
+            $table->string("statut", 255);
+            $table->unsignedBigInteger("type_utilisateur_id");
+            $table->unsignedBigInteger("departement_id");
             $table->rememberToken();
             $table->timestamps();
         });

@@ -14,16 +14,6 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        // ------------------------------------------------------ //
-        //        M O D I F I C A T I O N S   T A B L E S         //
-        // ------------------------------------------------------ //
-        Schema::table("users", function (Blueprint $table) {
-            // Modification de users
-            $table->unsignedBigInteger("type_utilisateur_id")->before("email_verified_at");
-            $table->string("statut", 255)->after("password");
-            $table->unsignedBigInteger("departement_id")->after("statut")->nullable();
-        });
-
         // -------------------------------------------- //
         //        C R E A T I O N   T A B L E S         //
         // -------------------------------------------- //
@@ -146,12 +136,12 @@ return new class extends Migration {
             Schema::dropIfExists($nomTable);
         }
 
-        // SUPPRESSION MODIFICATIONS
-        if (Schema::hasColumn("users", "type_utilisateur_id")) {
-            Schema::table('users', function (Blueprint $table) {
-                $table->dropForeign(['type_utilisateur_id']);
-                $table->dropColumn('type_utilisateur_id');
-            });
-        }
+        // SUPPRESSION CLES ETRANGERES AJOUTEES SEULES
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['type_utilisateur_id']);
+            $table->dropForeign(['departement_id']);
+            $table->dropColumn('type_utilisateur_id');
+            $table->dropColumn('departement_id');
+        });
     }
 };
