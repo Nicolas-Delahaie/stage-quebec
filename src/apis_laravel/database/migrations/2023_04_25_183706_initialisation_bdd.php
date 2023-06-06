@@ -24,36 +24,9 @@ return new class extends Migration {
             $table->unsignedBigInteger("departement_id")->after("statut")->nullable();
         });
 
-
-
         // -------------------------------------------- //
         //        C R E A T I O N   T A B L E S         //
         // -------------------------------------------- //
-        Schema::create("cours_propose", function (Blueprint $table) {
-            $table->id();
-            $table->unsignedTinyInteger("ponderation");
-            $table->unsignedFloat("tailleGroupes")->default(0);
-            $table->unsignedSmallInteger("nbGroupes")->default(0);
-            $table->unsignedBigInteger("cours_id");
-            $table->unsignedBigInteger("departement_id");
-            $table->unique(["cours_id", "departement_id"]);
-        });
-        Schema::create("enseigner", function (Blueprint $table) {
-            $table->id();
-            $table->unsignedTinyInteger("nbGroupes")->default(0);
-            $table->unsignedBigInteger("cours_propose_id");
-            $table->unsignedBigInteger("professeur_id");
-            $table->unique(["cours_propose_id", "professeur_id"]);
-        });
-        Schema::create("repartition", function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger("id_enseigner");
-            $table->unsignedBigInteger("id_scenario");
-            $table->unsignedTinyInteger("nbGroupes");
-            $table->unsignedTinyInteger("preparation");
-        });
-
-
         Schema::create("alouer", function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("utilisateur_id");
@@ -64,13 +37,13 @@ return new class extends Migration {
             $table->unsignedDecimal("tempsAloue", 5, 5);
             $table->timestamps();
         });
-        Schema::create("cours", function (Blueprint $table) {
-            $table->id();
-            $table->string("nom", 255)->unique();
-        });
         Schema::create("liberation", function (Blueprint $table) {
             $table->id();
             $table->string("motif", 255)->unique();
+        });
+        Schema::create("cours", function (Blueprint $table) {
+            $table->id();
+            $table->string("nom", 255)->unique();
         });
         Schema::create("type_utilisateur", function (Blueprint $table) {
             $table->id();
@@ -87,7 +60,7 @@ return new class extends Migration {
             $table->unsignedTinyInteger("oldPonderation")->nullable();
             $table->unsignedTinyInteger("newPonderation")->nullable();
             $table->unsignedBigInteger("professeur_id");
-            $table->unsignedBigInteger("cours_propose_id");
+            $table->unsignedBigInteger("cours_id");
             $table->unsignedBigInteger("modification_id");
         });
         Schema::create("departement", function (Blueprint $table) {
@@ -117,26 +90,6 @@ return new class extends Migration {
         // -------------------------------------------- //
         //       A J O U T   R E F E R E N C E S       //
         // -------------------------------------------- //
-        Schema::table("cours_propose", function (Blueprint $table) {
-            $table->foreign("cours_id")->references("id")->on("cours")
-                ->onDelete("CASCADE");
-            $table->foreign("departement_id")->references("id")->on("departement")
-                ->onDelete("CASCADE");
-        });
-        Schema::table("enseigner", function (Blueprint $table) {
-            $table->foreign("cours_propose_id")->references("id")->on("cours_propose")
-                ->onDelete("CASCADE");
-            $table->foreign("professeur_id")->references("id")->on("users")
-                ->onDelete("CASCADE");
-        });
-        Schema::table("repartition", function (Blueprint $table) {
-            $table->foreign("id_enseigner")->references("id")->on("enseigner")
-                ->onDelete("CASCADE");
-            $table->foreign("id_scenario")->references("id")->on("scenario")
-                ->onDelete("CASCADE");
-        });
-
-
         Schema::table("alouer", function (Blueprint $table) {
             $table->foreign("utilisateur_id")->references("id")->on("users")
                 ->onDelete("CASCADE");
@@ -158,7 +111,7 @@ return new class extends Migration {
         Schema::table("detail_modification", function (Blueprint $table) {
             $table->foreign("professeur_id")->references("id")->on("users")
                 ->onDelete("cascade");
-            $table->foreign("cours_propose_id")->references("id")->on("cours_propose")
+            $table->foreign("cours_enseigne_id")->references("id")->on("cours_enseigne")
                 ->onDelete("cascade");
             $table->foreign("modification_id")->references("id")->on("modification")
                 ->onDelete("cascade");
@@ -188,7 +141,7 @@ return new class extends Migration {
         Schema::disableForeignKeyConstraints();
 
         // SUPPRESSION TABLES CREES
-        $nomsTables = array("detail_modification", "alouer", "liberation", "cours", "cours_propose", "enseigner", "rdv", "modification", "organiser", "type_utilisateur", "departement", "scenario", "repartition");
+        $nomsTables = array("alouer", "liberation", "cours", "type_utilisateur", "modification", "detail_modification", "departement", "scenario", "rdv");
         foreach ($nomsTables as $nomTable) {
             Schema::dropIfExists($nomTable);
         }
