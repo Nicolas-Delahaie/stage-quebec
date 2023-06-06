@@ -22,6 +22,8 @@ return new class extends Migration
         Schema::table("users", function (Blueprint $table) {
             // Modification de users
             $table->unsignedBigInteger("type_utilisateur_id")->before("email_verified_at");
+            $table->string("statut", 255)->after("password");
+            $table->unsignedBigInteger("departement_id")->after("statut");
         });
 
 
@@ -125,6 +127,8 @@ return new class extends Migration
         });
         Schema::table("users", function (Blueprint $table) {
             $table->foreign("type_utilisateur_id")->references("id")->on("type_utilisateur")
+                ->onDelete("cascade");
+            $table->foreign("departement_id")->references("id")->on("departement")
                 ->onDelete("cascade");
         });
         Schema::table("departement", function (Blueprint $table) {

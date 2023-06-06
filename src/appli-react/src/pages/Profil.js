@@ -1,96 +1,12 @@
-import { useParams } from "react-router-dom";
+// Librairies
 import { useState, useEffect, useContext, useRef } from "react";
-import { Loader, colors, fonts } from "../utils/styles";
-import { AppContext } from '../utils/context/context';
-import styled from "styled-components";
 import toast, { Toaster } from 'react-hot-toast';
+import { AppContext } from '../utils/context/context';
 
-import { ArticleTitle, Bouton } from "../components/forms";
+// Composants
+import Loader from '../components/Loader';
+import TableauLiberations from "../components/TableauLiberations";
 
-
-/* ---------------------------------- STYLE --------------------------------- */
-
-const DivPageProfil = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: ${props => props.isLoading ? "center" : "flex-start"};
-    justify-content: ${props => props.isLoading ? "center" : "flex-start"};
-    min-height: 80.5vh;
-    padding: 1rem auto;
-`;
-
-const DivInfos = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 1rem 2rem;
-`;
-
-const DivContraintes = styled.div`
-    padding: 1rem;
-`;
-
-const FromProfil = styled.form`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    width: 50%;
-    height: 50%;
-`;
-
-const H2Profil = styled.h2`
-    font-family: ${fonts.titre};
-    color: ${colors.bleuFonce};
-    font-size: 1.5rem;
-    margin: 1rem 0;
-`;
-
-const TextareaProfil = styled.textarea`
-    height: 100%;
-    width: calc(50vw - 3rem);
-
-    cursor: text;
-    border: none;
-    box-shadow: 0px 5px 10px 0px ${colors.gris};
-    border-radius: 0.5rem;
-    font-family: ${fonts.texte};
-    padding: 0.5rem;
-    margin: 0.25rem 0;
-    color: ${colors.bleuMoyen};
-    &:focus{
-        outline: none;
-    }
-`;
-
-const SubmitProfil = styled.input`
-    background-color: ${colors.jauneFonce};
-    color: ${colors.bleuFonce};
-    text-decoration: none;
-    font-family: ${fonts.titre};
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    border-radius: 1rem;
-    margin: 1rem;
-`;
-
-const DivContainerLiberations = styled.div`
-    padding: 1rem;
-`;
-
-const DivLiberations = styled.div`
-    display:grid; 
-    grid-template-columns:1fr 1fr 1fr;
-    border: 1px solid black;
-    justify-items: center;
-`;
-const DivLiberation = styled.div`
-    width:100%;
-    border-top: 1px solid black;
-    border-left: 1px solid black;
-    text-align: center;
-    box-sizing: border-box;
-    padding: 0.5rem;
-`;
 
 /* ----------------------------------- DOM ---------------------------------- */
 
@@ -115,36 +31,7 @@ function Profil() {
 
         // -- Traitement du resultat --
         if (rep.success) {
-            const datas = rep.datas;
-
-            if (datas.liberations.length !== 0) {
-                // Si l utilisateur a des liberations
-                // On ne garde que les libérations de l'année d'avant et celles de l'année à venir a afficher (6 semestres)
-                const annneeActuelle = new Date().getFullYear();
-                const anneesProches = [annneeActuelle - 1, annneeActuelle, annneeActuelle + 1];
-                datas.liberationsTriees = [];
-                anneesProches.forEach((annee) => {
-                    for (let semestre = 1; semestre <= 2; semestre++) {
-                        datas.liberationsTriees.push({ annee: annee, semestre: semestre, liberations: [] });
-                    }
-                });
-
-                // Agencement des liberations dans leur semestre
-                datas.liberationsTriees.forEach((liberationTriee) => {
-                    // On regarde chaque liberation pour trouver celles qui correspondent a l annee et au semestre
-                    datas.liberations.forEach((liberation) => {
-                        if ((liberation.pivot.annee === liberationTriee.annee || liberation.pivot.annee === null) &&
-                            (liberation.pivot.semestre === liberationTriee.semestre || liberation.pivot.semestre === null)) {
-                            // La liberation concerne cette annee et ce semestre
-                            liberationTriee.liberations.push(liberation);
-                        }
-                    })
-                });
-            }
-
-
-
-            setUser(datas);
+            setUser(rep.datas);
         }
         else {
             setErreur(rep.erreur);
@@ -186,60 +73,50 @@ function Profil() {
 
 
     return (
-        <DivPageProfil isLoading={isLoading}>
+        <div id="profil" className={isLoading ? "loading" : "notLoading"}>
             <Toaster />
             {erreur && <h1>{erreur}</h1>}
             {isLoading && <Loader />}
             {user &&
                 <>
-                    <ArticleTitle texte="Mon profil" />
-                    <DivInfos>
-                        <DivContraintes>
-                            <H2Profil>Informations globales</H2Profil>
+                    <h1>Mon profil</h1>
+                    <div className="infos">
+                        <div>
+                            <h2>Informations globales</h2>
                             <p>{user.name}</p>
                             <p>{user.email}</p>
                             <p>{user.type.nom}</p>
-                            <H2Profil>Contraintes</H2Profil>
-                            <FromProfil onSubmit={(e) => { enregistrementContraintes(); e.preventDefault(); }}>
-                                <TextareaProfil defaultValue={user.contraintes} ref={newContraintes} placeholder={user.contraintes === "" ? "Saisissez vos contraintes" : undefined} onKeyDown={handleKeyPress} />
+                            <h2>Contraintes</h2>
+                            <form onSubmit={(e) => { enregistrementContraintes(); e.preventDefault(); }} className="formContraintes">
+                                <textarea className="contraintes"
+                                    defaultValue={user.contraintes}
+                                    ref={newContraintes}
+                                    placeholder={user.contraintes === "" ? "Saisissez vos contraintes" : undefined}
+                                    onKeyDown={handleKeyPress}
+                                    rows="6"
+                                />
                                 {isSavingContraintes ?
                                     <Loader />
                                     :
-                                    <SubmitProfil type="submit" value="Modifier"></SubmitProfil>
+                                    <input className="bouton"
+                                        type="submit"
+                                        value="Modifier" />
                                 }
-                            </FromProfil>
-                        </DivContraintes>
-                        <DivContainerLiberations>
-                            <H2Profil>Libérations</H2Profil>
+                            </form>
+                        </div>
+                        <div>
+                            <h2>Libérations</h2>
                             {user.liberations.length === 0 ?
                                 <p>Vous n'avez aucune libération récente</p>
                                 :
-                                <DivLiberations>
-                                    <H2Profil>Semestre</H2Profil>
-                                    <H2Profil>1</H2Profil>
-                                    <H2Profil>2</H2Profil>
-                                    {
-                                        user.liberationsTriees.map((liberationTriee) => {
-                                            return <>
-                                                {liberationTriee.semestre === 1 && <h3> {liberationTriee.annee}-{liberationTriee.annee + 1}</h3 >}
-                                                <DivLiberation>
-                                                    {
-                                                        liberationTriee.liberations.map((liberation) => {
-                                                            return <p>{liberation.motif} ({(liberation.pivot.tempsAloue * 100).toFixed(1)}%)</p>
-                                                        })
-                                                    }
-                                                </DivLiberation>
-                                            </>
-                                        })
-                                    }
-                                </DivLiberations>
+                                <TableauLiberations liberations={user.liberations} />
                             }
-                            <Bouton>Voir toutes mes libérations</Bouton>
-                        </DivContainerLiberations>
-                    </DivInfos>
+                            <button className="bouton">Voir toutes mes libérations</button>
+                        </div>
+                    </div>
                 </>
             }
-        </ DivPageProfil>
+        </ div>
     );
 }
 

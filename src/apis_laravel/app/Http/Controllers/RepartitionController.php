@@ -14,8 +14,7 @@ class RepartitionController extends Controller
      * @return \Illuminate\Http\Response 200 si la répartition existe, 404 sinon
      */
     public function show($id){
-        $repartition = Repartition::findOrFail($id);
-        return response($repartition, 200);
+        return Repartition::findOrFail($id);
     }
 
     /**
@@ -39,5 +38,11 @@ class RepartitionController extends Controller
         ]);
 
         return response($repartition, 200);
+    }
+
+    public function delete($id){
+        $repartition = Repartition::findOrFail($id);
+        $repartition->delete();
+        return response(["message" => 'Répartition supprimée'], 200);
     }
 }

@@ -1,0 +1,211 @@
+/* --------------------------------------------- */
+/*               COMPOSANTS REACT                */
+/* --------------------------------------------- */
+/* --- LOADER --- */
+#loader {
+    fill: none;
+
+    stroke-linecap: bevel;
+    stroke-linejoin: round;
+    stroke-width: 2px;
+    stroke: var(--jaune-clair);
+
+    width: 100px;
+    height: 100px;
+}
+
+
+/* --- TABLEAU LIBERATIONS --- */
+.TableauLiberations {
+    display: grid;
+    grid-template-columns: min-content 1fr 1fr;
+    border: 5px solid var(--bleu-fonce);
+    border-radius: 50px;
+    justify-items: center;
+    overflow: hidden;
+    margin: 20px 0px;
+
+    h3 {
+        font-size: 1.5rem;
+        white-space: nowrap;
+        margin: 15px 20px;
+        align-self: center;
+    }
+
+    .anneeActuelle {
+        text-decoration: underline;
+    }
+
+    .case {
+        width: 100%;
+        border: 1px solid var(--bleu-fonce);
+        text-align: center;
+    }
+}
+
+
+/* --- HEADER --- */
+header {
+    display: grid;
+    grid-template-columns: 1fr 70% 1fr;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2rem;
+    background-color: var(--bleu-moyen);
+    height: 10vh;
+    cursor: url("../assets/svg/whiteCursor.svg"),
+        auto;
+
+    .logo {
+        height: 5vh;
+        width: 5vh;
+        cursor: pointer;
+    }
+
+    .zoneBoutons {
+        display: flex;
+        justify-content: center;
+    }
+
+    .btnConexion {
+        justify-self: end;
+        margin-right: 0px;
+    }
+}
+
+
+/* --- CARTE ACCUEIL --- */
+.carteAccueil {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min-content;
+    background-color: var(--blanc);
+    box-shadow: 0px 0px 10px 0px var(--gris);
+    border-radius: 2rem;
+    transition: 0.3s;
+    padding: 2rem;
+    text-decoration: none;
+    cursor: pointer;
+
+    * {
+        pointer-events: none; //Pour  garder le curseur main
+    }
+
+    &:hover {
+        box-shadow: 0px 10px 10px 0px var(--gris);
+        transform: scale(1.025);
+    }
+
+    img {
+        height: 250px;
+        width: 250px;
+    }
+}
+
+
+/* --- CARTE COURS --- */
+.carteCours {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: start;
+
+    box-shadow: 0 0 10px var(--gris);
+    border-radius: 1rem;
+    padding: 2rem 1.5rem;
+    width: auto;
+
+    .divModification {
+        display: grid;
+        grid-template-columns: 1fr 50px;
+    }
+
+    h2 {
+        margin: 0px;
+    }
+
+    h3 {
+        margin-bottom: 0px;
+    }
+
+    p {
+        padding: 0.3rem 0;
+        margin: 0px;
+        font-family: var(--font-texte);
+        font-size: 1.25rem;
+        color: var(--bleu-moyen);
+        font-weight: normal;
+    }
+
+    .zoneBoutons {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+
+    form {
+        width: 100%;
+    }
+}
+
+
+/* --- CARTE HORIZONTALE --- */
+.carteHorizontale {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 1rem;
+    box-shadow: 0px 10px 10px 0px var(--gris);
+    padding: 1rem 4rem;
+    margin: 1rem 0px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 10px 20px 0px var(--gris);
+    }
+
+    * {
+        pointer-events: none; //Pour  garder le curseur main
+    }
+
+    &>.imgContainer {
+        width: 40%;
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    .contenu {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+}
+
+
+/* --- FOOTER --- */
+footer {
+    background-color: var(--bleu-fonce);
+    font-size: 1rem;
+    padding: 1rem 3rem;
+    text-align: center;
+    cursor: url("../assets/svg/whiteCursor.svg"), auto;
+    height: 5vh;
+
+    p {
+        color: var(--blanc);
+        font-family: var(--font-texte);
+        cursor: url("../assets/svg/whiteCursor.svg"), auto;
+    }
+}

@@ -20,7 +20,36 @@ class DepartementController extends Controller
             'coordonnateur' => function ($query) {
                 $query->select('id', 'name');
             },
-        ])->get()->toJson();
+        ])->get();
+    }
+    public function indexWithEnseignants()
+    {
+        return Departement::with([
+            'coursProposes.enseignants' => function ($query) {
+                $query->select('users.id', 'users.name');
+            }
+        ])
+            ->get()
+            ->sortBy("nom")
+            ->values()
+            ->map(function ($dept) {
+                // On stock tous les enseignants de tous les cours propose (de maniere "flat", c est a dire [prof1, prof2, prof1, prof3] au lieu de [[prof1, prof2], [prof1, prof3]]])
+                $enseignants = $dept->coursProposes->flatMap(function ($coursPropose) {
+                    return $coursPropose
+                        ->enseignants
+                        // Suppression du pivot inutile
+                        ->map(function ($enseignant) {
+                            unset($enseignant->pivot);
+                            return $enseignant;
+                        });
+                });
+
+                return [
+                    'id' => $dept->id,
+                    'nom' => $dept->nom,
+                    'enseignants' => $enseignants->unique('id')->sortBy("name")->values(),
+                ];
+            });
     }
     public function show($id)
     {
@@ -28,7 +57,7 @@ class DepartementController extends Controller
     }
     public function showCoordonnateur($id)
     {
-        return Departement::findOrFail($id)->coordonnateur->toJson();
+        return Departement::findOrFail($id)->coordonnateur;
     }
     public function showCoursProposesDetailles($id)
     {

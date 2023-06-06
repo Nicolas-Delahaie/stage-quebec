@@ -2,55 +2,14 @@
  * @warning Les required et input type=email ne fonctionne pas, on peut valider le formulaire avec des champs vides
  */
 
-//Elements graphiques
-import styled from 'styled-components'
+// Librairies
+import { useState, useContext, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import toast, { Toaster } from "react-hot-toast"
-import { Input, InputSubmit } from "../components/forms"
-
-import { Loader, colors, fonts } from "../utils/styles"
-
-//Autre
-import { useState, useEffect } from "react"
-import { redirect, useNavigate } from "react-router-dom"
-import { useContext } from "react"
 import { AppContext } from "../utils/context/context"
 
-
-const DivAuthentification = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 80.5vh;
-`;
-
-const H1Authentification = styled.h1`
-    font-family: ${fonts.titre};
-    font-size: 2rem;
-    color: ${colors.bleuFonce};
-`;
-
-const FormAuthentification = styled.form`
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-`;
-
-const DivLabelInput = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-`;
-
-const PErreur = styled.p`
-    color: ${colors.rouge};
-`;
-
-const InputChkbx = styled.input`
-    justify-self: center;
-`;
+// Composants
+import Loader from '../components/Loader.js';
 
 function Login() {
     // Variables de la page
@@ -124,36 +83,32 @@ function Login() {
     }
 
     return (
-        <DivAuthentification>
+        <div id="login">
             <Toaster />
-            <H1Authentification>Connexion</H1Authentification>
-            <FormAuthentification onSubmit={clicConnexion}>
-                <DivLabelInput>
-                    <label>Adresse professionnelle</label>
-                    <Input type="email"
-                        required={true}
-                        value={mail}
-                        autoFocus
-                        onChange={(e) => setMail(e.target.value)} />
-                </DivLabelInput>
-                <DivLabelInput>
-                    <label>Mot de passe</label>
-                    <Input type="password"
-                        required={true}
-                        value={mdp}
-                        onChange={(e) => setMdp(e.target.value)} />
-                </DivLabelInput>
-                <DivLabelInput>
-                    <label>Rester connecté</label>
-                    <InputChkbx type="checkbox"
-                        checked={resterConnecte}
-                        onChange={(e) => setResterConnecte(e.target.checked)} />
-                </DivLabelInput>
-                {erreur && <PErreur>{erreur}</PErreur>}
+            <h1>Connexion</h1>
+            <form onSubmit={clicConnexion} >
+                <label>Adresse professionnelle</label>
+                <input className="champsSaisie"
+                    type="email"
+                    required={true}
+                    value={mail}
+                    autoFocus
+                    onChange={(e) => setMail(e.target.value)} />
+                <label>Mot de passe</label>
+                <input className="champsSaisie"
+                    type="password"
+                    required={true}
+                    value={mdp}
+                    onChange={(e) => setMdp(e.target.value)} />
+                <label>Rester connecté</label>
+                <input type="checkbox"
+                    checked={resterConnecte}
+                    onChange={(e) => setResterConnecte(e.target.checked)} />
+                {erreur && <p className="erreur">{erreur}</p>}
                 {isConnecting && <Loader />}
-                {isConnecting || <InputSubmit type="submit" value="Se connecter" />}
-            </FormAuthentification>
-        </DivAuthentification>
+                {!isConnecting && <input className="btnValider" type="submit" value="Se connecter" />}
+            </form>
+        </div>
     )
 }
 export default Login

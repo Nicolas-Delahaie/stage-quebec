@@ -5,94 +5,11 @@
  * @todo modifier les boutons pour pas que ce soient les memes (aux memes endroits) lorsqu on modifie ou non
  */
 
-import { useContext, useEffect } from "react";
-import { AppContext } from "../../utils/context/context";
-
-
-import styled from "styled-components"
-import { DivBouton, DivCarteReduite } from "./CarteProfesseur"
-import { colors, fonts } from "../../utils/styles"
+// Librairies
+import { useState, useContext, useEffect } from "react";
 import toast, { Toaster } from 'react-hot-toast';
-import { useState } from "react";
+import { AppContext } from "../utils/context/context";
 
-const H1Cours = styled.h1`
-    width: fit-content;
-    margin: 0.25rem 0;
-    font-family: ${fonts.sousTitre};
-    font-size: 1.5rem;
-    color: ${colors.bleuFonce};
-    margin-bottom: 1rem;
-
-    &:after{
-        content: "";
-        display: block;
-        width: 100%;
-        height: 2px;
-        background-color: ${colors.jauneFonce};
-    }
-`;
-
-const DivH2 = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-
-`;
-
-const Oskfbbz = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 40px;
-`;
-
-const H2Cours = styled.h2`
-    margin: 0.25rem 0;
-    font-family: ${fonts.texte};
-    font-size: 1.25rem;
-    color: ${colors.bleuMoyen};
-    font-weight: normal;
-`;
-
-const DivBoutonToast = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
-
-const Input = styled.input`
-    height: 1.5rem;
-    cursor: text;
-    border: none;
-    box-shadow: 0px 5px 10px 0px ${colors.gris};
-    border-radius: 0.5rem;
-    font-family: ${fonts.texte};
-    padding: 0rem 0.25rem;
-    margin: 0.25rem 0;
-    color: ${colors.bleuMoyen};
-    &:focus{
-        outline: none;
-    }
-
-    ::placeholder{
-        color: ${colors.gris};
-    }
-
-    ::-webkit-outer-spin-button,
-    ::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-`;
-
-const Bouton = styled.button`
-    background-color: ${colors.jauneFonce};
-    color: ${colors.bleuFonce};
-    text-decoration: none;
-    font-family: ${fonts.titre};
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    border-radius: 1rem;
-    margin: 1rem;
-`
 
 function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignables }) {
     const { apiAccess } = useContext(AppContext);
@@ -123,10 +40,10 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
         toast((t) => (
             <div>
                 <div>Êtes-vous sûr de vouloir supprimer le cours "{coursPropose.cours.nom}" ?</div>
-                <DivBoutonToast>
-                    <Bouton onClick={() => toast.dismiss(t.id)}>Annuler</Bouton>
-                    <Bouton onClick={() => { toast.dismiss(t.id); supprimerCours(); }}>Confirmer</Bouton>
-                </DivBoutonToast>
+                <div className="zoneBoutons">
+                    <button className="bouton" onClick={() => toast.dismiss(t.id)}>Annuler</button>
+                    <button className="bouton" onClick={() => { toast.dismiss(t.id); supprimerCours(); }}>Confirmer</button>
+                </div>
             </div>
         ))
     }
@@ -201,10 +118,10 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
         toast((t) => (
             <div>
                 <div>Retirer {nomProf} de {coursPropose.cours.nom}?</div>
-                <DivBoutonToast>
-                    <Bouton onClick={() => toast.dismiss(t.id)}>Annuler</Bouton>
-                    <Bouton onClick={() => { toast.dismiss(t.id); retirerProf(idProf); }}>Confirmer</Bouton>
-                </DivBoutonToast>
+                <div className="zoneBoutons">
+                    <button className="bouton" onClick={() => toast.dismiss(t.id)}>Annuler</button>
+                    <button className="bouton" onClick={() => { toast.dismiss(t.id); retirerProf(idProf); }}>Confirmer</button>
+                </div>
             </div>
         ))
     }
@@ -221,8 +138,6 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
         })
         toast.dismiss();
 
-        console.log(reponse);
-
         // -- Analyse --
         if (reponse.success) {
             toast.success(<b>Professeur retiré !</b>);
@@ -233,14 +148,13 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
             setAllCours(updatedCours);
         }
         else {
-            var erreur;
             if (reponse.statusCode === 404) {
-                erreur = `Professeur ou cours introuvable`;
+                toast.error(<b>Professeur ou cours introuvable</b>)
             }
             else {
-                erreur = `Problème de serveur`;
+                toast.error(<b>{reponse.erreur}</b>)
             }
-            toast.error(<b>{erreur}</b>);
+            ;
         }
     }
     const attribuerProfesseurs = async (e) => {
@@ -286,73 +200,73 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
 
 
     return (
-        <DivCarteReduite>
+        <div className="carteCours">
             <Toaster />
-            <H1Cours>{coursPropose.cours.nom}</H1Cours>
-            <h2>Informations</h2>
+            <h2>{coursPropose.cours.nom}</h2>
+            <h3>Informations</h3>
             {
                 modifierInformations ?
                     <form onSubmit={(e) => { modifierCours(); e.preventDefault(); }}>
-                        <Oskfbbz>
-                            <H2Cours>Pondération</H2Cours>
-                            <Input type="number" required value={newPonderationCours} onChange={(e) => setNewPonderationCours(e.target.value)} autoFocus />
-                            <H2Cours>Taille du groupe</H2Cours>
-                            <Input type="number" required value={newTailleGroupesCours} onChange={(e) => setNewTailleGroupesCours(e.target.value)} />
-                            <H2Cours>Nombre de groupes</H2Cours>
-                            <Input type="number" required value={newNbGroupesCours} onChange={(e) => setNewNbGroupesCours(e.target.value)} />
-                        </Oskfbbz>
-                        <DivBouton>
-                            <Bouton type="button" onClick={() => setModifierInformations(false)}>Annuler</Bouton>
-                            <Bouton type="submit">Confirmer</Bouton>
-                        </DivBouton>
+                        <div className="divModification">
+                            <p>Pondération</p>
+                            <input type="number" required value={newPonderationCours} onChange={(e) => setNewPonderationCours(e.target.value)} autoFocus />
+                            <p>Taille du groupe</p>
+                            <input type="number" required value={newTailleGroupesCours} onChange={(e) => setNewTailleGroupesCours(e.target.value)} />
+                            <p>Nombre de groupes</p>
+                            <input type="number" required value={newNbGroupesCours} onChange={(e) => setNewNbGroupesCours(e.target.value)} />
+                        </div>
+                        <div className="zoneBoutons">
+                            <button className="bouton" type="button" onClick={() => setModifierInformations(false)}>Annuler</button>
+                            <button className="bouton" type="submit">Confirmer</button>
+                        </div>
                     </form>
                     :
-                    <DivH2>
-                        <H2Cours>Pondération : {coursPropose.ponderation}</H2Cours>
-                        <H2Cours>Taille du groupe : {coursPropose.tailleGroupes}</H2Cours>
-                        <H2Cours>Nombre de groupes : {coursPropose.nbGroupes}</H2Cours>
-                        <Bouton onClick={() => setModifierInformations(true)}>Modifier</Bouton>
-                    </DivH2>
+                    <div className="informations">
+                        <p>Pondération : {coursPropose.ponderation}</p>
+                        <p>Taille du groupe : {coursPropose.tailleGroupes}</p>
+                        <p>Nombre de groupes : {coursPropose.nbGroupes}</p>
+                        <button className="bouton" onClick={() => setModifierInformations(true)}>Modifier</button>
+                    </div>
             }
-            <h2>Professeurs</h2>
-            <DivH2>
-                {coursPropose.enseignants.length === 0 && <H2Cours>Aucun professeur</H2Cours>}
-                {
-                    modifierProfesseurs ?
-                        <>
-                            {
-                                coursPropose.enseignants.map((professeur) =>
-                                    <>
-                                        <H2Cours onClick={() => validationSuppressionProf(professeur.id, professeur.name)}>{professeur.name}</H2Cours>
-                                        {/* <Bouton type="button" >Retirer</Bouton> */}
-                                    </>)
-                            }
-                            <h3>Ajouter un professeur</h3>
-                            {professeursAssignables &&
-                                <form onSubmit={attribuerProfesseurs}>
-                                    <select name="selectProf">
-                                        {professeursAssignables && professeursAssignables.map((prof) => (
-                                            <option key={prof.id} value={prof.id}>{prof.name}</option>
-                                        ))}
-                                    </select>
-                                    <Bouton type="submit">Ajouter</Bouton>
-                                </form>
-                            }
-                            <Bouton type="button" onClick={() => setModifierProfesseurs(false)}>Annuler</Bouton>
-                        </>
-                        :
-                        <>
-                            {
-                                coursPropose.enseignants.map((professeur) => (
-                                    <H2Cours>{professeur.name}</H2Cours>
-                                ))
-                            }
-                            <Bouton onClick={() => setModifierProfesseurs(true)}>Modifier</Bouton>
-                        </>
-                }
-            </DivH2>
-            <Bouton onClick={() => validationSuppressionCours()}>Supprimer</Bouton>
-        </DivCarteReduite >
+            <h3>Professeurs</h3>
+            {coursPropose.enseignants.length === 0 && <p>Aucun professeur</p>}
+            {
+                modifierProfesseurs ?
+                    <>
+                        {
+                            coursPropose.enseignants.map((professeur) =>
+                                <>
+                                    <p onClick={() => validationSuppressionProf(professeur.id, professeur.name)}>{professeur.name}</p>
+                                    {/* <button type="button" >Retirer</button> */}
+                                </>)
+                        }
+                        {professeursAssignables &&
+
+                            <form onSubmit={attribuerProfesseurs}>
+                                <select name="selectProf">
+                                    {professeursAssignables && professeursAssignables.map((prof) => (
+                                        <option key={prof.id} value={prof.id}>{prof.name}</option>
+                                    ))}
+                                </select>
+                                <div className="zoneBoutons">
+                                    <button className="bouton" type="submit">Ajouter</button>
+                                    <button className="bouton" type="button" onClick={() => setModifierProfesseurs(false)}>Annuler</button>
+                                </div>
+                            </form>
+                        }
+                    </>
+                    :
+                    <>
+                        {
+                            coursPropose.enseignants.map((professeur) => (
+                                <p>{professeur.name}</p>
+                            ))
+                        }
+                        <button className="bouton" onClick={() => setModifierProfesseurs(true)}>Ajouter un professeur</button>
+                    </>
+            }
+            <button className="bouton" onClick={() => validationSuppressionCours()}>Supprimer</button>
+        </div >
     )
 }
 

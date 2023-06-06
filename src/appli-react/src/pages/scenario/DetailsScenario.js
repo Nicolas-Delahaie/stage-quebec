@@ -2,19 +2,23 @@
  * @todo Mieux gérer l affichage des modifications 
  * @todo Prevoir des parametres d url faux (pas un chiffre bon par exemple)
  */
-import { ArticleTitle } from "../../components/forms";
 
+// Librairies
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { AppContext } from '../../utils/context/context';
 import { Toaster, toast } from "react-hot-toast";
 
-import { Loader, colors, fonts } from "../../utils/styles";
+// Composants
+import Loader from '../../components/Loader.js';
+import { TdScenario, TdScenarioComponent } from "../../components/TdScenario";
 
-import styled from "styled-components";
-
+//Fonctions de calculs
 import { calculCIP, calculCIL } from "./calculCI";
-import { TdScenario, TdScenarioComponent } from "./TdScenario";
+
+// Style
+import styled from "styled-components";
+import { colors, fonts } from "../../utils/styles";
 
 /* ---------------------------------- STYLE --------------------------------- */
 
@@ -27,15 +31,20 @@ const DivPageDetailsScenario = styled.div`
     margin: 1rem auto;
 `;
 
+const DivGrid = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 1rem 0rem;
+    width: 100%;
+`;
+
 const DivDetailsScenario = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
     width: 80%;
-    margin: 1rem auto;
-    padding: 1rem;
-`;
+    `;
 
 const DivTableau = styled.div`
     display: flex;
@@ -60,7 +69,6 @@ const DivTableau = styled.div`
 const DivShow = styled.div`
     display: flex;
     align-items: center;
-    justify-content: center;
 `;
 
 const ButtonShow = styled.button`
@@ -84,6 +92,7 @@ const H1Scenario = styled.h1`
     font-family: ${fonts.titre};
     color: ${colors.bleuFonce};
     margin-right: 1rem;
+    margin: 0rem;
 
     &:after {
         content: "";
@@ -103,19 +112,17 @@ const H2Scenario = styled.h2`
 const TableScenario = styled.table`
     margin: 1rem auto;
     border-collapse: collapse;
-    border: 1px solid ${colors.bleuFonce};
-
+    border: 1px solid ${colors.gris};
     overflow-x: scroll;
-`;
+    `;
 
 const ThScenario = styled.th`
     font-size: 0.9rem;
-    max-width: 3rem;
-    width: fit-content;
+    width: 2.5rem;
     font-family: ${fonts.titre};
     color: ${colors.bleuFonce};
     background-color: ${colors.jauneFonce};
-    border: 1px solid ${colors.bleuFonce};
+    border: 1px solid ${colors.noir};
 `;
 
 const ThScenarioProfesseur = styled(ThScenario)`
@@ -127,9 +134,10 @@ const ThScenarioProfesseur = styled(ThScenario)`
 
 const TrScenario = styled.tr`
     font-size: 0.9rem;
+    width: 100%;
     font-family: ${fonts.texte};
     border-collapse: collapse;
-    border: 1px solid ${colors.bleuFonce};
+    border: 1px solid ${colors.gris};
     /*&:nth-child(even) {
         background-color: ${colors.gris};
     }
@@ -154,6 +162,7 @@ function DetailsScenario() {
     const [scenario, setScenario] = useState({});                                   // State des données générales du scénario
     const [modifications, setModifications] = useState({});                           // State des modifications du scénario
     const [scenarioRepartition, setScenarioRepartition] = useState(null);             // State de la répartition du scénario
+    const [professeurs, setProfesseurs] = useState([]);                            // State des professeurs
     const { apiAccess } = useContext(AppContext);                                   // Récupération de la fonction permetant de faire des apels apis
 
 
@@ -163,7 +172,152 @@ function DetailsScenario() {
     var CITotal = 0;                                    // Variable pour le calcul de CI
     var heuresCoursTotal = 0;                                // Variable pour le calcul des heures
     var liberationTotal = 0;                                // Variable pour le calcul des libérations
+    var ETCSession = 0;                                    // Variable pour le calcul des ETC
 
+
+    /* ---------------------------- INITIALISATIONS DES TABLEAUX ---------------------------- */
+
+    var TbLiberations = [];                                                           // Tableau des libérations
+    var TbProfesseurs = [];                                                           // Tableau des professeurs   
+    var TbCours = [];                                                                 // Tableau des cours
+    var TbRepartitionProfesseur = [];                                                           // Tableau des attirbution de cours d'un professeur
+    const [TbRepartition, setTbRepartition] = useState([])                            // Tableau des attirbution de cours
+    const [TbCI, setTbCI] = useState([])                                             // Tableau des CI
+
+    /**
+     * 
+     * @param {*} liberation liberation à ajouter au tableau
+     * @returns un tableau avec les libérations
+     */
+    const addLiberation = (liberation) => {
+        var motifLiberation = liberation.motif;
+        var libExiste = false;
+
+        // Recherche de première occurence de la libération
+        TbLiberations.forEach(lib => {
+            if (lib.motif == motifLiberation) {
+                libExiste = true;
+            }
+        }
+        );
+
+        // Si la libération n'existe pas, on l'ajoute au tableau
+        if (!libExiste) {
+            TbLiberations.push({ 'motif': motifLiberation });
+        }
+    }
+
+    /**
+     * Permet de trier les libérations par ordre alphabétique des statuts et les nom de professeur commencant par "Prof" en dernier
+     * @returns un tableau trié par ordre alphabétique des statuts
+     */
+    const trierProfesseurs = () => {
+        TbProfesseurs.sort(function (a, b) {
+            if (a.nom.startsWith("Prof") && !b.nom.startsWith("Prof")) {
+                return 1; // a avant b car a commence par "Prof" et b non
+            }
+            if (!a.nom.startsWith("Prof") && b.nom.startsWith("Prof")) {
+                return -1; // b avant a car b commence par "Prof" et a non
+            }
+            if (a.nom.startsWith("Prof") && b.nom.startsWith("Prof")) {
+                return a.nom.localeCompare(b.nom); // tri alphabétique pour les noms commençant par "Prof"
+            }
+            // Tri par statut si aucun nom ne commence par "Prof"
+            if (a.statut === "P" && b.statut === "TP") {
+                return -1; // "P" avant "TP"
+            }
+            if (a.statut === "TP" && b.statut === "P") {
+                return 1; // "TP" après "P"
+            }
+            return 0; // Aucun changement
+        });
+    }
+
+    /**
+     * 
+     * @param {*} professeur professeur à ajouter au tableau
+     * @returns un tableau avec les professeurs
+     */
+    const addProfesseur = (professeur) => {
+        var idProfesseur = professeur.id;
+        var nomProfesseur = professeur.name;
+        var liberationsProfesseur = professeur.liberations;
+        var statut = professeur.statut;
+        var professeurExiste = false;
+
+        // Recherche de première occurence du professeur
+        TbProfesseurs.forEach(prof => {
+            if (prof.id == idProfesseur) {
+                professeurExiste = true;
+            }
+        });
+
+        // Si le professeur n'existe pas, on l'ajoute au tableau
+        if (!professeurExiste) {
+            TbProfesseurs.push({ 'id': idProfesseur, 'nom': nomProfesseur, 'liberations': liberationsProfesseur, 'statut': statut });
+        }
+        trierProfesseurs();
+    }
+
+
+    /**
+     * 
+     * @param {*} cours cours à ajouter au tableau
+     * @returns un tableau avec les cours
+     */
+    const addCours = (cours) => {
+        var idCours = cours.id;
+        var tailleGroupes = cours.tailleGroupes;
+        var nbGroupes = cours.nbGroupes;
+        var ponderation = cours.ponderation;
+        var nomCours = cours.cours.nom;
+        var nbEtudiantsTotal = tailleGroupes * nbGroupes;
+        var coursExiste = false;
+
+        // Recherche de première occurence du cours
+        TbCours.forEach(cour => {
+            if (cour.id == idCours) {
+                coursExiste = true;
+            }
+        });
+
+        // Si le cours n'existe pas, on l'ajoute au tableau
+        if (!coursExiste) {
+            TbCours.push({ 'id': idCours, 'nom': nomCours, 'nbGroupes': nbGroupes, 'ponderation': ponderation, 'tailleGroupes': tailleGroupes, 'nbEtudiantsTotal': nbEtudiantsTotal });
+        }
+    }
+
+    /**
+     * 
+     * @param {*} Repartition quel cours est enseigné par quel professeur
+     * @returns TbRepartition un tableau avec les Repartitions
+     */
+    const addRepartition = (repartition) => {
+        var idRepartition = repartition.id;
+        var idCours = repartition.enseigner.cours_propose_id;
+        var idProfesseur = repartition.enseigner.professeur.id;
+        var nbGoupes = repartition.nbGroupes
+        var preparation = repartition.preparation;
+        var repartitionExiste = false;
+
+        // Recherche de première occurence de la repartition
+        TbRepartition.forEach(rep => {
+            if (rep.idCours == idCours && rep.idProfesseur == idProfesseur) {
+                repartitionExiste = true;
+            }
+        });
+
+        // Si la repartition n'existe pas, on l'ajoute au tableau
+        if (!repartitionExiste) {
+            TbRepartition.push({ 'id': idRepartition, 'idCours': idCours, 'idProfesseur': idProfesseur, 'nbGroupes': nbGoupes, 'preparation': preparation });
+        }
+    }
+
+    const addCI = (CI) => {
+        TbCI.push(CI);
+    }
+
+    
     /* -------------------------------- USEEFFECT ------------------------------- */
 
     const [isLoadingScenario, setIsLoadingScenario] = useState(true);              // State du chargement des informations générales du scénario
@@ -172,6 +326,10 @@ function DetailsScenario() {
     const [erreurModifications, setErreurModifications] = useState(true);          // State de l'erreur lors de la récupération des modifications du scénario
     const [erreurRepartition, setErreurRepartition] = useState(true);              // State de l'erreur lors de la récupération de la répartition du scénario
     const [erreurScenario, setErreurScenario] = useState(true);                    // State de l'erreur lors de la récupération des informations générales du scénario
+
+    var liberationEstAffiche = false;                    // Variable pour savoir si la libération est affichée
+    var liberationTotaleProf = 0;                        // Variable pour le calcul de la libération totale d'un professeur
+
 
     /**
      * Fonction qui récupère les informations générales du scénario
@@ -238,129 +396,37 @@ function DetailsScenario() {
         }
     }
 
+    const getProfesseurs = async () => {
+        const rep = await apiAccess({
+            url: `http://localhost:8000/api/scenarios/${id}/professeurs`,
+            method: "get",
+        });
+
+        if (rep.success) {
+            setProfesseurs(rep.datas[0].departement.professeurs);
+        }
+        else {
+            toast.error("Erreur lors du chargement des professeurs" + rep.erreur);
+        }
+        
+            console.log(TbProfesseurs);
+    }
 
     useEffect(() => {
+        getProfesseurs();
         getRepartition();
         getInfos();
     }, []);
 
-    /* ---------------------------- INITIALISATIONS DES TABLEAUX ---------------------------- */
-
-    var repartitionMatch = false;                        // Variable de comparaison pour la répartition
-    var liberationEstAffiche = false;                    // Variable pour savoir si la libération est affichée
-    var liberationTotaleProf = 0;                        // Variable pour le calcul de la libération totale d'un professeur
-
-    var TbLiberations = [];                                    // Tableau des libérations
-    var TbProfesseurs = [];                                 // Tableau des professeurs   
-    var TbCours = [];                                         // Tableau des cours
-    const [TbRepartition, setTbRepartition] = useState([])                            // Tableau des attirbution de cours
-    /**
-     * 
-     * @param {*} liberation liberation à ajouter au tableau
-     * @returns un tableau avec les libérations
-     */
-    const addLiberation = (liberation) => {
-        var motifLiberation = liberation.motif;
-        var libExiste = false;
-
-        // Recherche de première occurence de la libération
-        TbLiberations.forEach(lib => {
-            if (lib.motif == motifLiberation) {
-                libExiste = true;
-            }
-        }
-        );
-
-        // Si la libération n'existe pas, on l'ajoute au tableau
-        if (!libExiste) {
-            TbLiberations.push({ 'motif': motifLiberation });
-        }
-    }
-
-    /**
-     * 
-     * @param {*} professeur professeur à ajouter au tableau
-     * @returns un tableau avec les professeurs
-     */
-    const addProfesseur = (professeur) => {
-        var idProfesseur = professeur.id;
-        var nomProfesseur = professeur.name;
-        var liberationsProfesseur = professeur.liberations;
-        var professeurExiste = false;
-
-        // Recherche de première occurence du professeur
-        TbProfesseurs.forEach(prof => {
-            if (prof.id == idProfesseur) {
-                professeurExiste = true;
-            }
-        });
-
-        // Si le professeur n'existe pas, on l'ajoute au tableau
-        if (!professeurExiste) {
-            TbProfesseurs.push({ 'id': idProfesseur, 'nom': nomProfesseur, 'liberations': liberationsProfesseur });
-        }
-
-    }
-
-    /**
-     * 
-     * @param {*} cours cours à ajouter au tableau
-     * @returns un tableau avec les cours
-     */
-    const addCours = (cours) => {
-        var idCours = cours.id;
-        var tailleGroupes = cours.tailleGroupes;
-        var nbGroupes = cours.nbGroupes;
-        var ponderation = cours.ponderation;
-        var nomCours = cours.cours.nom;
-        var nbEtudiantsTotal = tailleGroupes * nbGroupes;
-        var coursExiste = false;
-
-        // Recherche de première occurence du cours
-        TbCours.forEach(cour => {
-            if (cour.id == idCours) {
-                coursExiste = true;
-            }
-        });
-
-        // Si le cours n'existe pas, on l'ajoute au tableau
-        if (!coursExiste) {
-            TbCours.push({ 'id': idCours, 'nom': nomCours, 'nbGroupes': nbGroupes, 'ponderation': ponderation, 'tailleGroupes': tailleGroupes, 'nbEtudiantsTotal': nbEtudiantsTotal });
-        }
-    }
-
-    /**
-     * 
-     * @param {*} Repartition quel cours est enseigné par quel professeur
-     * @returns TbRepartition un tableau avec les Repartitions
-     */
-    const addRepartition = (repartition) => {
-        var idRepartition = repartition.id;
-        var idCours = repartition.enseigner.cours_propose_id;
-        var idProfesseur = repartition.enseigner.professeur.id;
-        var nbGoupes = repartition.nbGroupes
-        var preparation = repartition.preparation;
-        var repartitionExiste = false;
-
-        // Recherche de première occurence de la repartition
-        TbRepartition.forEach(rep => {
-            if (rep.idCours == idCours && rep.idProfesseur == idProfesseur) {
-                repartitionExiste = true;
-            }
-        });
-
-        // Si la repartition n'existe pas, on l'ajoute au tableau
-        if (!repartitionExiste) {
-            TbRepartition.push({ 'id': idRepartition, 'idCours': idCours, 'idProfesseur': idProfesseur, 'nbGroupes': nbGoupes, 'preparation': preparation });
-        }
-
-    }
+    professeurs && professeurs.forEach((prof) => {
+        addProfesseur(prof);
+    })
+console.log(TbProfesseurs);
 
     // mise en place des tableaux professeurs et cours
     scenarioRepartition && scenarioRepartition.map((repartition) => {
         addRepartition(repartition);
         addCours(repartition.enseigner.cours_propose);
-        addProfesseur(repartition.enseigner.professeur);
         repartition.enseigner.professeur.liberations.map((liberation) => {
             addLiberation(liberation, repartition.enseigner.professeur.id);
         })
@@ -386,83 +452,14 @@ function DetailsScenario() {
         return formattedDateTime;
     }
 
+
     /* ----------------------------------- DOM ---------------------------------- */
 
     return (
         <DivPageDetailsScenario>
             <Toaster />
-            <ArticleTitle texte="Détails du scénario" />
+            <h1 className="titrePrincipal">Détails du scénario</h1>
             <DivDetailsScenario>
-                <DivShow>
-                    <H1Scenario data-testis="titreDep">Informations générales</H1Scenario>
-                    <ButtonShow onClick={toggleShowInfos} showInfos={showInfos}>
-                        <img width="35" height="35" src="https://img.icons8.com/ios/50/circled-chevron-down.png" alt="circled-chevron-down" />
-                    </ButtonShow>
-                </DivShow>
-                {
-                    isLoadingScenario ? (
-                        <DivInfosScenario showInfos={showInfos}>
-                            <Loader />
-                        </DivInfosScenario>
-                    ) : (
-
-                        <>
-                            <DivInfosScenario showInfos={showInfos}>
-                                {
-                                    erreurScenario ? (
-                                        <p>Une erreur est survenue lors du chargement des informations du scénario</p>
-                                    ) : (
-                                        <>
-                                            <H2Scenario>Nom : {scenario.departement.nom}</H2Scenario>
-                                            <H2Scenario>Annee : {scenario.annee}</H2Scenario>
-                                            <p>Date de création : {afficherDate(scenario.created_at)}</p>
-                                            <H2Scenario>Propriétaire : {scenario.proprietaire.name}</H2Scenario>
-                                        </>
-                                    )
-                                }
-
-                            </DivInfosScenario>
-                        </>
-                    )
-                }
-
-                <DivShow>
-                    <H1Scenario>Historique des modifications</H1Scenario>
-                    <ButtonShow onClick={toggleShowHistorique} showInfos={showHistorique}>
-                        <img width="35" height="35" src="https://img.icons8.com/ios/50/circled-chevron-down.png" alt="circled-chevron-down" />
-                    </ButtonShow>
-                </DivShow>
-                {
-                    isLoadingModifications ? (
-                        <DivInfosScenario showInfos={showHistorique}>
-                            <Loader />
-                        </DivInfosScenario>
-                    ) : (
-                        <>
-                            <DivInfosScenario showInfos={showHistorique}>
-                                {
-                                    erreurModifications ? (
-                                        <p>Aucune modification n'a été apportée</p>
-                                    ) : (
-                                        <div>
-                                            {
-                                                /*Pour chaque modification, on affiche la date de modification et l'utilisateur qui a fait la modification*/
-                                                modifications.map((modif) => (
-                                                    <div key={modif.id}>
-                                                        <p>Date de dernière modification : {modif.date_modif}</p>
-                                                        <p>Utilisateur aillant fait la modification : {modif.user.name}</p>
-                                                    </div>
-                                                ))
-                                            }
-                                        </div>
-                                    )
-                                }
-                            </DivInfosScenario>
-                        </>
-                    )
-                }
-
-                <H1Scenario>Le scénario </H1Scenario>
                 {
                     isLoadingRepartition ? (
                         <Loader />
@@ -503,7 +500,6 @@ function DetailsScenario() {
                                         ) : (
                                             // On affiche toutes les informations du cours du département 
 
-
                                             TbCours.map((cours, indexCours) => (
                                                 <TrScenario key={cours.id}>
                                                     <TdScenario>{cours.nom}</TdScenario>
@@ -539,7 +535,6 @@ function DetailsScenario() {
                                         )
                                     }
 
-                                        {/*Partie pour les libérations*/}
                                         < TrTitreScenario >
                                             <TdScenario></TdScenario>
                                             <TdScenario></TdScenario>
@@ -548,7 +543,6 @@ function DetailsScenario() {
                                             <TdScenario>ETC</TdScenario>
                                         </TrTitreScenario>
 
-                                        {/*Partie pour les totaux*/}
                                         {
                                             erreurRepartition ? (
                                                 null
@@ -607,7 +601,6 @@ function DetailsScenario() {
                                             <TdScenario></TdScenario>
                                             <TdScenario>Totaux</TdScenario>
                                         </TrTitreScenario>
-
                                         <TrScenario>
                                             <TdScenario></TdScenario>
                                             <TdScenario></TdScenario>
@@ -619,19 +612,32 @@ function DetailsScenario() {
                                                 TbProfesseurs.map((professeur) => (
                                                     // On initialise le total de CI à 0
                                                     CITotal = 0,
+                                                    // On initialise le tableau de Repartition du professeur à vide
+                                                    TbRepartitionProfesseur = [],
                                                     // On récupère toutes les Repartitions du professeur
                                                     TbRepartition.map((repartition) => {
                                                         if (repartition.idProfesseur === professeur.id) {
-                                                            const coursMatch = TbCours.find(cours => cours.id === repartition.idCours);
+                                                            //on cherche le cours correspondant à la repartition
+                                                            const coursMatch = TbCours.find(
+                                                                (cours) =>
+                                                                    cours.id === repartition.idCours
+                                                            );
+                                                            //on crée un objet repartition pour l'ajouter au tableau de repartition du professeur
+                                                            var repartitionTemp = {
+                                                                nbGroupes: repartition.nbGroupes,
+                                                                ponderation: coursMatch.ponderation,
+                                                                tailleGroupes: coursMatch.tailleGroupes,
+                                                            }
                                                             // On ajoute le CI du cours au total de CI
-                                                            CITotal += parseFloat(calculCIP(repartition.nbGroupes, coursMatch.ponderation, coursMatch.tailleGroupes, repartition.preparation));
-
+                                                            TbRepartitionProfesseur.push(repartitionTemp);
                                                         }
                                                     }),
+                                                    CITotal += parseFloat(calculCIP(TbRepartitionProfesseur)),
                                                     professeur.liberations.map((liberation) => (
                                                         // On ajoute le CI de la libération au total de CI
                                                         CITotal += parseFloat(calculCIL(Number(liberation.pivot.tempsAloue)))
                                                     )),
+                                                    addCI(CITotal),
                                                     // On affiche le total de CI
                                                     <TdScenario key={'Ci de ' + professeur.nom}>{CITotal.toFixed(2)}</TdScenario>
                                                 ))
@@ -661,6 +667,70 @@ function DetailsScenario() {
                                                 ))
                                             }
                                         </TrScenario>
+                                        <TrScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario>ETC Session</TdScenario>
+                                            {
+                                                // Pour chaque professeur, on affiche le total d'ETC Session
+                                                TbProfesseurs.map((professeur, indexProfesseur) => (
+                                                    // On initialise le total d'ETC Session à 0
+                                                    ETCSession = 0,
+                                                    // On divise 40 par la CI du professeur
+                                                    ETCSession = parseFloat(TbCI[indexProfesseur] / 40),
+                                                    // On affiche le total d'ETC Session
+                                                    <TdScenario key={'ETC Session de ' + professeur.nom}>{ETCSession.toFixed(3)}</TdScenario>
+                                                ))
+                                            }
+                                        </TrScenario>
+                                        <TrScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario>Statut</TdScenario>
+                                            {
+                                                // Pour chaque professeur, on affiche le total d'ETC Session
+                                                TbProfesseurs.map((professeur,indexProfesseur) => (
+                                                    //On vérifie si si la CI du professeur n'est pas égale à 0
+                                                    TbCI[indexProfesseur] !== 0 ?
+                                                    // On affiche le statut du professeur
+                                                    <TdScenario key={'Statut de ' + professeur.nom}>{professeur.statut}</TdScenario>
+                                                    :
+                                                    // On affiche C
+                                                    <TdScenario key={'Statut de ' + professeur.nom}>C</TdScenario>
+                                                ))
+                                            }
+                                        </TrScenario>
+                                        <TrScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario></TdScenario>
+                                            <TdScenario>ETC Réel</TdScenario>
+                                            {
+                                                // Pour chaque professeur, on affiche le total d'ETC Session
+                                                TbProfesseurs.map((professeur, indexProfesseur) => (
+                                                    professeur.statut === "Professeur" ?
+                                                        <TdScenario key={'Statut de ' + professeur.nom}>{professeur.statut}</TdScenario>
+                                                        : (
+                                                            // On initialise le total d'ETC Session à 0
+                                                            ETCSession = 0,
+                                                            // On divise 40 par la CI du professeur
+                                                            ETCSession = parseFloat(TbCI[indexProfesseur] / 40),
+
+                                                            // Si l'ETC Session est supérieur à 0.95, on affiche 1 sinon on affiche l'ETC Session
+                                                            ETCSession >= 0.95 ?
+                                                                <TdScenario key={'ETC Réel de ' + professeur.nom} >{1}</TdScenario>
+                                                                : <TdScenario key={'ETC Réel de ' + professeur.nom}>{ETCSession.toFixed(3)}</TdScenario>
+                                                        )
+
+                                                ))
+                                            }
+                                        </TrScenario>
+
                                     </tbody>
                                 </TableScenario>
 
@@ -668,6 +738,79 @@ function DetailsScenario() {
                         </>
                     )
                 }
+                <DivGrid>
+                    <div>
+                        <DivShow>
+                            <H1Scenario data-testis="titreDep">Informations générales</H1Scenario>
+                            <ButtonShow onClick={toggleShowInfos} showInfos={showInfos}>
+                                <img width="35" height="35" src="https://img.icons8.com/ios/50/circled-chevron-down.png" alt="circled-chevron-down" />
+                            </ButtonShow>
+                        </DivShow>
+                        {
+                            isLoadingScenario ? (
+                                <DivInfosScenario showInfos={showInfos}>
+                                    <Loader />
+                                </DivInfosScenario>
+                            ) : (
+
+                                <>
+                                    <DivInfosScenario showInfos={showInfos}>
+                                        {
+                                            erreurScenario ? (
+                                                <p>Une erreur est survenue lors du chargement des informations du scénario</p>
+                                            ) : (
+                                                <>
+                                                    <H2Scenario>Nom : {scenario.departement.nom}</H2Scenario>
+                                                    <H2Scenario>Annee : {scenario.annee}</H2Scenario>
+                                                    <p>Date de création : {afficherDate(scenario.created_at)}</p>
+                                                    <H2Scenario>Propriétaire : {scenario.proprietaire.name}</H2Scenario>
+                                                </>
+                                            )
+                                        }
+
+                                    </DivInfosScenario>
+                                </>
+                            )
+                        }
+                    </div>
+                    <div>
+                        <DivShow>
+                            <H1Scenario>Historique des modifications</H1Scenario>
+                            <ButtonShow onClick={toggleShowHistorique} showInfos={showHistorique}>
+                                <img width="35" height="35" src="https://img.icons8.com/ios/50/circled-chevron-down.png" alt="circled-chevron-down" />
+                            </ButtonShow>
+                        </DivShow>
+                        {
+                            isLoadingModifications ? (
+                                <DivInfosScenario showInfos={showHistorique}>
+                                    <Loader />
+                                </DivInfosScenario>
+                            ) : (
+                                <>
+                                    <DivInfosScenario showInfos={showHistorique}>
+                                        {
+                                            erreurModifications || modifications.length === 0 ? (
+                                                <p>Aucune modification n'a été apportée</p>
+                                            ) : (
+                                                <div>
+                                                    {
+                                                        /*Pour chaque modification, on affiche la date de modification et l'utilisateur qui a fait la modification*/
+                                                        modifications.map((modif) => (
+                                                            <div key={modif.id}>
+                                                                <p>Date de dernière modification : {modif.date_modif}</p>
+                                                                <p>Utilisateur aillant fait la modification : {modif.user.name}</p>
+                                                            </div>
+                                                        ))
+                                                    }
+                                                </div>
+                                            )
+                                        }
+                                    </DivInfosScenario>
+                                </>
+                            )
+                        }
+                    </div>
+                </DivGrid>
             </DivDetailsScenario>
         </DivPageDetailsScenario >
     )

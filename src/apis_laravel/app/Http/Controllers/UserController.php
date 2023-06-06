@@ -11,32 +11,43 @@ use App\Models\User;
 class UserController extends Controller
 {
     // ------- GET ------- /
-    /**
-     * @brief Renvoie tous les utilisateurs
-     * @return Response 200
-     */
     public function index()
     {
-        return response(User::all(), 200);
+        return User::all();
+    }
+    public function indexResponsables()
+    {
+        $users = User::whereHas('type', function ($query) {
+            $query->where('nom', 'responsable');
+        })
+            ->select('id', 'name')
+            ->get()
+            ->sortBy('name')
+            ->values();
+
+        return $users;
     }
     /**
      * @brief Renvoie les scenarios d un utilisateur de maniere detaillee
      * @pre Condition Avoir un token valide lie a un utilisateur 
-     * @return Response 200
+     * @return Scenario[]
      */
     public function showUserScenariosCrees()
     {
-        return response(Auth::user()->scenarios, 200);
+        return Auth::user()->scenarios;
+    }
+    public function showLiberations($id)
+    {
+        return User::findOrFail($id)->liberations;
     }
     /**
      * @brief Renvoie un utilisateur de maniere detaillee 
      * @pre Condition Avoir un token valide lie a un utilisateur 
-     * @return Response 200
+     * @return User
      */
     public function showUserDetails()
     {
-        $user = Auth::user()->load(["type", "liberations", "coursEnseignes"]);
-        return response($user, 200);
+        return Auth::user()->load(["type", "liberations", "coursEnseignes"]);
     }
 
     // ----- PUT -----
@@ -45,7 +56,7 @@ class UserController extends Controller
      * @pre Condition Avoir un token valide lie a un utilisateur 
      * @param Request requete envoyee par le client avec :
      * @param string contraintes string Contraintes de l'utilisateur
-     * @return Response 200, 500
+     * @return Response 204
      */
     public function updateUserContraintes(Request $request)
     {
@@ -62,7 +73,7 @@ class UserController extends Controller
         $user->contraintes = $newContraintes;
         $user->save();
 
-        return response(['message' => 'Contraintes bien modifiées'], 200);
+        return response()->noContent();
     }
 
     // ------- POST ------- /
@@ -74,7 +85,7 @@ class UserController extends Controller
      * @param string password string Mot de passe en clair
      * @param string duration float Duree du token en minutes (entre 1 minute et 100 jours)
      * 
-     * @return Response 299, 401, 422
+     * @return Response 200, 401, 422
      * @return string token string Token de l'utilisateur
      * @return string type string Type de l'utilisateur
      */
@@ -107,7 +118,7 @@ class UserController extends Controller
             $token->accessToken->expires_at = $date_expiration;
             $token->accessToken->save();
 
-            return response(['token' => $token->plainTextToken, 'type' => $user->type->nom, 'message' => 'Utilisateur bien authentifié'], 299);
+            return response(['token' => $token->plainTextToken, 'type' => $user->type->nom, 'message' => 'Utilisateur bien authentifié'], 200);
         } else {
             // Mauvais identifiants
             return response(['message' => 'Mot de passe ou mail incorrect'], 401);
@@ -117,12 +128,12 @@ class UserController extends Controller
     /**
      * @brief Déconnecte l'utilisateur lié au token
      * @pre Condition Avoir un token valide lie a un utilisateur 
-     * @return Response 299
+     * @return Response 204
      */
     public function logout()
     {
         $user = Auth::user();
         $user->tokens()->delete();
-        return response(['message' => 'Utilisateur bien déconnecté'], 299);
+        return response()->noContent();
     }
 }

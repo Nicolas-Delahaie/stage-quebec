@@ -2,44 +2,65 @@ import { calculCIP, calculCIL } from "./calculCI"
 
 
 describe('calculCIP', () => {
-    it('revoyer 2.9 avec 1,1,20,1 ', () => {
+    it('revoyer 2.9 avec une répartion 1,1,20 ', () => {
         const resultatAttendu = 2.9;
-        const resultat = parseFloat(calculCIP(1, 1, 20, 1));
+
+        const TbTest = [{
+            nbGroupes: 1,
+            ponderation: 1,
+            tailleGroupes: 20,
+        }];
+        const resultat = parseFloat(calculCIP(TbTest));
         
         expect(resultat).toEqual(resultatAttendu);
     });
 
-    it('renvoyer 3.75 avec 1,1,20,4', () => {
-        const resultatAttendu = 3.75;
-        const resultat = parseFloat(calculCIP(1, 1, 20, 4));
+    it('renvoyer 9.3 avec quatres répartition de 1,1,20', () => {
+        const resultatAttendu = 9.3;
+
+        const TbTest = [{
+            nbGroupes: 1,
+            ponderation: 1,
+            tailleGroupes: 20,
+        },
+        {
+            nbGroupes: 1,
+            ponderation: 1,
+            tailleGroupes: 20,
+        },
+        {
+            nbGroupes: 1,
+            ponderation: 1,
+            tailleGroupes: 20,
+        }
+        ];
+        const resultat = parseFloat(calculCIP(TbTest));
 
         expect(resultat).toEqual(resultatAttendu);
     });
 
     it('renvoyer 19.05 avec 1,1,420,1', () => {
         const resultatAttendu = 19.05;
-        const resultat = parseFloat(calculCIP(1, 1, 420, 1));
 
-        expect(resultat).toEqual(resultatAttendu);
-    });
-
-    it('renvoyer 12863.55 avec 100,100,1,100', () => {
-        const resultatAttendu = 12863.55;
-        const resultat = parseFloat(calculCIP(100, 100, 1, 100));
-
-        expect(resultat).toEqual(resultatAttendu);
-    });
-
-    it('renvoyer 89732.55 avec 100,100,10,100', () => {
-        const resultatAttendu = 89732.55;
-        const resultat = parseFloat(calculCIP(100, 100, 10, 100));
+        const TbTest = [{
+            nbGroupes: 1,
+            ponderation: 1,
+            tailleGroupes: 420,
+        }];
+        const resultat = parseFloat(calculCIP(TbTest));
 
         expect(resultat).toEqual(resultatAttendu);
     });
 
     it('renvoyer 2.1 avec 1,1,0,1', () => {
         const resultatAttendu = 2.1;
-        const resultat = parseFloat(calculCIP(1, 1, 0, 1));
+
+        const TbTest = [{
+            nbGroupes: 1,
+            ponderation: 1,
+            tailleGroupes: 0,
+        }];
+        const resultat = parseFloat(calculCIP(TbTest));
 
         expect(resultat).toEqual(resultatAttendu);
     });
@@ -51,23 +72,54 @@ describe('calculCIP', () => {
         expect(resultat).toEqual(resultatAttendu);
     });
 
+    it('renvoyer 0 avec un tableau vide', () => {
+        const resultatAttendu = 0;
+        const resultat = parseFloat(calculCIP([]));
+
+        expect(resultat).toEqual(resultatAttendu);
+    });
+
     it('renvoyer 0 avec des paramètres qui ne sont pas du type number', () => {
         const resultatAttendu = 0;
-        const resultat = parseFloat(calculCIP('a', 'b', 'c', 'd'));
+
+        const TbTest = [{
+            nbGroupes: 'a',
+            ponderation: 'b',
+            tailleGroupes: 'c',
+        }];
+        const resultat = parseFloat(calculCIP(TbTest));
 
         expect(resultat).toEqual(resultatAttendu);
     });
-
-    it('renvoyer null si tout les paramètres sont a zéro ', () => {
+    it('renvoyer 0 avec plusieurs repartitions qui ont des paramètres qui ne sont pas du type number', () => {
         const resultatAttendu = 0;
-        const resultat = parseFloat(calculCIP(0, 0, 0, 0));
-        
+
+        const TbTest = [{
+            nbGroupes: 1,
+            ponderation: 2,
+            tailleGroupes: 3,
+        },
+        {
+            nbGroupes: 'a',
+            ponderation: 'b',
+            tailleGroupes: 'c',
+        },];
+
+        const resultat = parseFloat(calculCIP(TbTest));
+
         expect(resultat).toEqual(resultatAttendu);
     });
+
 
     it('renvoyer 0 avec des paramètres négatifs', () => {
         const resultatAttendu = 0;
-        const resultat = parseFloat(calculCIP(-1, -1, -1, -1));
+
+        const TbTest = [{
+            nbGroupes: -1,
+            ponderation: -1,
+            tailleGroupes: -1,
+        }];
+        const resultat = parseFloat(calculCIP(TbTest));
 
         expect(resultat).toEqual(resultatAttendu);
     });
@@ -109,7 +161,5 @@ describe('calculCIL', () => {
 
         expect(resultat).toEqual(resultatAttendu);
     });
-
 });
-
     

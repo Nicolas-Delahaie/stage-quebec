@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Scenario;
 use Illuminate\Http\Response;
-use Nette\Utils\DateTime;
+use App\Models\Scenario;
+use App\Models\Modification;
+use App\Models\Repartition;
+
 
 class ScenarioController extends Controller
 {
@@ -13,7 +15,7 @@ class ScenarioController extends Controller
     /**
      * @brief Retourne le scenario de maniere detaillee
      * @param $id : id du scenario
-     * @return Response 200
+     * @return Scenario 
      */
     public function showDetails($id)
     {
@@ -29,12 +31,12 @@ class ScenarioController extends Controller
         )
             ->findOrFail($id);
 
-        return response($scenario, 200);
+        return $scenario;
     }
     /**
      * @brief Retourne les modifications associees a un scenario
      * @param $id : id du scenario
-     * @return Response 200
+     * @return Modification
      */
     public function showModifications($id)
     {
@@ -51,51 +53,64 @@ class ScenarioController extends Controller
             ->select('id', 'date_modif', 'utilisateur_id')
             ->get();
 
-            foreach ($modifications as $modification) {
-                $modification->date_modif = date('d/m/Y', strtotime($modification->date_modif));
-            }
+        foreach ($modifications as $modification) {
+            $modification->date_modif = date('d/m/Y', strtotime($modification->date_modif));
+        }
 
-        return response($modifications, 200);
+        return $modifications;
     }
     /**
      * @brief Retourne la repartition d un scenario
      * @param $id : id du scenario
-     * @return Response 200
+     * @return Repartition
      */
     public function showRepartition($id)
     {
         // Recuperation du scenario
-
         $scenario = Scenario::findOrFail($id);
-        
 
         $repartition = $scenario->repartitions()
-        ->with([
-            'enseigner' => function ($query) {
-                $query->with([
-                    'coursPropose' => function ($query) {
-                        $query->with([
-                            'cours' => function ($query) {
-                                $query->select('id', 'nom');
-                            }
-                        ])
-                        ->select('id', 'tailleGroupes', 'nbGroupes','ponderation', 'cours_id');
-                    },
-                    'professeur' => function ($query) {
-                        $query->with([
-                            'liberations' => function ($query) {
-                                $query->select('motif');
-                            },
-                        ])
-                        ->select('id', 'name');
-                    }
-                ])
-                ->select('id', 'cours_propose_id','professeur_id');
-            }
-        ])
-        ->select('id', 'id_enseigner', 'nbGroupes', 'preparation')
+            ->with([
+                'enseigner' => function ($query) {
+                    $query->with([
+                        'coursPropose' => function ($query) {
+                            $query->with([
+                                'cours' => function ($query) {
+                                    $query->select('id', 'nom');
+                                }
+                            ])
+                                ->select('id', 'tailleGroupes', 'nbGroupes', 'ponderation', 'cours_id');
+                        },
+                        'professeur' => function ($query) {
+                            $query->with([
+                                'liberations' => function ($query) {
+                                    $query->select('motif');
+                                },
+                            ])
+                                ->select('id', 'name', 'statut');
+                        }
+                    ])
+                        ->select('id', 'cours_propose_id', 'professeur_id');
+                }
+            ])
+            ->select('id', 'id_enseigner', 'nbGroupes', 'preparation')
+            ->get();
+
+        return $repartition;
+    }
+
+    public function showProfesseurs($id){
+        return Scenario::findOrFail($id)->
+        with(['departement' => function($query){
+            $query->with(['professeurs' => function($query){
+                $query->with(['liberations' => function($query){
+                    $query->select('motif');
+                }])
+                ->select('id', 'name', 'statut', 'departement_id');
+            }])
+            ->select('id', 'nom');
+        }])
+        ->select('id', 'departement_id')
         ->get();
-        
-        return response($repartition, 200);
     }
 }

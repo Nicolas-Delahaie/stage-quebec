@@ -3,66 +3,81 @@
  * @param {*} nbGroupes nombre de groupe du cours
  * @param {*} ponderation ponderation du professeur
  * @param {*} tailleGroupes taille des groupes du cours
- * @param {*} nbPreparation nombre de préparation du cours
+ * @param {*} preparation nombre de préparation du cours
  * @returns 
  */
-export const calculCIP = (nbGroupes = 0, ponderation = 0, tailleGroupes = 0, nbPreparation = 0) => {
-    if (typeof nbGroupes !== 'number' || typeof ponderation !== 'number' || typeof tailleGroupes !== 'number' || typeof nbPreparation !== 'number') {
-        return 0;
-    }
+export const calculCIP = (TbRepartition) => {
 
-    if (nbGroupes < 0 || ponderation < 0 || tailleGroupes < 0 || nbPreparation < 0) {
-        return 0;
-    }
-
-    Math.ceil(nbGroupes);
-    Math.ceil(ponderation);
-    Math.ceil(tailleGroupes);
-    Math.ceil(nbPreparation);
-
+    if (TbRepartition === undefined) return 0;
+    if (TbRepartition.length === 0) return 0;
+    
+    var preparation = TbRepartition.length
     var CIP = 0;
-    var facteurPreparation = 0;
-    var nbEtudiantsTotal = tailleGroupes * nbGroupes;
+    var nbGroupes = 0;
+    var ponderation = 0;
+    var tailleGroupes = 0;
+    var nbEtudiantsTotal = 0;
+    var heuresCoursDiff = 0;
+    var heuresCoursTous = 0;
+    var PES = 0;
 
-    //Calcul du facteur de préparation
-    switch (nbPreparation) {
-        case 1 || 2:
-            facteurPreparation = 0.9;
-            break;
-        case 3:
-            facteurPreparation = 1.1;
-            break;
-        default:
-            facteurPreparation = 1.75;
-    }
+    TbRepartition.forEach((repartition) => {
+        nbEtudiantsTotal += repartition.nbGroupes * repartition.tailleGroupes;
+        heuresCoursTous += repartition.ponderation * repartition.nbGroupes;
+        tailleGroupes += repartition.tailleGroupes;
+        PES += repartition.ponderation * repartition.tailleGroupes * repartition.nbGroupes;
+        heuresCoursDiff += repartition.ponderation
+    });
 
-    CIP = facteurPreparation * ponderation
+        if (typeof nbGroupes !== 'number' || typeof ponderation !== 'number' || typeof tailleGroupes !== 'number' ) {
+            return 0;
+        }
 
-    CIP += (1.2 * ponderation * nbGroupes)
+        if (nbGroupes < 0 || ponderation < 0 || tailleGroupes < 0 || preparation < 0) {
+            return 0;
+        }
 
-    if (ponderation * nbEtudiantsTotal > 415) {
-        CIP += 0.04 * 415
-
-    }
-    else {
-        CIP += 0.04 * (ponderation * nbEtudiantsTotal)
-
-    }
-
-    if (ponderation * nbEtudiantsTotal > 415) {
-        CIP += 0.07 * (ponderation * nbEtudiantsTotal - 415)
+        var facteurPreparation = 0;
 
 
-    }
-    if (nbEtudiantsTotal > 74 && ponderation > 2) {
-        CIP += 0.01 * nbEtudiantsTotal
+        //Calcul du facteur de préparation
+        switch (preparation) {
+            case 1 :
+                facteurPreparation = 0.9;
+                break;
+            case 2:
+                facteurPreparation = 0.9;
+                break;
+            case 3:
+                facteurPreparation = 1.1;
+                break;
+            default:
+                facteurPreparation = 1.75;
+        }
 
-    }
+        CIP += facteurPreparation * heuresCoursDiff;
+        
+        CIP += (1.2 * heuresCoursTous)
 
-    if (nbEtudiantsTotal > 160 && ponderation > 2) {
-        CIP += 0.1 * ((nbEtudiantsTotal - 160) ** 2)
+        if (PES > 415) {
+            CIP += 0.04 * 415
+        }
+        else {
+            CIP += 0.04 * (PES)
+        }
 
-    }
+        if (PES> 415) {
+            CIP += 0.07 * (PES- 415)
+        }
+
+        if (nbEtudiantsTotal > 74 && preparation > 2) {
+            CIP += 0.01 * nbEtudiantsTotal
+        }
+
+        if (nbEtudiantsTotal > 160 && preparation > 2) {
+            CIP += 0.1 * ((nbEtudiantsTotal - 160) ** 2)
+        }
+
 
     return CIP.toFixed(2);
 }

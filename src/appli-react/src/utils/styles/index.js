@@ -4,6 +4,5 @@
 
 import { fonts } from "./fonts";
 import { colors } from "./colors";
-import { Loader } from "./Loader";
 
-export { fonts, colors, Loader }
+export { fonts, colors }

@@ -79,9 +79,9 @@ class DatabaseSeeder extends Seeder
 
             // TABLES AVEC 1 DEPENDANCES
             foreach([
-                ["name" => "Root","email" => "root@root.root","password" => bcrypt("root"),"type_utilisateur_id" => 1],
-                ["name" => "Root2","email" => "root2@root.root","password" => bcrypt("root"),"type_utilisateur_id" => 2],
-                ["name" => "Root3","email" => "root3@root.root","password" => bcrypt("root"),"type_utilisateur_id" => 3],
+                ["name" => "Root","email" => "root@root.root","password" => bcrypt("root"),"statut" => "P", "type_utilisateur_id" => 1],
+                ["name" => "Root2","email" => "root2@root.root","password" => bcrypt("root"), "statut" => "P", "type_utilisateur_id" => 2],
+                ["name" => "Root3","email" => "root3@root.root","password" => bcrypt("root"), "statut" => "P", "type_utilisateur_id" => 3],
                 ] as $val){User::create($val);}
             User::factory(20)->create();
 

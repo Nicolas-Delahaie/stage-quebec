@@ -29,4 +29,9 @@ class Departement extends Model
     {
         return $this->hasMany(Scenario::class, "departement_id");
     }
+
+    public function professeurs()
+    {
+        return $this->hasMany(User::class, "departement_id");
+    }
 }
