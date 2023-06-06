@@ -55,6 +55,7 @@ return new class extends Migration
             $table->id();
             $table->string("nom", 255)->unique();
             $table->smallInteger("nbEleves");
+            $table->string("image_url")->default("");
             $table->unsignedBigInteger("coordonnateur_id")->nullable();
         });
         Schema::create("scenario", function (Blueprint $table) {

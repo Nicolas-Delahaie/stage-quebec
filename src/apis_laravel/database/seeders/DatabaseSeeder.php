@@ -103,29 +103,35 @@ class DatabaseSeeder extends Seeder
             }
             foreach($alouer as $val){Alouer::create($val);}
 
-            $departement=[
-                ["nom" => "Biologie", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Education Physique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Analyses Biomedicales", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "GTEA", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Soins Infirmiers", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Mathémathiques", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Chimie", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Physique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Architecture", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Genie Mecanique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Genie Electronique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Sciences humaines", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Philisophie", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Techniques Travail Social", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Administration", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Informatique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Arts Visuels", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Design Interieur", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Lettres", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Langues Modernes", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
+            $departements = [
+                ["nom" => "Biologie", "nom_image" => "Biologie.svg"],
+                ["nom" => "Education Physique", "nom_image" => "EPS.svg"],
+                ["nom" => "Analyses Biomedicales", "nom_image" => "analyses_biomedicales.svg"],
+                ["nom" => "GTEA", "nom_image" => "GTEA.svg"],
+                ["nom" => "Soins Infirmiers", "nom_image" => "Soins_infirmiers.svg"],
+                ["nom" => "Mathémathiques", "nom_image" => "maths.svg"],
+                ["nom" => "Chimie", "nom_image" => "chimie.svg"],
+                ["nom" => "Physique", "nom_image" => "physique.svg"],
+                ["nom" => "Architecture", "nom_image" => "architecture.svg"],
+                ["nom" => "Genie Mecanique", "nom_image" => "mecanique.svg"],
+                ["nom" => "Genie Electronique", "nom_image" => "electronique.svg"],
+                ["nom" => "Sciences humaines", "nom_image" => "sciences_humaines.svg"],
+                ["nom" => "Philisophie", "nom_image" => "Philosophie.svg"],
+                ["nom" => "Techniques Travail Social", "nom_image" => "techniques_travail_social.svg"],
+                ["nom" => "Administration", "nom_image" => "Administration.svg"],
+                ["nom" => "Informatique", "nom_image" => "informatique.svg"],
+                ["nom" => "Arts Visuels", "nom_image" => "Art.svg"],
+                ["nom" => "Design Interieur", "nom_image" => "Design_interieur.svg"],
+                ["nom" => "Lettres", "nom_image" => "lettres.svg"],
+                ["nom" => "Langues Modernes", "nom_image" => "langues_modernes.svg"],
             ];
-            foreach($departement as $val){Departement::create($val);}
+            
+            foreach ($departements as $departement) {
+                // On ajoute le coordonnateur et le nombre d'eleves
+                $toAdd = ["coordonnateur_id" => $faker->numberBetween(1, User::count()), "nbEleves" => $faker->numberBetween(20, 300)];
+                $departement = array_merge($departement, $toAdd);
+                Departement::create($departement);
+            }
             
 
             // TABLES AVEC 3 DEPENDANCES
