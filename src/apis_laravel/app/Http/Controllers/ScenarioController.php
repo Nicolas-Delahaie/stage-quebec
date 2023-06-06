@@ -12,6 +12,10 @@ use App\Models\Repartition;
 class ScenarioController extends Controller
 {
     // ------- GET ------- /
+    /**
+     * @brief Retourne tous les scenarios de maniere detaillee 
+     * @details triés par scénario validé puis par année puis par date de modification
+     */
     public function indexDetaille()
     {
         return Scenario::with([
@@ -21,7 +25,12 @@ class ScenarioController extends Controller
             "departement" => function ($query) {
                 $query->select('id', 'nom');
             }
-        ])->get();
+        ])
+            ->get()
+            ->sortByDesc("updated_at")
+            ->sortByDesc("annee")
+            ->sortBy("aEteValide")
+            ->values();
     }
     /**
      * @brief Retourne tous les scenarios de maniere detaillee 
