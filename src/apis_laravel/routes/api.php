@@ -20,6 +20,12 @@ use Illuminate\Support\Facades\Route;
  * - _attribut lorsqu un attribut est developpe
  */
 
+/* -------------------------   DEVELOPPEMENT   ----------------------------- */
+//  Route::get('/test', [DepartementController::class, 'index']);
+Route::get('/test', function () {
+    return \App\Models\Scenario::find(1)->coursEnseignes()->get()->toJson();
+});
+
 
 /* -------------------------------------------------------------------------- */
 /*                                DEPARTEMENT                                 */
