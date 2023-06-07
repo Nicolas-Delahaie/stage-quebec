@@ -20,9 +20,9 @@ class Departement extends Model
     {
         return $this->belongsTo(User::class, "coordonnateur_id");
     }
-    public function coursProposes()
+    public function cours()
     {
-        return $this->hasMany(CoursPropose::class, 'departement_id');
+        return $this->hasMany(Cours::class, 'departement_id');
     }
 
     public function scenarios()

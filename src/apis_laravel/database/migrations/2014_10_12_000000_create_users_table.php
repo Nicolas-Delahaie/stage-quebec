@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->boolean("estCoordo")->default(false);
             $table->string("statut", 255);
             $table->unsignedBigInteger("type_utilisateur_id");
-            $table->unsignedBigInteger("departement_id");
+            $table->unsignedBigInteger("departement_id")->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
