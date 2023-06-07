@@ -20,9 +20,10 @@ class UserController extends Controller
         $users = User::whereHas('type', function ($query) {
             $query->where('nom', 'responsable');
         })
-            ->select('id', 'name')
+            ->select('id', 'nom', 'prenom')
             ->get()
-            ->sortBy('name')
+            ->sortBy('nom')
+            ->sortBy('prenom')
             ->values();
 
         return $users;
@@ -34,7 +35,16 @@ class UserController extends Controller
      */
     public function showUserScenariosCrees()
     {
-        return Auth::user()->scenarios;
+        return Auth::user()->scenariosCrees;
+    }
+    /**
+     * @brief Renvoie tous les scenarios modifies par un utilisateur de maniere detaillee
+     * @pre Condition Avoir un token valide lie a un utilisateur 
+     * @return Scenario[]
+     */
+    public function showUserScenariosModifies()
+    {
+        return Auth::user()->scenariosModifies;
     }
     public function showLiberations($id)
     {
@@ -118,7 +128,7 @@ class UserController extends Controller
             $token->accessToken->expires_at = $date_expiration;
             $token->accessToken->save();
 
-            return response(['token' => $token->plainTextToken, 'type' => $user->type->nom, 'message' => 'Utilisateur bien authentifié'], 200);
+            return response(['token' => $token->plainTextToken, 'type' => $user->type->nom, 'estCoordo' => $user->estCoordo, 'message' => 'Utilisateur bien authentifié'], 299);
         } else {
             // Mauvais identifiants
             return response(['message' => 'Mot de passe ou mail incorrect'], 401);

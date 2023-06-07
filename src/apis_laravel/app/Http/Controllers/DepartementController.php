@@ -18,7 +18,7 @@ class DepartementController extends Controller
     {
         return Departement::with([
             'coordonnateur' => function ($query) {
-                $query->select('id', 'name');
+                $query->select('id', 'prenom', 'nom');
             },
         ])->get();
     }
@@ -26,7 +26,7 @@ class DepartementController extends Controller
     {
         return Departement::with([
             'coursProposes.enseignants' => function ($query) {
-                $query->select('users.id', 'users.name');
+                $query->select('users.id', 'users.nom', 'users.prenom');
             }
         ])
             ->get()
@@ -47,7 +47,7 @@ class DepartementController extends Controller
                 return [
                     'id' => $dept->id,
                     'nom' => $dept->nom,
-                    'enseignants' => $enseignants->unique('id')->sortBy("name")->values(),
+                    'enseignants' => $enseignants->unique('id')->sortBy("nom")->sortBy("prenom")->values(),
                 ];
             });
     }
@@ -65,7 +65,7 @@ class DepartementController extends Controller
             ->coursProposes()
             ->with([
                 "enseignants" => function ($query) {
-                    $query->select('users.id', 'name');
+                    $query->select('users.id', 'nom', 'prenom');
                 },
                 "cours" => function ($query) {
                     $query->select('cours.id', 'nom');

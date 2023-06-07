@@ -26,11 +26,9 @@ function Login() {
     useEffect(() => {
         // Deconnecte l utilisateur s il est deja connecte
         if (estConnecte && mail === "" && mdp === "" && !resterConnecte) {
-            console.log("Deconnexion");
             deconnexion();
             /**
              * @warning FONCTIONNE MAL (affiche en double) a cause du react strictmod dans index.js
-             * @details s'affiche en double car le temps que deconnexion modifie la variable estConnecte, la deuxieme page chargee a le temps de s'afficher
             */
             toast.success("Vous avez été déconnecté", { duration: 8000, position: "top-center" });
         }
@@ -64,7 +62,7 @@ function Login() {
             // -- Traitement de la reponse --
             if (rep.success) {
                 //Connexion pour 100 jours si on coche la case, sinon pour 24h
-                connexion(rep.datas.token, dureeSessionEnMin, rep.datas.type);
+                connexion(rep.datas.token, dureeSessionEnMin, rep.datas.type, rep.datas.estCoordo);
                 navigate(-1);
             }
             else {

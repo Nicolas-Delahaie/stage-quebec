@@ -33,10 +33,15 @@
     user-select: none; //Pour que le texte ne soit pas selectionnable
 }
 
-
 body {
     margin: 0;
     padding: 0;
+}
+
+.App {
+    display: grid;
+    grid-template-rows: 10vh 1fr 5vh;
+    min-height: 100vh;
 }
 
 

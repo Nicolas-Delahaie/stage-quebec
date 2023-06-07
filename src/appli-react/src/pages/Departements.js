@@ -103,12 +103,11 @@ function Departements() {
                             <CarteHorizontale
                                 key={departement.id}
                                 titre={departement.nom}
-                                texteBouton={"Voir plus en détail"}
                                 urlImage={rechercheImage(departement.nom)}
                                 lien={`/departements/${departement.id}`}
                             >
                                 <p>
-                                    Coordonnateur : {departement.coordonnateur.name}<br />
+                                    Coordonnateur : {departement.coordonnateur.prenom} {departement.coordonnateur.nom}<br />
                                     Nombre d'étudiant : {departement.nbEleves}
                                 </p>
                             </CarteHorizontale>

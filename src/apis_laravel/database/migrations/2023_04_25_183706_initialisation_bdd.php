@@ -23,7 +23,7 @@ return new class extends Migration
             // Modification de users
             $table->unsignedBigInteger("type_utilisateur_id")->before("email_verified_at");
             $table->string("statut", 255)->after("password");
-            $table->unsignedBigInteger("departement_id")->after("statut");
+            $table->unsignedBigInteger("departement_id")->after("statut")->nullable();
         });
 
 

@@ -10,7 +10,7 @@ import { Link } from "react-router-dom"
  * @param enfants Prend en paramètre les enfants à afficher
  * @returns Carte avec une image à gauche et du texte à droite sur la longueur
  */
-function CarteHorizontale({ urlImage, titre, texteBouton, lien, children: enfants }) {
+function CarteHorizontale({ urlImage, titre, lien, children: enfants }) {
     return (
         <Link to={lien} className="carteHorizontale">
             <div className="contenu">

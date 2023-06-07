@@ -46,15 +46,17 @@
 
 /* --- HEADER --- */
 header {
+    position: sticky;
+    top: 0px;
+    z-index: 2;
     display: grid;
     grid-template-columns: 1fr 70% 1fr;
     align-items: center;
     justify-content: center;
     padding: 0 2rem;
     background-color: var(--bleu-moyen);
-    height: 10vh;
-    cursor: url("../assets/svg/whiteCursor.svg"),
-        auto;
+    height: 100%;
+    cursor: url("../assets/svg/whiteCursor.svg"), auto;
 
     .logo {
         height: 5vh;
@@ -201,7 +203,7 @@ footer {
     padding: 1rem 3rem;
     text-align: center;
     cursor: url("../assets/svg/whiteCursor.svg"), auto;
-    height: 5vh;
+    height: 100%;
 
     p {
         color: var(--blanc);

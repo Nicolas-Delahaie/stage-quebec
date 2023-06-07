@@ -33,16 +33,20 @@ export const AppProvider = ({ children }) => {
     const getType = () => {
         return Cookies.get('userType');
     }
+    const getEstCoordo = () => {
+        return Cookies.get('estCoordo');
+    }
 
     /**
      * @brief Connecte l utilsisateur
      * @details Cree le cookie de tokken et met a jour la variable estConnecte 
      */
-    const connexion = (token, dureeSessionEnMin, userType) => {
+    const connexion = (token, dureeSessionEnMin, userType, estCoordo) => {
         const dureeSessionEnH = dureeSessionEnMin / 60;
         const dureeSessionEnJ = dureeSessionEnH / 24;
         Cookies.set("token", token, { expires: dureeSessionEnJ });
         Cookies.set("userType", userType, { expires: dureeSessionEnJ });
+        Cookies.set("estCoordo", estCoordo, { expires: dureeSessionEnJ });
         setEstConnecte(true);
     }
     /**
@@ -53,6 +57,7 @@ export const AppProvider = ({ children }) => {
         Cookies.remove('token');
         Cookies.remove('userType');
         setEstConnecte(false);
+        console.log("DECONNEXION FRONT");
         navigate("/");
     }
     const deconnexion = async () => {
@@ -127,15 +132,16 @@ export const AppProvider = ({ children }) => {
         // -- RETOUR --
         if (res.ok) {
             // La requete a reussi
+
             return {
                 success: true,
                 statusCode: res.status,
-                datas: await res.json(),
+                datas: res.status === 204 ? {} : await res.json(),
             }
         }
         else {
             // La requete a echoue
-            if (res.status === 401) {
+            if (needAuth && res.status === 401) {
                 // Le tokken n est plus valide mais existe encore en local
                 deconnexionFront();
             }
@@ -151,7 +157,7 @@ export const AppProvider = ({ children }) => {
 
 
     return (
-        <AppContext.Provider value={{ deconnexion, connexion, estConnecte, apiAccess, getType }}>
+        <AppContext.Provider value={{ deconnexion, connexion, estConnecte, apiAccess, getType, getEstCoordo }}>
             {children}
         </AppContext.Provider>
     );

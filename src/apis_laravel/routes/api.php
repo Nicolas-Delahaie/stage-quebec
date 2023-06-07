@@ -44,6 +44,7 @@ use App\Http\Controllers\UserController;
 Route::get('/users', [UserController::class, 'index'])->middleware(['tokenBon', 'responsable']);
 Route::get('/users/responsables', [UserController::class, 'indexResponsables'])->middleware(['tokenBon', 'responsable']);
 Route::get('/user/scenarios_crees', [UserController::class, 'showUserScenariosCrees'])->middleware('tokenBon', 'responsable');
+Route::get('/user/scenarios_modifies', [UserController::class, 'showUserScenariosModifies'])->middleware('tokenBon', 'responsable');
 Route::get('/user/detaille', [UserController::class, 'showUserDetails'])->middleware(['tokenBon']);
 Route::put('/user/contraintes', [UserController::class, 'updateUserContraintes'])->middleware('tokenBon');
 Route::get('/users/{id}/liberations', [UserController::class, 'showLiberations'])->middleware(['tokenBon', 'responsable']);
@@ -84,6 +85,7 @@ Route::delete('/enseigner', [EnseignerController::class, 'delete'])->middleware(
 /* -------------------------------------------------------------------------- */
 use App\Http\Controllers\ScenarioController;
 
+Route::get('scenarios_detailles', [ScenarioController::class, 'indexDetaille'])->middleware('tokenBon');
 Route::get('scenarios/{id}/detaille', [ScenarioController::class, 'showDetails'])->middleware('tokenBon');
 Route::get('scenarios/{id}/modifications', [ScenarioController::class, 'showModifications'])->middleware('tokenBon');
 Route::get('scenarios/{id}/repartition', [ScenarioController::class, 'showRepartition'])->middleware('tokenBon');
