@@ -16,8 +16,8 @@ class Cours extends Model
         'nom',
     ];
 
-    public function departements(){
-        return $this->belongsToMany(Departement::class, 'cours_propose', 'departement_id', 'cours_id')
-            ->withPivot("ponderation", "tailleGroupes", "nbGroupes");
+    public function departement()
+    {
+        return $this->belongsTo(Departement::class, 'departement_id');
     }
 }

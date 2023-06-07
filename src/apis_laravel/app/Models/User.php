@@ -32,6 +32,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(TypeUtilisateur::class, "type_utilisateur_id");
     }
+    public function departement()
+    {
+        return $this->belongsTo(Departement::class, 'departement_id');
+    }
     public function liberations()
     {
         return $this->belongsToMany(Liberation::class, "alouer", "utilisateur_id", "liberation_id")
@@ -44,20 +48,13 @@ class User extends Authenticatable
     }
     public function coursEnseignes()
     {
-        return $this->belongsToMany(CoursPropose::class, 'enseigner', 'professeur_id', 'cours_propose_id');
-    }
-    public function scenariosCrees()
-    {
-        return $this->hasMany(Scenario::class, 'proprietaire_id');
+        return $this->hasMany(CoursEnseigne::class, "user_id");
     }
     public function scenariosModifies()
     {
         return $this->hasManyThrough(Scenario::class, Modification::class, 'utilisateur_id', 'id', 'id', 'scenario_id');
     }
 
-    public function departement(){
-        return $this->belongsTo(Departement::class, 'departement_id');
-    }
 
 
     /**
