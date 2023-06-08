@@ -73,11 +73,14 @@ function Profil() {
 
 
     return (
-        <div id="profil" className={isLoading ? "loading" : "notLoading"}>
+        <div id="profil" className="page">
             <Toaster />
             {erreur && <h1>{erreur}</h1>}
-            {isLoading && <Loader />}
-            {user &&
+            {isLoading &&
+            <div className="loading">
+            <Loader />
+            </div>}
+            {isLoading===false &&
                 <>
                     <h1>Mon profil</h1>
                     <div className="infos">

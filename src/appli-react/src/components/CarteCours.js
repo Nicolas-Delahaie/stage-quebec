@@ -223,70 +223,83 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
     return (
         <div className="carteCours">
             <Toaster />
-            <h2>{coursPropose.cours.nom}</h2>
-            <h3>Informations</h3>
-            {
-                modifierInformations ?
-                    <form onSubmit={(e) => { modifierCours(); e.preventDefault(); }}>
-                        <div className="divModification">
-                            <p>Pondération</p>
-                            <input type="number" required value={newPonderationCours} onChange={(e) => setNewPonderationCours(e.target.value)} autoFocus />
-                            <p>Taille du groupe</p>
-                            <input type="number" required value={newTailleGroupesCours} onChange={(e) => setNewTailleGroupesCours(e.target.value)} />
-                            <p>Nombre de groupes</p>
-                            <input type="number" required value={newNbGroupesCours} onChange={(e) => setNewNbGroupesCours(e.target.value)} />
+            <div className="informationsCours">
+                <h3>Informations</h3>
+
+                {
+                    modifierInformations ?
+                        <form onSubmit={(e) => { modifierCours(); e.preventDefault(); }}>
+                            <div className="divModification">
+                                <p>Pondération</p>
+                                <input type="number" required value={newPonderationCours} onChange={(e) => setNewPonderationCours(e.target.value)} autoFocus />
+                                <p>Taille du groupe</p>
+                                <input type="number" required value={newTailleGroupesCours} onChange={(e) => setNewTailleGroupesCours(e.target.value)} />
+                                <p>Nombre de groupes</p>
+                                <input type="number" required value={newNbGroupesCours} onChange={(e) => setNewNbGroupesCours(e.target.value)} />
+                            </div>
+                            <div className="zoneBoutons">
+                                <button className="bouton" type="button" onClick={() => setModifierInformations(false)}>Annuler</button>
+                                <button className="bouton" type="submit">Confirmer</button>
+                            </div>
+                        </form>
+                        :
+                        <div className="informations">
+                            <div>
+                                <p>Pondération : {coursPropose.ponderation}</p>
+                                <p>Taille du groupe : {coursPropose.tailleGroupes}</p>
+                                <p>Nombre de groupes : {coursPropose.nbGroupes}</p>
+                            </div>
+                            <button className="bouton" onClick={() => setModifierInformations(true)}>Modifier</button>
                         </div>
-                        <div className="zoneBoutons">
-                            <button className="bouton" type="button" onClick={() => setModifierInformations(false)}>Annuler</button>
-                            <button className="bouton" type="submit">Confirmer</button>
-                        </div>
-                    </form>
-                    :
-                    <div className="informations">
-                        <p>Pondération : {coursPropose.ponderation}</p>
-                        <p>Taille du groupe : {coursPropose.tailleGroupes}</p>
-                        <p>Nombre de groupes : {coursPropose.nbGroupes}</p>
-                        <button className="bouton" onClick={() => setModifierInformations(true)}>Modifier</button>
-                    </div>
-            }
-            <h3>Professeurs</h3>
-            {coursPropose.enseignants.length === 0 && <p>Aucun professeur</p>}
-            {
-                modifierProfesseurs ?
-                    <>
-                        {
-                            coursPropose.enseignants.map((professeur) =>
-                                <>
-                                    <p onClick={() => validationSuppressionProf(professeur)}>{professeur.prenom} {professeur.nom}</p>
-                                </>
-                            )
-                        }
-                        {professeursAssignables &&
-                            <form onSubmit={attribuerProfesseurs}>
-                                <select name="selectProf">
-                                    {professeursAssignables && professeursAssignables.map((prof) => (
-                                        <option key={prof.id} value={prof.id}>{prof.prenom} {prof.nom}</option>
-                                    ))}
-                                </select>
-                                <div className="zoneBoutons">
-                                    <button className="bouton" type="submit">Ajouter</button>
-                                    <button className="bouton" type="button" onClick={() => setModifierProfesseurs(false)}>Annuler</button>
-                                </div>
-                            </form>
-                        }
-                    </>
-                    :
-                    <>
-                        {
-                            coursPropose.enseignants.map((professeur) => (
-                                <p>{professeur.prenom} {professeur.nom}</p>
-                            ))
-                        }
-                        <button className="bouton" onClick={() => setModifierProfesseurs(true)}>Ajouter un professeur</button>
-                    </>
-            }
-            <button className="bouton" onClick={() => validationSuppressionCours()}>Supprimer</button>
-        </div >
+                }
+
+            </div>
+            <div className="nomCours">
+                <h2>{coursPropose.cours.nom}</h2>
+            </div>
+            <div className="professeurs">
+                <h3>Professeurs</h3>
+                {coursPropose.enseignants.length === 0 && <p>Aucun professeur</p>}
+                {
+                    modifierProfesseurs ?
+                        <>
+                            {
+                                coursPropose.enseignants.map((professeur) =>
+                                    <>
+                                        <p onClick={() => validationSuppressionProf(professeur.id, professeur.name)}>{professeur.name}</p>
+                                        {/* <button type="button" >Retirer</button> */}
+                                    </>)
+                            }
+                            {professeursAssignables &&
+
+                                <form onSubmit={attribuerProfesseurs}>
+                                    <select name="selectProf">
+                                        {professeursAssignables && professeursAssignables.map((prof) => (
+                                            <option key={prof.id} value={prof.id}>{prof.name}</option>
+                                        ))}
+                                    </select>
+                                    <div className="zoneBoutons">
+                                        <button className="bouton" type="submit">Ajouter</button>
+                                        <button className="bouton" type="button" onClick={() => setModifierProfesseurs(false)}>Annuler</button>
+                                    </div>
+                                </form>
+                            }
+                        </>
+                        :
+                        <>
+                            {
+                                coursPropose.enseignants.map((professeur) => (
+                                    <p>{professeur.name}</p>
+                                ))
+                            }
+                            <div className="zoneBoutons">
+                                <button className="bouton" onClick={() => setModifierProfesseurs(true)}>Ajouter un professeur</button>
+                                <button className="bouton" onClick={() => validationSuppressionCours()}>Supprimer</button>
+                            </div>
+                        </>
+                }
+            </div >
+        </div>
     )
 }
 

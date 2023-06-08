@@ -109,8 +109,6 @@ class ScenarioController extends Controller
         // Recuperation du scenario
         $scenario = Scenario::findOrFail($id);
 
-
-
         $repartition = $scenario->repartitions()
             ->with([
                 'enseigner' => function ($query) {
@@ -129,7 +127,7 @@ class ScenarioController extends Controller
                                     $query->select('motif');
                                 },
                             ])
-                                ->select('id', 'nom', 'prenom');
+                                ->select('id', 'nom', 'prenom', 'statut');
                         }
                     ])
                         ->select('id', 'cours_propose_id', 'professeur_id');
@@ -138,22 +136,21 @@ class ScenarioController extends Controller
             ->select('id', 'id_enseigner', 'nbGroupes', 'preparation')
             ->get();
 
-
         return $repartition;
-
     }
 
     public function showProfesseurs($id){
-        return Scenario::findOrFail($id)->
+        return Scenario::
         with(['departement' => function($query){
             $query->with(['professeurs' => function($query){
                 $query->with(['liberations' => function($query){
                     $query->select('motif');
                 }])
-                ->select('id', 'name', 'statut', 'departement_id');
+                ->select('id', 'nom','prenom', 'statut', 'departement_id');
             }])
             ->select('id', 'nom');
         }])
+        ->where('id', $id)
         ->select('id', 'departement_id')
         ->get();
     }

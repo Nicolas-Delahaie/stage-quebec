@@ -92,10 +92,13 @@ function Departements() {
     }, [])
 
     return (
-        <div id="departements">
+        <div className="page" id="departements">
             <h1>Départements</h1>
             {erreur && <h1>{erreur}</h1>}
-            {isLoading && <Loader />}
+            {isLoading &&
+                <div className="loading">
+                    <Loader />
+                </div>}
             {departements &&
                 <div>
                     {

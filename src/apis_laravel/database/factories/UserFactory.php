@@ -30,6 +30,7 @@ class UserFactory extends Factory
             'type_utilisateur_id' => $type->id,
             'departement_id' => $departement_id,
             'remember_token' => Str::random(10),
+            'departement_id' => fake()->numberBetween(1, \App\Models\Departement::count()),
         ];
     }
 

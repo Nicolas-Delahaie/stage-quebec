@@ -23,7 +23,6 @@ import NotFound from "./pages/NotFound";
 
 /* Import des Layout */
 import Header from "./components/Header";
-import Footer from "./components/Footer";
 
 
 function App() {
@@ -41,10 +40,8 @@ function App() {
             <Route exact path="/departements/:id" element={<DetailsDepartement />} />
             <Route exact path="/profil" element={<Profil />} />
             <Route exact path="/liberations" element={<Liberations />} />
-
             <Route path="*" element={<NotFound />} />
           </Routes >
-          <Footer />
         </AppProvider >
       </BrowserRouter >
     </div >
