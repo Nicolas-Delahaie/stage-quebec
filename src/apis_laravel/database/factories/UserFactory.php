@@ -26,6 +26,7 @@ class UserFactory extends Factory
             'contraintes' => fake()->paragraphs(1, true),
             'type_utilisateur_id' => fake()->numberBetween(2, \App\Models\TypeUtilisateur::count()),
             'remember_token' => Str::random(10),
+            'departement_id' => fake()->numberBetween(1, \App\Models\Departement::count()),
         ];
     }
 

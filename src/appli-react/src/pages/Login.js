@@ -81,31 +81,43 @@ function Login() {
     }
 
     return (
-        <div id="login">
+        <div className="page" id="login">
             <Toaster />
-            <h1>Connexion</h1>
-            <form onSubmit={clicConnexion} >
-                <label>Adresse professionnelle</label>
-                <input className="champsSaisie"
-                    type="email"
-                    required={true}
-                    value={mail}
-                    autoFocus
-                    onChange={(e) => setMail(e.target.value)} />
-                <label>Mot de passe</label>
-                <input className="champsSaisie"
-                    type="password"
-                    required={true}
-                    value={mdp}
-                    onChange={(e) => setMdp(e.target.value)} />
-                <label>Rester connecté</label>
-                <input type="checkbox"
-                    checked={resterConnecte}
-                    onChange={(e) => setResterConnecte(e.target.checked)} />
-                {erreur && <p className="erreur">{erreur}</p>}
-                {isConnecting && <Loader />}
-                {!isConnecting && <input className="btnValider" type="submit" value="Se connecter" />}
-            </form>
+            <section>
+                <h2>Connexion</h2>
+                <form onSubmit={clicConnexion} >
+                    <div className="DivInput">
+                        <label>Adresse professionnelle</label>
+                        <input className="champsSaisie"
+                            type="email"
+                            required={true}
+                            value={mail}
+                            autoFocus
+                            onChange={(e) => setMail(e.target.value)} />
+                    </div>
+                    <div className="DivInput">
+                        <label>Mot de passe</label>
+                        <input className="champsSaisie"
+                            type="password"
+                            required={true}
+                            value={mdp}
+                            onChange={(e) => setMdp(e.target.value)} />
+                    </div>
+                    <div className="DivCheckbox">
+                        <input type="checkbox"
+                            checked={resterConnecte}
+                            onChange={(e) => setResterConnecte(e.target.checked)} />
+                        <label>Rester connecté</label>
+                    </div>
+                    {erreur && <p className="erreur">{erreur}</p>}
+                    {isConnecting &&
+                        <div className="loading">
+                            <Loader />
+                        </div>
+                    }
+                    {!isConnecting && <input className="btnValider" type="submit" value="Se connecter" />}
+                </form>
+            </section>
         </div>
     )
 }

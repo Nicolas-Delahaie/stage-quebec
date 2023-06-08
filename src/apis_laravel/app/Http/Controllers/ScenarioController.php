@@ -107,8 +107,12 @@ class ScenarioController extends Controller
                                     $query->select('motif');
                                 },
                             ])
-                                ->select('id', 'nom', 'prenom');
+                                ->select('id', 'nom', 'prenom', 'statut');
+                        }
+                    ])
+                        ->select('id', 'cours_propose_id', 'professeur_id');
                 }
+            ])
             ->select('id', 'id_enseigner', 'nbGroupes', 'preparation')
             ->get();
 
@@ -116,16 +120,17 @@ class ScenarioController extends Controller
     }
 
     public function showProfesseurs($id){
-        return Scenario::findOrFail($id)->
+        return Scenario::
         with(['departement' => function($query){
             $query->with(['professeurs' => function($query){
                 $query->with(['liberations' => function($query){
                     $query->select('motif');
                 }])
-                ->select('id', 'name', 'statut', 'departement_id');
+                ->select('id', 'nom','prenom', 'statut', 'departement_id');
             }])
             ->select('id', 'nom');
         }])
+        ->where('id', $id)
         ->select('id', 'departement_id')
         ->get();
     }

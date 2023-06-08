@@ -58,36 +58,40 @@ function TableauLiberation({ liberations, anneesAvant = 1, anneesApres = 1 }) {
     }
 
     return (
-        <div className="TableauLiberations">
-            <h3>Semestre</h3>
-            <h3>1</h3>
-            <h3>2</h3>
+        <table>
+            <tr>
+                <th>Semestre</th>
+                <th>1</th>
+                <th>2</th>
+            </tr>
             {
                 anneesAAfficher.map((annee) => {
                     // Pour chaque annee (ligne)
                     return (
-                        <React.Fragment key={annee}>
-                            <h3 className={annee === anneeActuelle ? "anneeActuelle" : undefined}>{annee}-{annee + 1}</h3 >
+                        <tr key={annee}>
+                            <td className={annee === anneeActuelle ? "anneeActuelle" : undefined}>{annee}-{annee + 1}</td >
                             {
                                 [1, 2].map((semestre) => {
                                     // Pour chaque semestre (case)
                                     return (
-                                        <div key={annee + semestre} className="case">
-                                            {
-                                                liberationsDuSemestre(annee, semestre).map((liberation) => {
-                                                    // Pour chaque liberation (ligne d une case)
-                                                    return <p key={liberation.id + liberation.pivot.annee + liberation.pivot.semestre}>{motifPersonnalise(liberation)} ({(liberation.pivot.tempsAloue * 100).toFixed(1)}%)</p>
-                                                })
-                                            }
-                                        </div>
+                                        <td key={annee + semestre}>{
+                                        liberationsDuSemestre(annee, semestre).map((liberation) => {
+                                            // Pour chaque liberation (ligne d une case)
+                                            return <div key={liberation.id + liberation.pivot.annee + liberation.pivot.semestre}>
+                                                <div>
+                                                    {motifPersonnalise(liberation)} ({(liberation.pivot.tempsAloue * 100).toFixed(1)}%)
+                                                </div>
+                                            </div>
+                                        })}
+                                    </td>
                                     )
                                 })
                             }
-                        </React.Fragment>
+                        </tr>
                     )
                 })
             }
-        </div>
+        </table>
     )
 }
 export default TableauLiberation;

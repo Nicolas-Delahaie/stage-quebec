@@ -252,23 +252,23 @@ function Scenarios() {
     }
 
 
-    return <div id="scenarios">
+    return <div className='page' id="scenarios">
         {type === "administrateur" &&
             <nav>
-                <button onClick={() => setCurrentPage("allScenarios")}>Tous les scenarios</button>
+                <button className='boutonSeul' onClick={() => setCurrentPage("allScenarios")}>Tous les scenarios</button>
             </nav>
         }
         {type === "responsable" &&
             <nav>
-                <button onClick={() => setCurrentPage("scenariosEnAttente")}>Scenarios en attente</button>
+                <button className='premierBouton' onClick={() => setCurrentPage("scenariosEnAttente")}>Scenarios en attente</button>
                 <button onClick={() => setCurrentPage("scenariosModifies")}>Scenarios modifiés</button>
-                <button onClick={() => setCurrentPage("allScenarios")}>Tous les scenarios</button>
+                <button className='dernierBouton' onClick={() => setCurrentPage("allScenarios")}>Tous les scenarios</button>
             </nav>
         }
         {type === "professeur" && estCoordo &&
             <nav>
-                <button onClick={() => setCurrentPage("scenariosModifies")}>Scenarios modifiés</button>
-                <button onClick={() => setCurrentPage("mesScenarios")}>Mes scénarios</button>
+                <button className='premierBouton' onClick={() => setCurrentPage("scenariosModifies")}>Scenarios modifiés</button>
+                <button className='dernierBouton' onClick={() => setCurrentPage("mesScenarios")}>Mes scénarios</button>
             </nav>
         }
         {type === "professeur" && !estCoordo &&

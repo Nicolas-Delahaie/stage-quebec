@@ -1,4 +1,10 @@
+.page {
+    min-height: 60vh;
+    margin: 10vh 0 0 0;
+}
+
 /* -------------- PAGE PROFIL -------------- */
+
 #profil {
     display: flex;
     flex-direction: column;
@@ -36,24 +42,49 @@
 /* -------------- PAGE LOGIN -------------- */
 #login {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
 
-
-    form {
-        display: grid;
-        grid-template-columns: 1fr 150px;
+    section {
+        display: flex;
+        flex-direction: column;
         align-items: center;
+        justify-content: center;
+        box-shadow: 0px 5px 10px 0px var(--gris);
+        border-radius: 1rem;
+        padding: 1rem 2rem;
 
-        input[type="email"],
-        input[type="password"] {
-            margin-left: 10px;
+        form {
+            display: flex;
+            flex-direction: column;
+
+            .DivInput {
+                display: grid;
+                grid-template-columns: 1fr 12.5vw;
+                align-items: center;
+                margin-bottom: 0.5rem;
+
+                input[type="email"],
+                input[type="password"] {
+                    margin-left: 1rem;
+                }
+            }
+
+            .DivCheckbox {
+                display: flex;
+
+                input[type="checkbox"] {
+                    margin: 0;
+                    margin-right: 0.5rem;
+                }
+            }
+
+            .btnValider {
+                margin: 1rem 0;
+                align-self: center;
+            }
         }
 
-        input[type="checkbox"] {
-            justify-self: center;
-        }
     }
 
     .ligneFormulaire {
@@ -65,7 +96,7 @@
 
     .erreur {
         grid-column: span 2;
-        color: red;
+        color: var(--red);
         text-align: center;
     }
 
@@ -81,70 +112,70 @@
 #Liberations {
     .container {
         display: grid;
-        padding: 0px 15%;
+        grid-template-columns: 40% 1fr;
+        align-items: flex-start;
+        padding: 2rem;
 
         .choixPersonnel {
             display: flex;
-            border: 2px solid var(--bleu-fonce);
+            flex-direction: column;
+            box-shadow: 0px 5px 10px 0px var(--gris);
             border-radius: 1rem;
             padding: 1rem 2rem;
-            width: min-content;
-            justify-self: center;
+            width: 25vw;
 
             .responsable,
             .professeur {
-                &>div {
+                div {
                     display: grid;
-                    grid-template-columns: min-content 1fr;
+                    grid-template-columns: 1fr 1fr;
                     align-items: center;
-                }
-            }
-
-            .responsable {
-                margin: 0px 4rem;
-            }
-        }
-
-        .zoneLiberations {
-            .divH2 {
-                display: flex;
-                justify-content: center;
-
-                h2 {
-                    margin-bottom: 0;
                 }
             }
 
             .zoneAnnees {
-                display: grid;
-                grid-template-columns: min-content min-content;
-                justify-content: center;
-                justify-items: center;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-start;
 
-                div {
-                    display: flex;
-                    flex-direction: column;
-                    width: min-content;
-                }
-
-                h3,
-                h4 {
-                    margin-bottom: 0;
-                    align-self: center;
-                }
-
-                .modifAnnee {
+                .gridContainer {
                     display: grid;
-                    grid-template-columns: repeat(3, 1fr);
+                    grid-template-columns: 1fr 1fr;
                     align-items: center;
-                    padding: 0px 1rem;
+                    justify-items: center;
+                    margin: 0;
+                    width: 100%;
 
-                    span {
-                        margin: 0px;
+                    div {
+                        display: flex;
+                        flex-direction: column;
+                        width: min-content;
+                    }
+
+                    h3,
+                    h4 {
+                        margin: 0;
+                        align-self: center;
+                    }
+
+                    .modifAnnee {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        align-items: center;
+                        padding: 0px 1rem;
+
+                        span {
+                            margin: 0px;
+                        }
+
+                        button {
+                            margin: 0.5rem;
+                            padding: 0.25rem 0.5rem;
+                        }
                     }
                 }
             }
-
         }
     }
 }
@@ -152,11 +183,14 @@
 
 /* -------------- PAGE ACCUEIL -------------- */
 #accueil {
+    display: flex;
+    flex-direction: column;
+
     #authentifie {
         display: flex;
         align-items: center;
         justify-content: space-around;
-        height: 100%;
+        margin-top: 5rem;
     }
 
     #nonAuthentifie {
@@ -166,6 +200,10 @@
             grid-template-columns: 1fr 1fr;
             align-items: center;
             justify-items: center;
+        }
+
+        h2 {
+            margin: 0rem 2rem;
         }
 
         img {
@@ -185,10 +223,8 @@
     align-items: center;
 
     .container {
-        width: 60%;
         display: flex;
         flex-direction: column;
-        align-items: center; // Pour le loader
 
         .zoneValidation {
             display: flex;
@@ -204,81 +240,76 @@
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         width: min-content;
+        margin: 1rem 0;
 
         button {
             margin: 0px;
             white-space: nowrap;
             border-radius: 0;
+            border-collapse: collapse;
+            border: 1px solid var(--noir);
         }
 
         .premierBouton {
-            border-radius: 0;
+            border-radius: 0.5rem 0 0 0.5rem;
         }
 
         .dernierBouton {
-            border-radius: 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .boutonSeul {
+            border-radius: 0.5rem;
         }
     }
 }
 
 // PAGE DETAILS SCENARIO
 #detailsScenario {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    margin: 1rem auto;
 
-
-    &>div {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-        width: 80%;
-        margin: 1rem auto;
-        padding: 1rem;
-    }
-
-    .repartition {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        overflow: auto;
-
+    #tableContainer {
+        overflow: scroll;
+        padding: 0 2rem;
 
         &::-webkit-scrollbar {
-            height: 0.5rem;
+            display: none;
         }
 
-        &::-webkit-scrollbar-track {
-            background-color: transparent;
+        th {
+            background-color: var(--bleu-fonce);
+            color: var(--blanc);
+            padding: 0.5rem 0;
+            width: 1rem;
+            min-width: 0;
+
+            &:nth-child(n+6) {
+                background-color: var(--bleu-clair);
+                writing-mode: vertical-lr;
+                text-orientation: mixed;
+            }
         }
 
-        &::-webkit-scrollbar-thumb {
-            background-color: var(--jaune-fonce);
-            border-radius: 1rem;
+        tr {
+            &:hover {
+                background-color: var(--jaune-tres-clair);
+            }
+        }
+
+        td {
+            padding: 0;
+            width: 1rem;
+            height: 1rem;
+            min-width: 0;
+            text-align: center;
+            border: 1px solid var(--gris);
+
+            &:nth-child(-n+5) {
+                background-color: var(--gris-clair);
+            }
         }
     }
-
-    .divTitre {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .btnTitre {
-        transition: all 0.3s ease-in-out;
-        background-color: transparent;
-        border: none;
-    }
-
-    .btnDeveloppe {
-        transform: rotate(180deg);
-    }
-
-    .btnNonDeveloppe {
-        transform: rotate(0deg);
+    .details{
+        margin: 2rem 2rem;
     }
 }
 
@@ -286,31 +317,25 @@
 /* -------------- DEPARTEMENTS -------------- */
 // PAGE DETAILS DEPARTEMENT
 .departement {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    margin: 1rem auto;
 
-    &>div {
+    .container {
         align-items: flex-start;
-        width: 80%;
-        min-height: auto;
+        margin: auto 2rem;
+
+        #coursProposes {
+            display: grid;
+            width: 100%;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-gap: 1rem;
+        }
+
+        p {
+            font-size: 1.5rem;
+            font-family: var(--font-sous-titre);
+            color: var(--bleu-fonce);
+        }
     }
 
-    #coursProposes {
-        display: grid;
-        width: 100%;
-        grid-template-columns: repeat(3, 1fr);
-        grid-gap: 1rem;
-    }
-
-    p {
-        font-size: 1.5rem;
-        font-family: var(--font-sous-titre);
-        color: var(--bleu-fonce);
-    }
 }
 
 // PAGE DEPARTEMENTS
@@ -321,10 +346,27 @@
     justify-content: flex-start;
 
     &>div {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 60%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 1rem;
     }
+}
+
+// 404
+#notFound{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 55vh;
+
+    h2{
+        font-size: 3rem;
+        margin : 1rem 0;
+    }
+    p{
+        margin :0;
+        font-size: 2rem;
+    }
+
 }

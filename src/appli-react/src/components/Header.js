@@ -4,17 +4,11 @@ import { AppContext } from "../utils/context/context"
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
 
-// Images
-import home from "../assets/svg/home.svg"
-
-
-
 /* ----------------------------------- DOM ---------------------------------- */
 
 function Header() {
     const { estConnecte, deconnexion, getType } = useContext(AppContext);
     const [type, setType] = useState();
-    const navigate = useNavigate();
 
     useEffect(() => {
         setType(getType());
@@ -22,38 +16,39 @@ function Header() {
 
     return (
         <header className={estConnecte ? "headerConnecte" : "headerDeconnecte"}>
-            <Link to="/">
-                <img src={home} alt="logo" className="logo" />
+            <Link className="lien" to="/">
+                <img src="https://cstjean.omnivox.ca/Cache/AttatchWebPartNewsTemp/Prod/JEA/id-comm-v19-3c2da998-982c-4a2b-901f-94bc482f2286small.temp.jpg?i=RldsQE5kOkhfNjVZb0lXbkNQYA**" alt="logo" className="logo" />
             </Link>
 
-
-            <div className="zoneBoutons">
+            <div>
                 {estConnecte && type === "administrateur" &&
                     <>
-                        <Link className="btnLien" to="/scenarios">Scénarios</Link>
-                        <Link className="btnLien" to="/departements/">Départements</Link>
-                        <Link className="btnLien" to="profil">Mon profil</Link>
+                        <Link className="LienSouligne" to="/scenarios">Scénarios</Link>
+                        <Link className="LienSouligne" to="/departements/">Départements</Link>
+                        <Link className="LienSouligne" to="profil">Mon profil</Link>
                     </>
                 }
                 {estConnecte && type === "responsable" &&
                     <>
-                        <Link className="btnLien" to="/scenarios">Scénarios</Link>
-                        <Link className="btnLien" to="/departements/">Départements</Link>
-                        <Link className="btnLien" to="profil">Mon profil</Link>
+                        <Link className="LienSouligne" to="/scenarios">Scénarios</Link>
+                        <Link className="LienSouligne" to="/departements/">Départements</Link>
+                        <Link className="LienSouligne" to="profil">Mon profil</Link>
                     </>
                 }
                 {estConnecte && type === "professeur" &&
                     <>
-                        <Link className="btnLien" to="/scenarios">Scénarios</Link>
-                        <Link className="btnLien" to="profil">Mon profil</Link>
+                        <Link className="LienSouligne" to="/scenarios">Scénarios</Link>
+                        <Link className="LienSouligne" to="profil">Mon profil</Link>
                     </>
                 }
             </div>
 
             {estConnecte ?
-                <button className="btnConexion" onClick={() => deconnexion()}>Se déconnecter</button>
+                <button onClick={() => deconnexion()}>Se déconnecter</button>
                 :
-                <Link className="btnConexion btnLien" to="/login"> Se connecter</Link>
+                <button>
+                <Link className="lien" to="/login"> Se connecter</Link>
+                </button>
             }
         </header>
     )

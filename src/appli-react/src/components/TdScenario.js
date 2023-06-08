@@ -1,56 +1,9 @@
-import styled from 'styled-components';
-import { colors, fonts } from '../utils/styles';
 import { useState, useRef, useEffect } from 'react';
 import { AppContext } from '../utils/context/context';
 import { useContext } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 
-export const TdScenario = styled.td`
-    box-sizing: border-box;
-    width: 100%;
-    height: 2rem;
-    font-size: 0.9rem;
-    overflow : scroll;
-    boder-collapse: collapse;
-    border: 1px solid ${colors.gris};
-    text-align: center;
-    padding:0rem;
-    &:nth-child(-n+5) {
-        font-family: ${fonts.titre};
-        background-color: ${colors.grisClair};
-    }
-    &:hover {
-        background-color: ${colors.jauneClair};
-    }
-
-    ::-webkit-scrollbar {
-        display: none;
-    }
-`;
-
-const InputTdScenario = styled.input`
-    width: 100%;
-    height: calc(2rem - 2px);
-    font-size: 0.9rem;
-    border: none;
-    color: ${colors.bleuFonce};
-    font-family: ${fonts.texte};
-    padding: 0rem;
-    text-align: center;
-
-    ::-webkit-inner-spin-button,
-    ::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-
-    :focus {
-        outline: none;
-    }
-`;
-
-
-export function TdScenarioComponent({ indexCours, indexProfesseur, nbGroupes, TbCours, TbProfesseurs, TbRepartition, fonctionUpdateRepartition }) {
+export function TdScenario({ indexCours, indexProfesseur, nbGroupes, TbCours, TbProfesseurs, TbRepartition, fonctionUpdateRepartition }) {
     const [estClicker, setEstClicker] = useState(false);        //Permet de savoir si l'utilisateur a cliqué sur la cellule
     const [resultatUpdate, setResultatUpdate] = useState(0);    //Variable qui contient le résultat de la modification de la répartition
     const inputRef = useRef(null);                              //Référence à l'input
@@ -221,15 +174,14 @@ export function TdScenarioComponent({ indexCours, indexProfesseur, nbGroupes, Tb
 
     return (
         estClicker ? (
-            <TdScenario onClick={clickTest}>
+            <td className='tdScenario' onClick={clickTest}>
                 <Toaster />
-                <InputTdScenario ref={inputRef} type="number" placeholder={nbGroupes} onKeyDown={(e) => entreTest(e, nbGroupes)} />
-            </TdScenario>
+                <input ref={inputRef} type="number" placeholder={nbGroupes} onKeyDown={(e) => entreTest(e, nbGroupes)} />
+            </td>
         ) : (
-            <TdScenario onClick={clickTest}>
+            <td onClick={clickTest}>
                 {nbGroupes}
-            </TdScenario>
+            </td>
         )
     );
 }
-

@@ -101,14 +101,20 @@ function DetailsDepartement() {
 
 
     return (
-        <div className="departement">
-            {loadingDepartement && <Loader />}
+        <div className="page departement">
+            {loadingDepartement &&
+                <div className="loading">
+                    <Loader />
+                </div>}
             {erreurDepartement && <h1>Erreur : {erreurDepartement}</h1>}
             {departement &&
                 <>
                     <h1>{departement.nom}</h1>
-                    <div>
-                        {loadingCoordo && <Loader />}
+                    <div className="container">
+                        {loadingCoordo &&
+                            <div>
+                                <Loader />
+                            </div>}
                         {erreurCoordo && <h1>Erreur : {erreurCoordo}</h1>}
                         {coordo && <p>Coordonné par : {coordo.prenom} {coordo.nom}</p>}
 

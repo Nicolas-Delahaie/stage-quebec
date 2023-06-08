@@ -78,6 +78,42 @@ class DatabaseSeeder extends Seeder
 
 
             // TABLES AVEC 1 DEPENDANCES
+
+
+
+            // TABLES AVEC 2 DEPENDANCES
+
+
+            $departement=[
+                ["nom" => "Biologie", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Education Physique", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Analyses Biomedicales", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "GTEA", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Soins Infirmiers", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Mathémathiques", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Chimie", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Physique", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Architecture", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Genie Mecanique", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Genie Electronique", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Sciences humaines", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Philisophie", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Techniques Travail Social", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Administration", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Informatique", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Arts Visuels", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Design Interieur", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Lettres", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+                ["nom" => "Langues Modernes", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
+            ];
+            foreach($departement as $val){Departement::create($val);}
+            
+            // foreach([
+            //     ["name" => "Root","email" => "root@root.root","password" => bcrypt("root"),"statut" => "P", "type_utilisateur_id" => 1,"statut" => "P","departement_id"=>1],
+            //     ["name" => "Root2","email" => "root2@root.root","password" => bcrypt("root"), "statut" => "P", "type_utilisateur_id" => 2,"statut" => "P","departement_id"=>1],
+            //     ["name" => "Root3","email" => "root3@root.root","password" => bcrypt("root"), "statut" => "P", "type_utilisateur_id" => 3,"statut" => "P","departement_id"=>1],
+            //     ] as $val){User::create($val);}
+            // User::factory(20)->create();
             foreach([
                 ["prenom" => "Root","nom"=>"", "email" => "root@root.root","password" => bcrypt("root"),"statut" => "P","type_utilisateur_id" => 1],
                 ["prenom" => "Root2","nom"=>"","email" => "root2@root.root","password" => bcrypt("root"),"statut" => "P","type_utilisateur_id" => 2],
@@ -86,8 +122,10 @@ class DatabaseSeeder extends Seeder
                 ] as $val){User::create($val);}
             User::factory(20)->create();
 
-
-            // TABLES AVEC 2 DEPENDANCES
+            for ($i=0; $i < Departement::count();$i++){
+                Departement::where("id", $i+1)->update(["coordonnateur_id" => $i+1]);
+            }
+            
             $alouer=[];
             //Chaque prof a entre 0 et 7 liberations
             foreach (User::where("type_utilisateur_id", 3)->get() as $prof){
@@ -103,32 +141,7 @@ class DatabaseSeeder extends Seeder
                 }
             }
             foreach($alouer as $val){Alouer::create($val);}
-
-            $departement=[
-                ["nom" => "Biologie", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Education Physique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Analyses Biomedicales", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "GTEA", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Soins Infirmiers", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Mathémathiques", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Chimie", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Physique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Architecture", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Genie Mecanique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Genie Electronique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Sciences humaines", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Philisophie", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Techniques Travail Social", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Administration", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Informatique", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Arts Visuels", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Design Interieur", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Lettres", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Langues Modernes", "coordonnateur_id"=>$faker->numberBetween(1, User::count()), "nbEleves"=>$faker->numberBetween(20, 300)],
-            ];
-            foreach($departement as $val){Departement::create($val);}
             
-
             // TABLES AVEC 3 DEPENDANCES
             $cours_propose = [];
             foreach (Departement::all() as $departement) {

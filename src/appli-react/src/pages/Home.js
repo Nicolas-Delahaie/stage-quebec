@@ -33,7 +33,7 @@ function Home() {
     }
 
     return (
-        <div id="accueil">
+        <div className="page" id="accueil">
             {
                 estConnecte ?
                     <div id="authentifie">
@@ -60,7 +60,7 @@ function Home() {
                     </div>
                     :
                     <div id="nonAuthentifie">
-                        <h1 className>Présentation</h1>
+                        <h1>Présentation</h1>
                         <section>
                             <p>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -72,7 +72,7 @@ function Home() {
                             </p>
                             <img src={Repartition_plusieurs} alt="image article" />
                         </section>
-                        <h2>Fonctionnement</h2>
+                        <h1>Fonctionnement</h1>
                         <section>
                             <img src={Tableau} alt="image article" />
                             <p>

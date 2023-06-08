@@ -120,7 +120,7 @@ function Liberations() {
         }
     }
     return (
-        <div id="Liberations">
+        <div className="page" id="Liberations">
             <h1>Liberations</h1>
             <div className="container">
                 <div className="choixPersonnel">
@@ -168,33 +168,29 @@ function Liberations() {
                             </div>
                         }
                     </div>
+                    <div className="zoneAnnees">
+                        <h2>Annees</h2>
+                        <div className="gridContainer">
+                            <h3>Avant</h3>
+                            <h3>Après</h3>
+                            <div className="modifAnnee">
+                                <button onClick={() => modifAnnee("avant", -1)} className="bouton">-</button>
+                                <span> {anneesAvant} </span>
+                                <button onClick={() => modifAnnee("avant", 1)} className="bouton">+</button>
+                            </div>
+                            <div className="modifAnnee">
+                                <button onClick={() => modifAnnee("apres", -1)} className="bouton">-</button>
+                                <span> {anneesApres} </span>
+                                <button onClick={() => modifAnnee("apres", 1)} className="bouton">+</button>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
                 <div className={"zoneLiberations " + (loadingLiberations && "loading")}>
                     {loadingLiberations && <Loader />}
                     {liberations &&
-                        <>
-                            {nomSelectionnee &&
-                                <div className="divH2">
-                                    <h2>Libérations de {nomSelectionnee}</h2>
-                                </div>
-                            }
-                            <div className="zoneAnnees">
-                                <h3>Avant</h3>
-                                <h3>Après</h3>
-
-                                <div className="modifAnnee">
-                                    <button onClick={() => modifAnnee("avant", -1)} className="bouton">-</button>
-                                    <span> {anneesAvant} </span>
-                                    <button onClick={() => modifAnnee("avant", 1)} className="bouton">+</button>
-                                </div>
-                                <div className="modifAnnee">
-                                    <button onClick={() => modifAnnee("apres", -1)} className="bouton">-</button>
-                                    <span> {anneesApres} </span>
-                                    <button onClick={() => modifAnnee("apres", 1)} className="bouton">+</button>
-                                </div>
-                            </div>
-                            <TableauLiberations liberations={liberations} anneesAvant={anneesAvant} anneesApres={anneesApres} />
-                        </>
+                        <TableauLiberations liberations={liberations} anneesAvant={anneesAvant} anneesApres={anneesApres} />
                     }
                 </div>
             </div>
