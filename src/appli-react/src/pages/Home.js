@@ -1,8 +1,5 @@
 /* --------------------------------- IMPORT --------------------------------- */
 
-// FORM et LAYOUT
-import CarteAccueil from "../components/CarteAccueil"
-
 // IMAGES 
 import Repartition_plusieurs from "../assets/images/Home/Repartition_plusieurs.svg"
 import Tableau from "../assets/images/Home/Tableau.svg"
@@ -13,6 +10,7 @@ import Departements from "../assets/images/Authentifie/Departements.svg"
 // LIBRAIRIES
 import { useContext, useState, useEffect } from "react"
 import { AppContext } from "../utils/context/context"
+import { Link } from "react-router-dom"
 
 
 /* ----------------------------------- DOM ---------------------------------- */
@@ -25,23 +23,38 @@ function Home() {
         setType(getType());
     }, [])
 
+    function CarteAccueil(urlImage, titre, lien) {
+        return (
+            <Link to={lien} className="carteAccueil">
+                <img src={urlImage} alt={titre} />
+                <h2>{titre}</h2>
+            </Link>
+        )
+    }
+
     return (
         <div id="accueil">
             {
                 estConnecte ?
                     <div id="authentifie">
-                        {type === "administrateur" && <h2>Admin</h2>}
+                        {type === "administrateur" &&
+                            <>
+                                {CarteAccueil(Repartir, "Scénarios", "/scenarios")}
+                                {CarteAccueil(Departements, "Départements", "/departements")}
+                                {CarteAccueil(Calendrier, "Profil", "/profil")}
+                            </>
+                        }
                         {type === "responsable" &&
                             <>
-                                <CarteAccueil urlImage={Repartir} titre={'Voir mes scénarios'} texteBouton={'Mes scénarios'} lien={'/scenarios'} />
-                                <CarteAccueil urlImage={Calendrier} titre={'Gérer mes contraintes'} texteBouton={'Mes contraintes'} lien={'/profil'} />
-                                <CarteAccueil urlImage={Departements} titre={'Voir les départements'} texteBouton={'Les départements'} lien={'/departements/'} />
+                                {CarteAccueil(Repartir, "Scénarios", "/scenarios")}
+                                {CarteAccueil(Departements, "Départements", "/departements")}
+                                {CarteAccueil(Calendrier, "Profil", "/profil")}
                             </>
                         }
                         {type === "professeur" &&
                             <>
-                                <CarteAccueil urlImage={Repartir} titre={'Voir mes scénarios'} texteBouton={'Mes scénarios'} lien={'/scenarios'} />
-                                <CarteAccueil urlImage={Calendrier} titre={'Gérer mes contraintes'} texteBouton={'Mes contraintes'} lien={'/profil'} />
+                                {CarteAccueil(Repartir, "Scénarios", "/scenarios")}
+                                {CarteAccueil(Calendrier, "Profil", "/profil")}
                             </>
                         }
                     </div>

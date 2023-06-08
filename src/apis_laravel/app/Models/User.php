@@ -18,7 +18,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'nom',
+        'prenom',
         'email',
         'password',
         'statut',
@@ -27,22 +28,35 @@ class User extends Authenticatable
     ];
 
 
-    public function type(){
+    public function type()
+    {
         return $this->belongsTo(TypeUtilisateur::class, "type_utilisateur_id");
     }
-    public function liberations(){
+    public function liberations()
+    {
         return $this->belongsToMany(Liberation::class, "alouer", "utilisateur_id", "liberation_id")
             ->withPivot("annee", "semestre", "tempsAloue")
             ->orderBy("tempsAloue", "desc");
     }
-    public function modifications(){
+    public function modifications()
+    {
         return $this->hasMany(Modification::class, "utilisateur_id");
     }
-    public function coursEnseignes(){ 
+    public function coursEnseignes()
+    {
         return $this->belongsToMany(CoursPropose::class, 'enseigner', 'professeur_id', 'cours_propose_id');
     }
-    public function scenarios(){
+    public function scenariosCrees()
+    {
         return $this->hasMany(Scenario::class, 'proprietaire_id');
+    }
+    public function scenariosModifies()
+    {
+        return $this->hasManyThrough(Scenario::class, Modification::class, 'utilisateur_id', 'id', 'id', 'scenario_id');
+    }
+
+    public function departement(){
+        return $this->belongsTo(Departement::class, 'departement_id');
     }
 
     public function departement(){

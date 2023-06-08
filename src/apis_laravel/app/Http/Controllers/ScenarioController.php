@@ -13,6 +13,26 @@ class ScenarioController extends Controller
 {
     // ------- GET ------- /
     /**
+     * @brief Retourne tous les scenarios de maniere detaillee 
+     * @details triés par scénario validé puis par année puis par date de modification
+     */
+    public function indexDetaille()
+    {
+        return Scenario::with([
+            "proprietaire" => function ($query) {
+                $query->select('id', 'nom', 'prenom');
+            },
+            "departement" => function ($query) {
+                $query->select('id', 'nom');
+            }
+        ])
+            ->get()
+            ->sortByDesc("updated_at")
+            ->sortByDesc("annee")
+            ->sortBy("aEteValide")
+            ->values();
+    }
+    /**
      * @brief Retourne le scenario de maniere detaillee
      * @param $id : id du scenario
      * @return Scenario 
@@ -22,7 +42,7 @@ class ScenarioController extends Controller
         $scenario = Scenario::with(
             [
                 'proprietaire' => function ($query) {
-                    $query->select('id', 'name', 'email');
+                    $query->select('id', 'nom', 'prenom', 'email');
                 },
                 'departement' => function ($query) {
                     $query->select('id', 'nom');
@@ -47,7 +67,7 @@ class ScenarioController extends Controller
         $modifications = $scenario->modifications()
             ->with([
                 'user' => function ($query) {
-                    $query->select('id', 'name');
+                    $query->select('id', 'nom', 'prenom');
                 }
             ])
             ->select('id', 'date_modif', 'utilisateur_id')
@@ -87,12 +107,8 @@ class ScenarioController extends Controller
                                     $query->select('motif');
                                 },
                             ])
-                                ->select('id', 'name', 'statut');
-                        }
-                    ])
-                        ->select('id', 'cours_propose_id', 'professeur_id');
+                                ->select('id', 'nom', 'prenom');
                 }
-            ])
             ->select('id', 'id_enseigner', 'nbGroupes', 'preparation')
             ->get();
 

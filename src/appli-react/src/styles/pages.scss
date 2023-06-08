@@ -2,7 +2,6 @@
 #profil {
     display: flex;
     flex-direction: column;
-    min-height: 80vh;
 
     .infos {
         display: grid;
@@ -40,7 +39,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 80.5vh;
 
 
     form {
@@ -81,8 +79,6 @@
 
 /* -------------- PAGE LIBERATIONS -------------- */
 #Liberations {
-    min-height: 80vh;
-
     .container {
         display: grid;
         padding: 0px 15%;
@@ -160,7 +156,7 @@
         display: flex;
         align-items: center;
         justify-content: space-around;
-        min-height: 80vh;
+        height: 100%;
     }
 
     #nonAuthentifie {
@@ -187,7 +183,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 80vh;
 
     .container {
         width: 60%;
@@ -204,6 +199,26 @@
             margin-left: 1rem;
         }
     }
+
+    nav {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        width: min-content;
+
+        button {
+            margin: 0px;
+            white-space: nowrap;
+            border-radius: 0;
+        }
+
+        .premierBouton {
+            border-radius: 0;
+        }
+
+        .dernierBouton {
+            border-radius: 0;
+        }
+    }
 }
 
 // PAGE DETAILS SCENARIO
@@ -212,7 +227,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    min-height: 80.5vh;
     margin: 1rem auto;
 
 
@@ -276,7 +290,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    min-height: 80.5vh;
+    width: 100%;
     margin: 1rem auto;
 
     &>div {
@@ -305,7 +319,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    min-height: 80.5vh;
 
     &>div {
         display: flex;

@@ -110,7 +110,7 @@ function DetailsDepartement() {
                     <div>
                         {loadingCoordo && <Loader />}
                         {erreurCoordo && <h1>Erreur : {erreurCoordo}</h1>}
-                        {coordo && <p>Coordonné par : {coordo.name}</p>}
+                        {coordo && <p>Coordonné par : {coordo.prenom} {coordo.nom}</p>}
 
                         <h2>Cours proposés par le département </h2>
                         {loadingCoursProposes && <Loader />}
@@ -120,7 +120,13 @@ function DetailsDepartement() {
                                 <div id="coursProposes">
                                     {
                                         coursProposes?.map((coursPropose) => (
-                                            <CarteCours key={coursPropose.id} coursPropose={coursPropose} idDepartement={departement.id} allCours={coursProposes} setAllCours={setCoursProposes} professeursAssignables={professeursAssignables} />
+                                            <CarteCours key={coursPropose.id}
+                                                coursPropose={coursPropose}
+                                                idDepartement={departement.id}
+                                                allCours={coursProposes}
+                                                setAllCours={setCoursProposes}
+                                                professeursAssignables={professeursAssignables}
+                                            />
                                         ))
                                     }
                                 </div>

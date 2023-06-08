@@ -10,7 +10,7 @@ function Liberations() {
     const { apiAccess } = useContext(AppContext);
 
     const [departements, setDepartements] = useState(null);
-    const [enseignants, setEnseignants] = useState([{ name: "Selectionnez un departement" }]);
+    const [enseignants, setEnseignants] = useState([{ prenom: "Selectionnez un departement" }]);
     const [responsables, setResponsables] = useState(null);
     const [liberations, setLiberations] = useState(null);
     const [nomSelectionnee, setNomSelectionnee] = useState(null);
@@ -92,7 +92,7 @@ function Liberations() {
         setLoadingLiberations(false);
 
         if (rep.success) {
-            setNomSelectionnee(employer.name);
+            setNomSelectionnee(employer.prenom + " " + employer.nom);
             setLiberations(rep.datas);
         }
         else {
@@ -142,7 +142,7 @@ function Liberations() {
                                 <select onChange={(e) => getLiberations(e, "enseignant")}>
                                     {
                                         enseignants.map((enseignant, idEnseignant) => {
-                                            return <option key={enseignant.id} value={idEnseignant}>{enseignant.name}</option>
+                                            return <option key={enseignant.id} value={idEnseignant}>{enseignant.prenom} {enseignant.nom}</option>
                                         })
                                     }
                                 </select>
@@ -160,7 +160,7 @@ function Liberations() {
                                     <select onChange={(e) => getLiberations(e, "responsable")}>
                                         {
                                             responsables.map((responsable, idResponsable) => {
-                                                return <option key={responsable.id} value={idResponsable}>{responsable.name}</option>
+                                                return <option key={responsable.id} value={idResponsable}>{responsable.prenom} {responsable.nom}</option>
                                             })
                                         }
                                     </select>

@@ -36,13 +36,24 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
     }, [modifierInformations])
 
 
+    var waitingForDeleting = false;
     const validationSuppressionCours = () => {
+        if (waitingForDeleting) return;
+
+        waitingForDeleting = true;
         toast((t) => (
             <div>
                 <div>Êtes-vous sûr de vouloir supprimer le cours "{coursPropose.cours.nom}" ?</div>
                 <div className="zoneBoutons">
-                    <button className="bouton" onClick={() => toast.dismiss(t.id)}>Annuler</button>
-                    <button className="bouton" onClick={() => { toast.dismiss(t.id); supprimerCours(); }}>Confirmer</button>
+                    <button className="bouton" onClick={() => {
+                        toast.dismiss(t.id);
+                        waitingForDeleting = false;
+                    }}>Annuler</button>
+                    <button className="bouton" onClick={() => {
+                        toast.dismiss(t.id);
+                        supprimerCours();
+                        waitingForDeleting = false;
+                    }}>Confirmer</button>
                 </div>
             </div>
         ))
@@ -73,9 +84,13 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
             toast.error(<b>{erreur}</b>);
         }
     }
+    var modifying = false;
     const modifierCours = async () => {
+        if (modifying) return;
+
         // -- Envoi --
         toast.loading("Sauvegarde...");
+        modifying = true;
         const reponse = await apiAccess({
             url: `http://localhost:8000/api/cours_proposes/${coursPropose.id}`,
             method: "put",
@@ -86,6 +101,7 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
             }
         })
         toast.dismiss();
+        modifying = false;
 
         // -- Analyse --
         if (reponse.success) {
@@ -114,13 +130,13 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
             toast.error(<b>{erreur}</b>);
         }
     }
-    const validationSuppressionProf = (idProf, nomProf) => {
+    const validationSuppressionProf = (prof) => {
         toast((t) => (
             <div>
-                <div>Retirer {nomProf} de {coursPropose.cours.nom}?</div>
+                <div>Retirer {prof.prenom} {prof.nom} de {coursPropose.cours.nom}?</div>
                 <div className="zoneBoutons">
                     <button className="bouton" onClick={() => toast.dismiss(t.id)}>Annuler</button>
-                    <button className="bouton" onClick={() => { toast.dismiss(t.id); retirerProf(idProf); }}>Confirmer</button>
+                    <button className="bouton" onClick={() => { toast.dismiss(t.id); retirerProf(prof.id); }}>Confirmer</button>
                 </div>
             </div>
         ))
@@ -157,12 +173,16 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
             ;
         }
     }
+    var attributing = false;
     const attribuerProfesseurs = async (e) => {
         e.preventDefault();
-        const idProf = e.target.selectProf.value;
+
+        if (attributing) return;
 
         // -- Envoi --
+        attributing = true;
         toast.loading("Attribution du professeur...")
+        const idProf = e.target.selectProf.value;
         const rep = await apiAccess({
             url: `http://localhost:8000/api/enseigner`,
             method: "post",
@@ -171,6 +191,7 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
                 cours_propose_id: coursPropose.id
             },
         })
+        attributing = false;
         toast.dismiss();
 
         // -- Analyse --
@@ -179,8 +200,8 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
             // On modifie la ressource de la page parente
             const updatedCours = [...allCours];                 //Copie de la liste des cours
             const indexCours = allCours.findIndex(c => c.id === coursPropose.id);      //index du cours a modifier dans la liste des cours
-            const nomProf = professeursAssignables.find((prof) => prof.id == idProf).name;
-            updatedCours[indexCours].enseignants.push({ id: idProf, name: nomProf });
+            const prof = professeursAssignables.find((prof) => prof.id == idProf)
+            updatedCours[indexCours].enseignants.push({ id: idProf, nom: prof.nom, prenom: prof.prenom });
             setAllCours(updatedCours);
         }
         else {
@@ -236,16 +257,15 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
                         {
                             coursPropose.enseignants.map((professeur) =>
                                 <>
-                                    <p onClick={() => validationSuppressionProf(professeur.id, professeur.name)}>{professeur.name}</p>
-                                    {/* <button type="button" >Retirer</button> */}
-                                </>)
+                                    <p onClick={() => validationSuppressionProf(professeur)}>{professeur.prenom} {professeur.nom}</p>
+                                </>
+                            )
                         }
                         {professeursAssignables &&
-
                             <form onSubmit={attribuerProfesseurs}>
                                 <select name="selectProf">
                                     {professeursAssignables && professeursAssignables.map((prof) => (
-                                        <option key={prof.id} value={prof.id}>{prof.name}</option>
+                                        <option key={prof.id} value={prof.id}>{prof.prenom} {prof.nom}</option>
                                     ))}
                                 </select>
                                 <div className="zoneBoutons">
@@ -259,7 +279,7 @@ function CarteCours({ coursPropose, allCours, setAllCours, professeursAssignable
                     <>
                         {
                             coursPropose.enseignants.map((professeur) => (
-                                <p>{professeur.name}</p>
+                                <p>{professeur.prenom} {professeur.nom}</p>
                             ))
                         }
                         <button className="bouton" onClick={() => setModifierProfesseurs(true)}>Ajouter un professeur</button>

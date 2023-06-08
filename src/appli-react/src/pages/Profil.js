@@ -83,7 +83,7 @@ function Profil() {
                     <div className="infos">
                         <div>
                             <h2>Informations globales</h2>
-                            <p>{user.name}</p>
+                            <p>{user.prenom} {user.nom}</p>
                             <p>{user.email}</p>
                             <p>{user.type.nom}</p>
                             <h2>Contraintes</h2>

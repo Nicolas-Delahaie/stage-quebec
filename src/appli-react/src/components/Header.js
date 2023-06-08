@@ -30,21 +30,22 @@ function Header() {
             <div className="zoneBoutons">
                 {estConnecte && type === "administrateur" &&
                     <>
-                        <Link className="btnLien" to="/scenarios">Mes scénarios</Link>
+                        <Link className="btnLien" to="/scenarios">Scénarios</Link>
+                        <Link className="btnLien" to="/departements/">Départements</Link>
                         <Link className="btnLien" to="profil">Mon profil</Link>
                     </>
                 }
                 {estConnecte && type === "responsable" &&
                     <>
-                        <Link className="btnLien" to="/scenarios">Mes scénarios</Link>
-                        <Link className="btnLien" to="/profil">Mon profil</Link>
-                        <Link className="btnLien" to="/departements/">Tous les départements</Link>
+                        <Link className="btnLien" to="/scenarios">Scénarios</Link>
+                        <Link className="btnLien" to="/departements/">Départements</Link>
+                        <Link className="btnLien" to="profil">Mon profil</Link>
                     </>
                 }
                 {estConnecte && type === "professeur" &&
                     <>
-                        <Link className="btnLien" to="/scenarios">Mes scénarios</Link>
-                        <Link className="btnLien" to="/profil">Mon profil</Link>
+                        <Link className="btnLien" to="/scenarios">Scénarios</Link>
+                        <Link className="btnLien" to="profil">Mon profil</Link>
                     </>
                 }
             </div>

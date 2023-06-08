@@ -240,7 +240,6 @@ function DetailsScenario() {
      */
     const addProfesseur = (professeur) => {
         var idProfesseur = professeur.id;
-        var nomProfesseur = professeur.name;
         var liberationsProfesseur = professeur.liberations;
         var statut = professeur.statut;
         var professeurExiste = false;
@@ -254,7 +253,7 @@ function DetailsScenario() {
 
         // Si le professeur n'existe pas, on l'ajoute au tableau
         if (!professeurExiste) {
-            TbProfesseurs.push({ 'id': idProfesseur, 'nom': nomProfesseur, 'liberations': liberationsProfesseur, 'statut': statut });
+            TbProfesseurs.push({ 'id': idProfesseur, 'prenom': professeur.prenom, 'nom': professeur.nom, 'liberations': liberationsProfesseur, 'statut': statut });
         }
         trierProfesseurs();
     }
@@ -763,7 +762,7 @@ console.log(TbProfesseurs);
                                                     <H2Scenario>Nom : {scenario.departement.nom}</H2Scenario>
                                                     <H2Scenario>Annee : {scenario.annee}</H2Scenario>
                                                     <p>Date de création : {afficherDate(scenario.created_at)}</p>
-                                                    <H2Scenario>Propriétaire : {scenario.proprietaire.name}</H2Scenario>
+                                                    <H2Scenario>Propriétaire : {scenario.proprietaire.prenom} {scenario.proprietaire.nom}</H2Scenario>
                                                 </>
                                             )
                                         }
@@ -798,7 +797,7 @@ console.log(TbProfesseurs);
                                                         modifications.map((modif) => (
                                                             <div key={modif.id}>
                                                                 <p>Date de dernière modification : {modif.date_modif}</p>
-                                                                <p>Utilisateur aillant fait la modification : {modif.user.name}</p>
+                                                                <p>Utilisateur aillant fait la modification : {modif.user.prenom} {modif.user.nom}</p>
                                                             </div>
                                                         ))
                                                     }
