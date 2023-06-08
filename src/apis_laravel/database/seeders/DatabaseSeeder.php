@@ -35,8 +35,12 @@ class DatabaseSeeder extends Seeder
             // LIBERATIONS
             $liberations = [
                 ["motif" => "PVRTT"],
-                ["motif" => "Congé"],
-                ["motif" => "Gestion staiaires"],
+                ["motif" => "Coord. Dept"],
+                ["motif" => "Coord. Programme"],
+                ["motif" => "ESR"],
+                ["motif" => "Club Sécurité"],
+                ["motif" => "Recherche stages FR"],
+                ["motif" => "Élaboration SCIM"],
             ];
             foreach ($liberations as $val) {
                 Liberation::create($val);
@@ -69,7 +73,7 @@ class DatabaseSeeder extends Seeder
                 ["nom" => "Philisophie"],
                 ["nom" => "Techniques Travail Social"],
                 ["nom" => "Administration"],
-                ["nom" => "Informatique"],
+                // ["nom" => "Informatique"],
                 ["nom" => "Arts Visuels"],
                 ["nom" => "Design Interieur"],
                 ["nom" => "Lettres"],
