@@ -19,29 +19,6 @@ class ScenarioController extends Controller
     public function indexDetaille()
     {
         return Scenario::with([
-            "proprietaire" => function ($query) {
-                $query->select('id', 'nom', 'prenom');
-            },
-            "departement" => function ($query) {
-                $query->select('id', 'nom');
-            }
-        ])
-            ->get()
-            ->sortByDesc("updated_at")
-            ->sortByDesc("annee")
-            ->sortBy("aEteValide")
-            ->values();
-    }
-    /**
-     * @brief Retourne tous les scenarios de maniere detaillee 
-     * @details triés par scénario validé puis par année puis par date de modification
-     */
-    public function indexDetaille()
-    {
-        return Scenario::with([
-            "proprietaire" => function ($query) {
-                $query->select('id', 'nom', 'prenom');
-            },
             "departement" => function ($query) {
                 $query->select('id', 'nom');
             }

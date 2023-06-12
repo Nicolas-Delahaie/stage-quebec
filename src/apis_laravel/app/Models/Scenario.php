@@ -13,7 +13,6 @@ class Scenario extends Model
         'aEteValide',
         'annee',
         'semestre',
-        'proprietaire_id',
         'departement_id',
     ];
 

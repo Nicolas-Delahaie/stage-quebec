@@ -21,11 +21,6 @@ import { iconNonValide } from '../assets/svg/iconNonValide.js'
 function Scenarios() {
     const { apiAccess, getType, getEstCoordo } = useContext(AppContext);
 
-    // const [erreurContexte, setErreurContexte] = useState(null);
-    // const [isLoadingContexte, setIsLoadingContexte] = useState(false);
-    // const [isLoadingScenarios, setIsLoadingScenarios] = useState(false);
-    // const [scenariosDetailles, setScenariosDetailles] = useState(null);
-
     const [estCoordo, setEstCoordo] = useState(false);
     const [type, setType] = useState(false);
 
@@ -38,58 +33,6 @@ function Scenarios() {
 
     let urlImage = Calendrier;
     let icon = iconValide;
-
-
-    // const getScenarios = async () => {
-    //     // -- Recuperation des scenarios --
-    //     setIsLoadingContexte(true);
-    //     const rep = await apiAccess({
-    //         url: `http://localhost:8000/api/user/scenarios_crees`,
-    //         method: "get",
-    //     });
-    //     setIsLoadingContexte(false);
-
-    //     // -- Analyse --
-    //     if (rep.success) {
-    //         setScenariosDetailles([]);
-    //         console.log(rep);
-
-    //         var scenariosNonDetailles = rep.datas;
-
-    //         // -- Trie des scenarios (plus recents en premier et valides en premiers) --
-    //         scenariosNonDetailles.sort((a, b) => {
-    //             return b.annee - a.annee;
-    //         });
-    //         scenariosNonDetailles.sort((a, b) => {
-    //             return a.aEteValide - b.aEteValide;
-    //         });
-
-    //         // -- Recuperation des scenarios detailles un a un--
-    //         setIsLoadingScenarios(true);
-    //         for (let i = 0; i < rep.datas.length; i++) {
-    //             // -- Recuperation des scenarios detailles un a un--
-    //             const idScenario = scenariosNonDetailles[i].id;
-
-    //             const rep2 = await apiAccess({
-    //                 url: `http://localhost:8000/api/scenarios/${idScenario}/detaille`,
-    //                 method: "get",
-    //             });
-
-    //             // -- Analyse --
-    //             if (rep2.success) {
-    //                 // On ajoute le scenario aux autres scenarios
-    //                 setScenariosDetailles(scenariosDetailles => [...scenariosDetailles, rep2.datas]);
-    //             }
-    //             else {
-    //                 console.error("Erreur du chargement d'un des scenarios");
-    //             }
-    //         }
-    //         setIsLoadingScenarios(false);
-    //     }
-    //     else {
-    //         setErreurContexte(rep.erreur);
-    //     }
-    // };
 
 
     const getAllScenarios = async () => {
@@ -181,15 +124,17 @@ function Scenarios() {
     }, [])
 
     const renderScenario = (scenario) => {
+        console.log(scenario);
         return <CarteHorizontale
             key={scenario.id}
             urlImage={scenario.aEteValide ? Valider : Calendrier}
             titre={"Département " + scenario.departement.nom}
             lien={`/scenarios/${scenario.id}`}>
-            <p>Coordonnateur : {scenario.proprietaire.prenom} {scenario.proprietaire.nom}<br />
-                Année :{scenario.annee}<br />
-                Dernière modification : {scenario.updated_at}<br />
-                Date de création : {scenario.created_at}<br />
+            <p>
+                Session : {scenario.session}<br />
+                Année : {scenario.annee}<br />
+                Dernière modification : {new Date(scenario.updated_at).toLocaleDateString()}<br />
+                Date de création : {new Date(scenario.created_at).toLocaleDateString()}<br />
             </p>
             <div className="zoneValidation">
                 <h3>Validé par le responsable : </h3>
