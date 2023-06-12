@@ -119,106 +119,30 @@ class DatabaseSeeder extends Seeder
                 $nbCours = $faker->numberBetween(4, 10);
                 $nomsAleatoire = $faker->randomElements($nomsCours, $nbCours);
 
-            $liberation = [
-                ["motif" => "PVRTT"],
-                ["motif" => "Congé"],
-                ["motif" => "Gestion stagiaires"],
-            ];
-            foreach($liberation as $val){Liberation::create($val);}
-
-
-            // TABLES AVEC 1 DEPENDANCES
-
-
-
-            // TABLES AVEC 2 DEPENDANCES
-
-
-            $departement=[
-                ["nom" => "Biologie", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Education Physique", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Analyses Biomedicales", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "GTEA", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Soins Infirmiers", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Mathémathiques", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Chimie", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Physique", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Architecture", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Genie Mecanique", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Genie Electronique", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Sciences humaines", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Philisophie", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Techniques Travail Social", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Administration", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Informatique", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Arts Visuels", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Design Interieur", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Lettres", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-                ["nom" => "Langues Modernes", "coordonnateur_id"=>null, "nbEleves"=>$faker->numberBetween(20, 300)],
-            ];
-            foreach($departement as $val){Departement::create($val);}
-            
-            // foreach([
-            //     ["name" => "Root","email" => "root@root.root","password" => bcrypt("root"),"statut" => "P", "type_utilisateur_id" => 1,"statut" => "P","departement_id"=>1],
-            //     ["name" => "Root2","email" => "root2@root.root","password" => bcrypt("root"), "statut" => "P", "type_utilisateur_id" => 2,"statut" => "P","departement_id"=>1],
-            //     ["name" => "Root3","email" => "root3@root.root","password" => bcrypt("root"), "statut" => "P", "type_utilisateur_id" => 3,"statut" => "P","departement_id"=>1],
-            //     ] as $val){User::create($val);}
-            // User::factory(20)->create();
-            foreach([
-                ["prenom" => "Root","nom"=>"", "email" => "root@root.root","password" => bcrypt("root"),"statut" => "P","type_utilisateur_id" => 1],
-                ["prenom" => "Root2","nom"=>"","email" => "root2@root.root","password" => bcrypt("root"),"statut" => "P","type_utilisateur_id" => 2],
-                ["prenom" => "Root3","nom"=>"","email" => "root3@root.root","password" => bcrypt("root"),"statut" => "P","type_utilisateur_id" => 3, "estCoordo"=>true],
-                ["prenom" => "Root4","nom"=>"","email" => "root4@root.root","password" => bcrypt("root"),"statut" => "P","type_utilisateur_id" => 3],
-                ] as $val){User::create($val);}
-            User::factory(20)->create();
-
-            for ($i=0; $i < Departement::count();$i++){
-                Departement::where("id", $i+1)->update(["coordonnateur_id" => $i+1]);
-            }
-            
-            $alouer=[];
-            //Chaque prof a entre 0 et 7 liberations
-            foreach (User::where("type_utilisateur_id", 3)->get() as $prof){
-                $nbLiberations = $faker->numberBetween(0, 7);
-                for ($i=0; $i < $nbLiberations; $i++) {
-                    array_push($alouer, [
-                        "tempsALoue" => $faker->numberBetween(0, 1000)/1000,
-                        "annee" => rand(0,1) ? null : $faker->numberBetween(2021, 2024),
-                        "semestre" => rand(0,1) ? null : $faker->numberBetween(1, 2),
-                        "utilisateur_id" => $prof->id,
-                        "liberation_id" => $faker->numberBetween(1, Liberation::count()),
-                    ]);
+                foreach ($nomsAleatoire as $nomCours) {
+                    $cours = [];
+                    $cours["nom"] = $nomCours["nom"];
+                    $cours["nb_groupes"] = $faker->numberBetween(1, 5);
+                    $cours["taille_groupes"] = $faker->numberBetween(20, 50);
+                    $cours["ponderation"] = $faker->numberBetween(1, 4);
+                    $cours["departement_id"] = $dept->id;
+                    Cours::create($cours);
                 }
             }
-            foreach($alouer as $val){Alouer::create($val);}
-            
-            // TABLES AVEC 3 DEPENDANCES
-            $cours_propose = [];
-            foreach (Departement::all() as $departement) {
-                // -- On attribue a chaque departement entre 3 et 8 cours proposes --
 
-                // On cree un tableau de cours uniques
-                $coursProposes = [];
-                $nbCours = $faker->numberBetween(3, 8);
-                // On s'assure que les cours soient uniques
-                while (count($coursProposes) < $nbCours) {
-                    $cours = $faker->numberBetween(1, Cours::count());
-                    if (!in_array($cours, $coursProposes)){
-                        array_push($coursProposes, $cours);
-                    }
-                }
-                
-                // On ajoute les cours proposes
-                foreach ($coursProposes as $cours){
-                    array_push($cours_propose, [
-                        "cours_id" => $cours, 
-                        "departement_id" => $departement->id, 
-                        "ponderation" => $faker->numberBetween(1, 5),
-                        "tailleGroupes" => $faker->numberBetween(10, 35),
-                        "nbGroupes" => $faker->numberBetween(1, 4),
-                    ]);
-                }
-                
+            // USERS
+            $users = ([
+                ["prenom" => "Root", "type_utilisateur_id" => 1],
+                ["prenom" => "Root2", "type_utilisateur_id" => 2],
+                ["prenom" => "Root3", "type_utilisateur_id" => 3, "estCoordo" => true],
+                ["prenom" => "Root4", "type_utilisateur_id" => 3],
+            ]);
+            foreach ($users as $user) {
+                $user["nom"] = "";
+                $user["email"] = $user["prenom"] . "@root.root";
+                $user["password"] = bcrypt("root");
+                $user["statut"] = "P";
+                User::factory()->create($user);
             }
             User::factory(100)->create();
 

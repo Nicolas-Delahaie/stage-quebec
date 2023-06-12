@@ -14,10 +14,19 @@ class Cours extends Model
     protected $table = 'cours';
     protected $fillable = [
         'nom',
+        'nb_groupes',
+        'taille_groupes',
+        'ponderation',
+        'departement_id',
     ];
 
     public function departement()
     {
         return $this->belongsTo(Departement::class, 'departement_id');
+    }
+
+    public function professeurs()
+    {
+        return $this->belongsToMany(User::class, 'cours_enseigne', 'cours_id', 'user_id');
     }
 }

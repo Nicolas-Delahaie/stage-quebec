@@ -38,6 +38,7 @@ Route::get('/departements_enseignants', [DepartementController::class, 'indexWit
 Route::get('/departements/{id}', [DepartementController::class, 'show'])->middleware(['tokenBon', 'responsable']);
 Route::get('/departements/{id}/coordonnateur', [DepartementController::class, 'showCoordonnateur'])->middleware(['tokenBon', 'responsable']);
 Route::get('/departements/{id}/cours_proposes_detailles', [DepartementController::class, 'showCoursProposesDetailles'])->middleware(['tokenBon', 'responsable']);
+Route::get('/departements/{id}/professeurs', [DepartementController::class, 'showProfesseurs'])->middleware(['tokenBon', 'responsable']);
 // Route::get('/departements/{id}/cours_proposes', [DepartementController::class, 'showCoursProposes'])->middleware(['tokenBon', 'responsable']);
 // Route::get('/departements/{id}/scenarios', [DepartementController::class, 'showScenarios'])->middleware(['tokenBon', 'responsable']);
 
@@ -67,23 +68,21 @@ Route::post('/logout', [UserController::class, 'logout'])->middleware('tokenBon'
 /* -------------------------------------------------------------------------- */
 /*                               COURS PROPOSE                                */
 /* -------------------------------------------------------------------------- */
-use App\Http\Controllers\CoursProposeController;
+use App\Http\Controllers\CoursController;
 
-Route::delete('/cours_proposes/{id}', [CoursProposeController::class, 'delete'])->middleware(['tokenBon']);
-Route::put('/cours_proposes/{id}', [CoursProposeController::class, 'update'])->middleware(['tokenBon']);
-// Route::get('/cours_proposes/{id}/cours', [CoursProposeController::class, 'showCours'])->middleware(['tokenBon', 'responsable']);
-// Route::get('/cours_proposes/{id}/departement', [CoursProposeController::class, 'showDepartement'])->middleware(['tokenBon', 'responsable']);
-// Route::get('/cours_proposes/{id}/enseignants', [CoursProposeController::class, 'showEnseignants'])->middleware(['tokenBon', 'responsable']);
+Route::delete('/cours/{id}', [CoursController::class, 'delete'])->middleware(['tokenBon']);
+Route::put('/cours/{id}', [CoursController::class, 'update'])->middleware(['tokenBon']);
+// Route::get('/cours_proposes/{id}/cours', [CoursController::class, 'showCours'])->middleware(['tokenBon', 'responsable']);
+// Route::get('/cours_proposes/{id}/departement', [CoursController::class, 'showDepartement'])->middleware(['tokenBon', 'responsable']);
+// Route::get('/cours_proposes/{id}/enseignants', [CoursController::class, 'showEnseignants'])->middleware(['tokenBon', 'responsable']);
 
 
 /* -------------------------------------------------------------------------- */
 /*                                  ENSEIGNER                                 */
 /* -------------------------------------------------------------------------- */
-use App\Http\Controllers\EnseignerController;
-use App\Http\Controllers\RepartitionController;
+use App\Http\Controllers\CoursEnseigneController;
 
-Route::post('/enseigner', [EnseignerController::class, 'store'])->middleware(['tokenBon', 'responsable']);
-Route::delete('/enseigner', [EnseignerController::class, 'delete'])->middleware(['tokenBon', 'responsable']);
+Route::post('/enseigner', [CoursEnseigneController::class, 'store'])->middleware(['tokenBon', 'responsable']);
 
 
 /* -------------------------------------------------------------------------- */
@@ -107,16 +106,6 @@ Route::get('scenarios/{id}/professeurs', [ScenarioController::class, 'showProfes
 /* -------------------------------------------------------------------------- */
 Route::post('repartition/{id}', [RepartitionController::class, 'update'])->middleware(['tokenBon', 'responsable']);
 Route::delete('repartition/{id}', [RepartitionController::class, 'delete'])->middleware(['tokenBon', 'responsable']);
-
-
-/* -------------------------------------------------------------------------- */
-/*                                    COURS                                   */
-/* -------------------------------------------------------------------------- */
-use App\HTTP\Controllers\CoursController;
-// Route::get('/cours', [CoursController::class, 'index'])->middleware(['tokenBon', 'responsable']);
-// Route::get('/cours/{id}', [CoursController::class, 'show'])->middleware(['tokenBon', 'responsable']);
-// Route::get('/cours/{id}/departements', [CoursController::class, 'showDepartements'])->middleware(['tokenBon', 'responsable']);
-
 
 /* -------------------------------------------------------------------------- */
 /*                                LIBERATION                                  */

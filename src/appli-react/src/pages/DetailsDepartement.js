@@ -7,6 +7,9 @@ import { AppContext } from '../utils/context/context';
 import Loader from '../components/Loader.js';
 import CarteCours from "../components/CarteCours";
 
+//Gestion d'erreur
+import { Toaster, toast } from "react-hot-toast";
+
 
 /* ----------------------------------- DOM ---------------------------------- */
 
@@ -68,23 +71,23 @@ function DetailsDepartement() {
                 method: "get",
             });
             const resultatProfs = await apiAccess({
-                url: `http://localhost:8000/api/users`
+                url: `http://localhost:8000/api/departements/${id}/professeurs`,
             })
             setLoadingCoursProposes(false);
 
             // -- Analyses --
             if (resultatCoursProposes.success) {
-                setCoursProposes(resultatCoursProposes.datas);
+                setCoursProposes(resultatCoursProposes.datas[0].cours);
             }
             else {
                 setErreurCoursProposes(resultatCoursProposes.erreur);
             }
             if (resultatProfs.success) {
                 // On ne garde que les professeurs
-                setProfesseursAssignables(resultatProfs.datas.filter((prof) => prof.type_utilisateur_id === 3));
+                setProfesseursAssignables(resultatProfs.datas[0].professeurs);
             }
             else {
-                console.log("Impossible de recuperer les professeurs assignables aux cours")
+                toast.error("Impossible de récupérer les professeurs attribuables");
             }
 
         }
@@ -99,9 +102,9 @@ function DetailsDepartement() {
         getInfos();
     }, []);
 
-
     return (
         <div className="page departement">
+            <Toaster />
             {loadingDepartement &&
                 <div className="loading">
                     <Loader />
@@ -125,7 +128,11 @@ function DetailsDepartement() {
                             <>
                                 <div id="coursProposes">
                                     {
+                                    console.log(coursProposes)
+                                    }
+                                    {
                                         coursProposes?.map((coursPropose) => (
+                                            console.log(coursPropose),
                                             <CarteCours key={coursPropose.id}
                                                 coursPropose={coursPropose}
                                                 idDepartement={departement.id}

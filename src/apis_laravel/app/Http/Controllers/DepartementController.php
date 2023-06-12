@@ -25,7 +25,7 @@ class DepartementController extends Controller
     public function indexWithEnseignants()
     {
         return Departement::with([
-            'coursProposes.enseignants' => function ($query) {
+            'cours.enseignants' => function ($query) {
                 $query->select('users.id', 'users.nom', 'users.prenom');
             }
         ])
@@ -62,15 +62,28 @@ class DepartementController extends Controller
     public function showCoursProposesDetailles($id)
     {
         return Departement::findOrFail($id)
-            ->coursProposes()
             ->with([
-                "enseignants" => function ($query) {
-                    $query->select('users.id', 'nom', 'prenom');
-                },
                 "cours" => function ($query) {
-                    $query->select('cours.id', 'nom');
-                },
+                    $query->with([
+                        "professeurs" => function ($query) {
+                            $query->select( 'nom','prenom');
+                        }
+                    ])
+                    ->select('id', 'nom','departement_id','ponderation','taille_groupes','nb_groupes');                   
+                }
             ])
+            ->where('id', $id)
             ->get();
+    }
+    public function showProfesseurs($id){
+        return Departement::
+        with([
+            'professeurs' => function ($query) {
+                $query->select('id', 'nom', 'prenom','departement_id');
+            }
+        ])
+        ->select('id', 'nom')
+        ->where('id', $id)
+        ->get();
     }
 }
