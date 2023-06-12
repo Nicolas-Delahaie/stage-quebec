@@ -132,7 +132,7 @@ class DatabaseSeeder extends Seeder
 
             // USERS
             $users = ([
-                ["prenom" => "Root", "type_utilisateur_id" => 1],
+                ["prenom" => "Root", "type_utilisateur_id" => 1,],
                 ["prenom" => "Root2", "type_utilisateur_id" => 2],
                 ["prenom" => "Root3", "type_utilisateur_id" => 3, "estCoordo" => true],
                 ["prenom" => "Root4", "type_utilisateur_id" => 3],

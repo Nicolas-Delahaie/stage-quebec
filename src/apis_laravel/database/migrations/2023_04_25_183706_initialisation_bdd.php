@@ -35,7 +35,7 @@ return new class extends Migration {
             $table->id();
             $table->string("nom", 255);
             $table->unsignedTinyInteger("nb_groupes");
-            $table->unsignedSmallInteger("taille_groupes");
+            $table->unsignedFloat("taille_groupes");
             $table->unsignedSmallInteger("ponderation");
             $table->unsignedBigInteger("departement_id");
             $table->unique(["nom", "departement_id"]);

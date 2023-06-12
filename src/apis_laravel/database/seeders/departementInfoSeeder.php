@@ -18,27 +18,27 @@ class departementInfoSeeder extends Seeder
      */
     public function run(): void
     {
-        // TEMPORAIRES 
-        // $type_utilisateurs = [
-        //     ["nom" => "administrateur"],
-        //     ["nom" => "responsable"],
-        //     ["nom" => "professeur"]
-        // ];
-        // foreach ($type_utilisateurs as $val) {
-        //     \App\Models\TypeUtilisateur::create($val);
-        // }
-        // $liberations = [
-        //     ["motif" => "PVRTT"],
-        //     ["motif" => "Coord. Dept"],
-        //     ["motif" => "Coord. Programme"],
-        //     ["motif" => "ESR"],
-        //     ["motif" => "Club Sécurité"],
-        //     ["motif" => "Recherche stages FR"],
-        //     ["motif" => "Élaboration SCIM"],
-        // ];
-        // foreach ($liberations as $val) {
-        //     Liberation::create($val);
-        // }
+        //TEMPORAIRES 
+        $type_utilisateurs = [
+            ["nom" => "administrateur"],
+            ["nom" => "responsable"],
+            ["nom" => "professeur"]
+        ];
+        foreach ($type_utilisateurs as $val) {
+            \App\Models\TypeUtilisateur::create($val);
+        }
+        $liberations = [
+            ["motif" => "PVRTT"],
+            ["motif" => "Coord. Dept"],
+            ["motif" => "Coord. Programme"],
+            ["motif" => "ESR"],
+            ["motif" => "Club Sécurité"],
+            ["motif" => "Recherche stages FR"],
+            ["motif" => "Élaboration SCIM"],
+        ];
+        foreach ($liberations as $val) {
+            Liberation::create($val);
+        }
 
 
         // DEPARTEMENT
@@ -55,7 +55,7 @@ class departementInfoSeeder extends Seeder
             ["nom" => 'Introduction au développement web',           "nb_groupes" => 4, "taille_groupes" => 22, "ponderation" => 4],
             ["nom" => 'Algorithmie et programmation structurée',     "nb_groupes" => 4, "taille_groupes" => 19.75, "ponderation" => 6],
             ["nom" => 'Outils logiciels',                            "nb_groupes" => 1, "taille_groupes" => 12, "ponderation" => 3],
-            ["nom" => 'Introduction à la réseautique',               "nb_groupes" => 2, "taille_groupes" => 16, "ponderation" => 3],
+            ["nom" => 'Introduction à la réseautique',               "nb_groupes" => 2, "taille_groupes" => 16.50, "ponderation" => 3],
             ["nom" => 'Structure de données et algorithmie avancée', "nb_groupes" => 1, "taille_groupes" => 26, "ponderation" => 4],
             ["nom" => 'Programmation système',                       "nb_groupes" => 2, "taille_groupes" => 16, "ponderation" => 6],
             ["nom" => 'Développement web côté client',               "nb_groupes" => 2, "taille_groupes" => 14, "ponderation" => 4],
@@ -77,17 +77,17 @@ class departementInfoSeeder extends Seeder
 
         // USERS
         $users = [
-            ["prenom" => "Sandra", "nom" => "Béland", "statut" => "P"],
-            ["prenom" => "Patrick", "nom" => "McGrail", "statut" => "P"],
-            ["prenom" => "Suzette", "nom" => "Neveu", "statut" => "P"],
-            ["prenom" => "Saint-Thomas", "nom" => "Trudeau", "statut" => "P"],
-            ["prenom" => "Frederic", "nom" => "Guérin", "statut" => "P"],
-            ["prenom" => "Kati", "nom" => "Bessette", "statut" => "P"],
-            ["prenom" => "Maya", "nom" => "Bouthillier", "statut" => "TP", "estCoordo" => true],
-            ["prenom" => "Sebastien", "nom" => "Huot", "statut" => "TP"],
-            ["prenom" => "Olivier", "nom" => "Fortin", "statut" => "TP"],
-            ["prenom" => "A", "nom" => "Prof", "statut" => "TP"],
-            ["prenom" => "B", "nom" => "Prof", "statut" => "TP"],
+            ["prenom" => "Sandra", "nom" => "Béland", "statut" => "P","type_utilisateur_id" => 3],
+            ["prenom" => "Patrick", "nom" => "McGrail", "statut" => "P","type_utilisateur_id" => 3],
+            ["prenom" => "Suzette", "nom" => "Neveu", "statut" => "P","type_utilisateur_id" => 3],
+            ["prenom" => "Saint-Thomas", "nom" => "Trudeau", "statut" => "P","type_utilisateur_id" => 3],
+            ["prenom" => "Frederic", "nom" => "Guérin", "statut" => "P","type_utilisateur_id" => 3],
+            ["prenom" => "Kati", "nom" => "Bessette", "statut" => "P","type_utilisateur_id" => 3],
+            ["prenom" => "Maya", "nom" => "Bouthillier", "statut" => "TP", "estCoordo" => true,"type_utilisateur_id" => 3],
+            ["prenom" => "Sebastien", "nom" => "Huot", "statut" => "TP","type_utilisateur_id" => 3],
+            ["prenom" => "Olivier", "nom" => "Fortin", "statut" => "TP","type_utilisateur_id" => 3],
+            ["prenom" => "A", "nom" => "Prof", "statut" => "TP","type_utilisateur_id" => 3],
+            ["prenom" => "B", "nom" => "Prof", "statut" => "TP","type_utilisateur_id" => 3],
         ];
         foreach ($users as $user) {
             $user["email"] = $user["prenom"][0] . strtolower($user["nom"]) . "@gmail.com";

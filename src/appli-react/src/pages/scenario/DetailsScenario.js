@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { AppContext } from '../../utils/context/context';
 import { Toaster, toast } from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 // Composants
 import Loader from '../../components/Loader.js';
@@ -127,10 +128,10 @@ function DetailsScenario() {
      */
     const addCours = (cours) => {
         var idCours = cours.id;
-        var tailleGroupes = cours.tailleGroupes;
-        var nbGroupes = cours.nbGroupes;
+        var nomCours = cours.nom;
+        var nbGroupes = cours.nb_groupes;
+        var tailleGroupes = cours.taille_groupes;
         var ponderation = cours.ponderation;
-        var nomCours = cours.cours.nom;
         var nbEtudiantsTotal = tailleGroupes * nbGroupes;
         var coursExiste = false;
 
@@ -154,10 +155,9 @@ function DetailsScenario() {
      */
     const addRepartition = (repartition) => {
         var idRepartition = repartition.id;
-        var idCours = repartition.enseigner.cours_propose_id;
-        var idProfesseur = repartition.enseigner.professeur.id;
-        var nbGoupes = repartition.nbGroupes
-        var preparation = repartition.preparation;
+        var nbGoupes = repartition.nb_groupes
+        var idCours = repartition.cours_id;
+        var idProfesseur = repartition.user_id;
         var repartitionExiste = false;
 
         // Recherche de première occurence de la repartition
@@ -169,7 +169,7 @@ function DetailsScenario() {
 
         // Si la repartition n'existe pas, on l'ajoute au tableau
         if (!repartitionExiste) {
-            TbRepartition.push({ 'id': idRepartition, 'idCours': idCours, 'idProfesseur': idProfesseur, 'nbGroupes': nbGoupes, 'preparation': preparation });
+            TbRepartition.push({ 'id': idRepartition, 'idCours': idCours, 'idProfesseur': idProfesseur, 'nbGroupes': nbGoupes});
         }
     }
 
@@ -245,12 +245,12 @@ function DetailsScenario() {
         setIsLoadingRepartition(true);
 
         if (rep.success) {
-            setScenarioRepartition(rep.datas);
+            setScenarioRepartition(rep.datas[0]);
             setIsLoadingRepartition(false);
             setErreurRepartition(false);
         }
         else {
-            toast.error("Erreur lors du chargement de la répartition" + rep.erreur);
+            toast.error("Erreur lors du chargement de la répartition : " + rep.erreur);
             setIsLoadingRepartition(false);
             setErreurRepartition(true);
         }
@@ -283,34 +283,13 @@ function DetailsScenario() {
     })
 
     // mise en place des tableaux professeurs et cours
-    scenarioRepartition && scenarioRepartition.map((repartition) => {
+    scenarioRepartition && scenarioRepartition.cours_enseignes.map((repartition) => {
         addRepartition(repartition);
-        addCours(repartition.enseigner.cours_propose);
-        repartition.enseigner.professeur.liberations.map((liberation) => {
-            addLiberation(liberation, repartition.enseigner.professeur.id);
+        addCours(repartition.cours);
+        repartition.professeur.liberations.map((liberation) => {
+            addLiberation(liberation);
         })
     })
-
-    /* ---------------------------- AUTRES FONCTIONS ---------------------------- */
-
-    const [showInfos, setShowInfos] = useState(false);
-    const [showHistorique, setShowHistorique] = useState(false);
-
-    const toggleShowInfos = () => {
-        setShowInfos(!showInfos);
-    }
-
-    const toggleShowHistorique = () => {
-        setShowHistorique(!showHistorique);
-    }
-
-    const afficherDate = (date) => {
-        const dateTime = new Date(date);
-        const options = { weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric', second: 'numeric' };
-        const formattedDateTime = dateTime.toLocaleDateString('fr-FR', options);
-        return formattedDateTime;
-    }
-
 
     /* ----------------------------------- DOM ---------------------------------- */
 
@@ -616,10 +595,15 @@ function DetailsScenario() {
                                             <p>Une erreur est survenue lors du chargement des informations du scénario</p>
                                         ) : (
                                             <>
-                                                <h2>Nom : {scenario.departement.nom}</h2>
-                                                <h2>Annee : {scenario.annee}</h2>
-                                                <p>Date de création : {afficherDate(scenario.created_at)}</p>
-                                                <h2>Propriétaire : {scenario.proprietaire.name}</h2>
+                                                <h2>
+                                                Departement: 
+                                                    <Link className="lien" to={"/departements/" + scenario.departement.id} >
+                                                        {scenario.departement.nom}
+                                                    </Link>
+                                                </h2>
+                                                <p>Annee : {scenario.annee}</p>
+                                                <p>Session : {scenario.session}</p>
+                                                <p>Date de création : {new Date(scenario.created_at).toLocaleDateString()}</p>
                                             </>
                                         )
                                     }
@@ -650,7 +634,7 @@ function DetailsScenario() {
                                                     modifications.map((modif) => (
                                                         <div key={modif.id}>
                                                             <p>Date de dernière modification : {modif.date_modif}</p>
-                                                            <p>Utilisateur aillant fait la modification : {modif.user.name}</p>
+                                                            <p>Utilisateur aillant fait la modification : {modif.user.nom +' '+ modif.user.prenom}</p>
                                                         </div>
                                                     ))
                                                 }

@@ -15,4 +15,14 @@ class CoursEnseigne extends Model
         'cours_id',
         'user_id',
     ];
+
+    public function cours()
+    {
+        return $this->belongsTo(Cours::class, 'cours_id');
+    }
+
+    public function professeur()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

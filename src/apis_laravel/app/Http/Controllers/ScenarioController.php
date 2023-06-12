@@ -38,9 +38,6 @@ class ScenarioController extends Controller
     {
         $scenario = Scenario::with(
             [
-                'proprietaire' => function ($query) {
-                    $query->select('id', 'nom', 'prenom', 'email');
-                },
                 'departement' => function ($query) {
                     $query->select('id', 'nom');
                 }
@@ -84,36 +81,24 @@ class ScenarioController extends Controller
     public function showRepartition($id)
     {
         // Recuperation du scenario
-        $scenario = Scenario::findOrFail($id);
-
-        $repartition = $scenario->repartitions()
-            ->with([
-                'enseigner' => function ($query) {
-                    $query->with([
-                        'coursPropose' => function ($query) {
-                            $query->with([
-                                'cours' => function ($query) {
-                                    $query->select('id', 'nom');
-                                }
-                            ])
-                                ->select('id', 'tailleGroupes', 'nbGroupes', 'ponderation', 'cours_id');
-                        },
-                        'professeur' => function ($query) {
-                            $query->with([
-                                'liberations' => function ($query) {
-                                    $query->select('motif');
-                                },
-                            ])
-                                ->select('id', 'nom', 'prenom', 'statut');
-                        }
-                    ])
-                        ->select('id', 'cours_propose_id', 'professeur_id');
-                }
-            ])
-            ->select('id', 'id_enseigner', 'nbGroupes', 'preparation')
+        return Scenario::with(["coursEnseignes" => function ($query) {
+                $query->with([
+                    'professeur' => function ($query) {
+                        $query->with([
+                            'liberations' => function ($query) {
+                                $query->select('motif');
+                            }
+                        ])
+                            ->select('id', 'nom', 'prenom','statut');
+                    },
+                    'cours' => function ($query) {
+                        $query->select('id', 'nom', 'nb_groupes', 'taille_groupes', 'ponderation');
+                    }
+                ]);
+            }])
+            ->where('id', $id)
+            ->select('id')
             ->get();
-
-        return $repartition;
     }
 
     public function showProfesseurs($id){
