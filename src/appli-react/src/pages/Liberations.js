@@ -32,8 +32,8 @@ function Liberations() {
         });
 
         if (rep.success) {
-            setDepartements(rep.datas);
-            setEnseignants(rep.datas[0].enseignants);
+            setDepartements(rep.datas.departement);
+            setEnseignants(rep.datas.professeurs);
         }
         else {
             setErreurDept("Impossible de charger les professeurs : " + rep.erreur);
@@ -67,7 +67,7 @@ function Liberations() {
     const updateEnseignants = (e) => {
         const idDept = e.target.value;
         // Mise a jour des enseignants lies au departement
-        setEnseignants(departements[idDept].enseignants);
+        setEnseignants(departements[idDept].professeurs);
     }
     /**
      * @brief Charge les liberations de l employer selectionne
@@ -119,6 +119,8 @@ function Liberations() {
             }
         }
     }
+
+
     return (
         <div className="page" id="Liberations">
             <h1>Liberations</h1>
@@ -139,10 +141,17 @@ function Liberations() {
                                 </select>
 
                                 <span>Nom</span>
+
                                 <select onChange={(e) => getLiberations(e, "enseignant")}>
+                                    <option value={-1}>Selectionnez un professeur</option>
                                     {
-                                        enseignants.map((enseignant, idEnseignant) => {
-                                            return <option key={enseignant.id} value={idEnseignant}>{enseignant.prenom} {enseignant.nom}</option>
+                                        enseignants.length > 0 && enseignants.map((_, i) => {
+                                            const enseignant = enseignants[i];
+                                            return (
+                                                <option key={enseignant.id} value={i}>
+                                                    {enseignant.prenom} {enseignant.nom}
+                                                </option>
+                                            );
                                         })
                                     }
                                 </select>
