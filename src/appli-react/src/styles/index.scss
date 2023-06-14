@@ -1,0 +1,237 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital@1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans+SC&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Imprima&display=swap');
+
+:root {
+    --bleu-fonce: #00296B;
+    --bleu-moyen: #003F88;
+    --bleu-clair: #00509D;
+    --bleu-tres-clair: #E6F2FF;
+    --jaune-fonce: #FDC500;
+    --jaune-clair: #FFD500;
+    --jaune-tres-clair: #FFF2CC;
+    --blanc: #FFFFFF;
+    --noir: #000000;
+    --gris: #C4C4C4;
+    --gris-clair: #F2F2F2;
+    --vert: #00A651;
+    --rouge: #E60000;
+
+    --font-titre: 'Josefin Sans';
+    --font-sous-titre: 'Alegreya Sans SC';
+    --font-texte: 'Imprima';
+}
+
+/* --------------------------------------------- */
+/*                     GLOABL                    */
+/* --------------------------------------------- */
+// Styles globaux a toute l application
+* {
+    cursor: url("../assets/svg/cursor.svg"), auto;
+    font-family: var(--font-texte);
+    color: var(--bleu-fonce);
+    user-select: none; //Pour que le texte ne soit pas selectionnable
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.App {
+    display: grid;
+    grid-template-rows: 10vh 1fr 10vh;
+}
+
+
+/* --------------------------------------------- */
+/*             ELEMENTS HTML BASIQUES            */
+/* --------------------------------------------- */
+// Comportements par defaut des elements html
+// -- Titres -- //
+h2,
+h3,
+h4,
+h5,
+h6 {
+    width: fit-content;
+    font-family: var(--font-sous-titre);
+}
+
+h1 {
+    font-family: var(--font-titre);
+    text-align: center;
+    width: 100%;
+
+    &::after {
+        content: "";
+        display: block;
+        width: auto;
+        height: 3px;
+        background-color: var(--jaune-fonce);
+        margin: 0.5rem auto;
+    }
+}
+
+h2:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: var(--jaune-fonce);
+}
+
+// -- BOUTONS -- //
+button {
+    @extend .ModeleBouton;
+}
+
+input[type="submit"] {
+    @extend .ModeleBouton;
+}
+
+// -- INPUTS -- //
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="email"] {
+    @extend .ModeleInputsHorizontaux;
+    cursor: text;
+}
+
+select {
+    @extend .ModeleInputsHorizontaux;
+    cursor: pointer;
+}
+
+a{
+    text-decoration: none;
+    
+    &:hover{
+        cursor: pointer;
+    }
+}
+
+/* --------------------------------------------- */
+/*           MODELES (non instanciable)          */
+/* --------------------------------------------- */
+// Classe utilisables uniquement dans le scss
+.ModeleBouton {
+    background-color: var(--jaune-fonce);
+    color: var(--bleu-fonce);
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    margin: 0.3rem;
+    cursor: pointer;
+    width: fit-content;
+    transition: all 0.2s ease-in-out;
+    border: none;
+    white-space: nowrap;
+
+    &:hover {
+        box-shadow: 0px 5px 5px 0px var(--gris);
+        transform: translateY(-2px);
+        cursor: pointer;
+    }
+
+    &:active {
+        box-shadow: none;
+        transform: translateY(2px);
+    }
+}
+
+.ModeleInputsHorizontaux {
+    height: 1.5rem;
+    border: none;
+    box-shadow: 0px 5px 10px 0px var(--gris);
+    border-radius: 0.5rem;
+    padding: 0rem 0.3rem;
+    margin: 0.25rem;
+    color: var(--bleu-moyen);
+
+    &::placeholder {
+        color: var(--gris);
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+
+.ModeleLien {
+    text-decoration: none;
+    color: var(--bleu-fonce);
+    font-weight: bold;
+    margin: 0rem 0.5rem;
+    margin: 0.5rem;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+/* --------------------------------------------- */
+/*             CLASSES PERSONNALISEES            */
+/* --------------------------------------------- */
+// Classe utilisables directement dans le html
+.lienBtn {
+    @extend .ModeleLien;
+    @extend .ModeleBouton;
+}
+
+.LienSouligne {
+    @extend .ModeleLien;
+    font-size: 1.2rem;
+
+    &:after {
+        content: "";
+        display: block;
+        width: 0%;
+        height: 2px;
+        background-color: var(--jaune-fonce);
+        transition: all 0.2s ease-in-out;
+    }
+
+    &:hover {
+        &:after {
+            width: 100%;
+        }
+    }
+}
+
+.lienSimple {
+    @extend .ModeleLien;
+    margin: 0%;
+}
+
+
+
+/* --------------------------------------------- */
+/*                     LAYOUTS                   */
+/* --------------------------------------------- */
+// Classe utilisables directement dans le html
+// Tout ce qui peut aider a positionner des elements
+.centrerH {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.centrerV {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.centrer {
+    @extend .centrerH;
+    @extend .centrerV;
+}

@@ -16,10 +16,20 @@ class Modification extends Model
         'scenario_id',
     ];
 
-    public function user(){
+    protected $casts = [
+        'date_modif' => 'datetime:H:i d-m-Y ',
+    ];
+
+    public function user()
+    {
         return $this->belongsTo(User::class, "utilisateur_id");
     }
-    public function scenario(){
+    public function scenario()
+    {
         return $this->belongsTo(Scenario::class, "scenario_id");
+    }
+    public function details()
+    {
+        return $this->hasMany(DetailModification::class, "modification_id");
     }
 }

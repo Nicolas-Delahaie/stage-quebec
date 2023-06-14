@@ -1,0 +1,411 @@
+.page {
+    min-height: 75vh;
+}
+
+/* -------------- PAGE PROFIL -------------- */
+#profil {
+    .infos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin: 0 4rem;
+    }
+
+    .formContraintes {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .contraintes {
+        width: 80%;
+        cursor: text;
+        border: none;
+        box-shadow: 0px 5px 10px 0px var(--gris);
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        margin: 0.25rem 0;
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
+
+/* -------------- PAGE LOGIN -------------- */
+#login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 5px 10px 0px var(--gris);
+        border-radius: 1rem;
+        padding: 1rem 2rem;
+
+        form {
+            display: flex;
+            flex-direction: column;
+
+            .DivInput {
+                display: grid;
+                grid-template-columns: 1fr 12.5vw;
+                align-items: center;
+                margin-bottom: 0.5rem;
+
+                input[type="email"],
+                input[type="password"] {
+                    margin-left: 1rem;
+                }
+            }
+
+            .DivCheckbox {
+                display: flex;
+
+                input[type="checkbox"] {
+                    margin: 0;
+                    margin-right: 0.5rem;
+                }
+            }
+
+            .btnValider {
+                margin: 1rem 0;
+                align-self: center;
+            }
+        }
+
+    }
+
+    .ligneFormulaire {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .erreur {
+        grid-column: span 2;
+        color: var(--rouge);
+        text-align: center;
+    }
+
+    .btnValider {
+        grid-column: span 2;
+        width: 60%;
+        justify-self: center;
+    }
+}
+
+
+/* -------------- PAGE LIBERATIONS -------------- */
+#Liberations {
+    .divErreur {
+        display: flex;
+        justify-content: center;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: 40% 1fr;
+        align-items: flex-start;
+        padding: 2rem;
+
+        .choixPersonnel {
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0px 5px 10px 0px var(--gris);
+            border-radius: 1rem;
+            padding: 1rem 2rem;
+            width: 25vw;
+
+            .responsable,
+            .professeur {
+                div {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    align-items: center;
+                }
+            }
+
+            .zoneAnnees {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-start;
+
+                .gridContainer {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    align-items: center;
+                    justify-items: center;
+                    margin: 0;
+                    width: 100%;
+
+                    div {
+                        display: flex;
+                        flex-direction: column;
+                        width: min-content;
+                    }
+
+                    h3,
+                    h4 {
+                        margin: 0;
+                        align-self: center;
+                    }
+
+                    .modifAnnee {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        align-items: center;
+                        padding: 0px 1rem;
+
+                        span {
+                            margin: 0px;
+                        }
+
+                        button {
+                            margin: 0.5rem;
+                            padding: 0.25rem 0.5rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+/* -------------- PAGE ACCUEIL -------------- */
+#accueil {
+    display: flex;
+    flex-direction: column;
+
+    #authentifie {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        margin-top: 5rem;
+    }
+
+    #nonAuthentifie {
+        section {
+            padding: 1rem 3rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            justify-items: center;
+        }
+
+        h2 {
+            margin: 0rem 2rem;
+        }
+
+        img {
+            width: 40vw;
+            height: auto;
+            margin: 0 2rem;
+        }
+    }
+}
+
+
+/* -------------- SCENARIOS -------------- */
+// PAGE SCENARIOS
+#scenarios {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .filtres {
+        display: grid;
+        grid-template-columns: 1fr min-content;
+        align-items: center;
+
+        span {
+            margin-right: 10px;
+        }
+    }
+
+    .container {
+        width: 80%;
+        min-width: 400px;
+        display: flex;
+        flex-direction: column;
+
+        .zoneValidation {
+            display: flex;
+            align-items: center;
+        }
+
+        .icone {
+            margin-left: 1rem;
+        }
+    }
+
+    nav {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        width: min-content;
+        margin: 1rem 0;
+
+        button {
+            margin: 0px;
+            white-space: nowrap;
+            border-radius: 0;
+            border-collapse: collapse;
+            border: 1px solid var(--noir);
+        }
+
+        .premierBouton {
+            border-radius: 0.5rem 0 0 0.5rem;
+        }
+
+        .dernierBouton {
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        .boutonSeul {
+            border-radius: 0.5rem;
+        }
+    }
+}
+
+// PAGE DETAILS SCENARIO
+#detailsScenario {
+    display: flex;
+    flex-direction: column;
+
+    #erreur {
+        align-self: center;
+    }
+
+    #tableContainer {
+        overflow: scroll;
+        padding: 0 2rem;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        th {
+            background-color: var(--bleu-fonce);
+            color: var(--blanc);
+            padding: 0.5rem 0;
+            width: 1rem;
+            min-width: 0;
+
+            a {
+                color: var(--blanc);
+
+                writing-mode: vertical-lr;
+                text-orientation: mixed;
+            }
+
+            &:nth-child(n+6) {
+                background-color: var(--bleu-clair);
+                writing-mode: vertical-lr;
+                text-orientation: mixed;
+            }
+
+            &:nth-child(n+6) {
+                background-color: var(--bleu-clair);
+            }
+        }
+
+        tr {
+            &:hover {
+                background-color: var(--jaune-tres-clair);
+            }
+
+            .separateur {
+                background-color: var(--gris-clair);
+            }
+
+            td {
+                padding: 0;
+                width: 1rem;
+                height: 100%;
+                min-width: 0;
+                text-align: center;
+                border: 1px solid var(--gris);
+
+                &:nth-child(-n+5) {
+                    background-color: var(--gris-clair);
+                }
+
+                input {
+                    width: 100%;
+                    height: 100%;
+                    border: none;
+                    background-color: transparent;
+                    text-align: center;
+                    font-size: 1rem;
+                    font-family: var(--font-texte);
+                }
+            }
+        }
+
+    }
+
+    .details {
+        margin: 2rem 2rem;
+    }
+
+    #infos,
+    #historique {
+        padding: 0rem 2rem;
+    }
+}
+
+
+/* -------------- DEPARTEMENTS -------------- */
+// PAGE DETAILS DEPARTEMENT
+.departement {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .container {
+        align-items: flex-start;
+        margin: auto 2rem;
+
+        #coursProposes {
+            display: grid;
+            width: 100%;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-gap: 1rem;
+        }
+
+        p {
+            font-size: 1.5rem;
+            font-family: var(--font-sous-titre);
+            color: var(--bleu-fonce);
+        }
+    }
+
+}
+
+// PAGE DEPARTEMENTS
+#departements {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &>div {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 1rem;
+    }
+}
+
+// 404
+#notFound {
+    display: flex;
+    justify-content: center;
+}
