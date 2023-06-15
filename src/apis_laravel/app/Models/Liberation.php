@@ -16,6 +16,6 @@ class Liberation extends Model
 
     public function users(){
         return $this->belongsToMany(User::class, "alouer", "utilisateur_id", "liberation_id")
-            ->withPivot('tempsAloue', 'annee', 'semestre');
+            ->withPivot('temps_aloue', 'annee', 'semestre');
     }
 }

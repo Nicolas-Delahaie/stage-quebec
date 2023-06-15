@@ -81,7 +81,7 @@ class DatabaseSeeder extends Seeder
             ];
             foreach ($departements as $departement) {
                 $departement["coordonnateur_id"] = null;
-                $departement["nbEleves"] = $faker->numberBetween(20, 300);
+                $departement["nb_eleves"] = $faker->numberBetween(20, 300);
                 Departement::create($departement);
             }
 
@@ -132,7 +132,8 @@ class DatabaseSeeder extends Seeder
 
             // USERS
             $users = ([
-                ["prenom" => "Root", "type_utilisateur_id" => 1,],
+                ["prenom" => "Root", "type_utilisateur_id" => 1,
+                ],
                 ["prenom" => "Root2", "type_utilisateur_id" => 2],
                 ["prenom" => "Root3", "type_utilisateur_id" => 3, "estCoordo" => true],
                 ["prenom" => "Root4", "type_utilisateur_id" => 3],
@@ -193,7 +194,7 @@ class DatabaseSeeder extends Seeder
                 $liberations = Liberation::inRandomOrder()->limit($nbLiberations)->get();
                 foreach ($liberations as $liberation) {
                     Alouer::create([
-                        "tempsALoue" => $faker->numberBetween(0, 500) / 1000,
+                        "temps_aloue" => $faker->numberBetween(0, 500) / 1000,
                         "annee" => rand(0, 1) ? null : $faker->numberBetween(2020, 2026),
                         "semestre" => rand(0, 1) ? null : $faker->numberBetween(1, 2),
                         "utilisateur_id" => $user->id,
@@ -268,8 +269,8 @@ class DatabaseSeeder extends Seeder
                         DetailModification::create([
                             "modification_id" => $modif->id,
                             "cours_enseigne_id" => $scenario->coursEnseignes()->inRandomOrder()->first()->id,
-                            "oldValeur" => $faker->numberBetween(0, 4),
-                            "newValeur" => $faker->numberBetween(0, 4),
+                            "old_valeur" => $faker->numberBetween(0, 4),
+                            "new_valeur" => $faker->numberBetween(0, 4),
                         ]);
                     }
                 }

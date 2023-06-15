@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @todo Mettre les ondelete et onedit sur les foreign key +
- * @todo Gerer l'ordre de suppression dans le down() pour que les tables soient bien supprimees
- */
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -24,7 +20,7 @@ return new class extends Migration {
             $table->unsignedSmallInteger("annee")->nullable();
             $table->unsignedTinyInteger("semestre")->nullable();
             $table->unique(["utilisateur_id", "liberation_id", "annee", "semestre"]);
-            $table->unsignedDecimal("tempsAloue", 5, 5);
+            $table->unsignedDecimal("temps_aloue", 5, 5);
             $table->timestamps();
         });
         Schema::create("liberation", function (Blueprint $table) {
@@ -61,15 +57,15 @@ return new class extends Migration {
         });
         Schema::create("detail_modification", function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger("oldValeur")->nullable();
-            $table->unsignedTinyInteger("newValeur")->nullable();
+            $table->unsignedTinyInteger("old_valeur")->nullable();
+            $table->unsignedTinyInteger("new_valeur")->nullable();
             $table->unsignedBigInteger("cours_enseigne_id");
             $table->unsignedBigInteger("modification_id");
         });
         Schema::create("departement", function (Blueprint $table) {
             $table->id();
             $table->string("nom", 255)->unique();
-            $table->smallInteger("nbEleves");
+            $table->smallInteger("nb_eleves");
             $table->unsignedBigInteger("coordonnateur_id")->nullable();
         });
         Schema::create("scenario", function (Blueprint $table) {

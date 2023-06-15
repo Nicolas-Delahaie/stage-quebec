@@ -169,7 +169,7 @@ function DetailsScenario() {
 
         // Si la repartition n'existe pas, on l'ajoute au tableau
         if (!repartitionExiste) {
-            TbRepartition.push({ 'id': idRepartition, 'idCours': idCours, 'idProfesseur': idProfesseur, 'nbGroupes': nbGoupes});
+            TbRepartition.push({ 'id': idRepartition, 'idCours': idCours, 'idProfesseur': idProfesseur, 'nbGroupes': nbGoupes });
         }
     }
 
@@ -395,7 +395,7 @@ function DetailsScenario() {
                                                         TbProfesseurs.map((professeur) => (
                                                             professeur.liberations.map((liberationProfesseur) => (
                                                                 liberationProfesseur.motif === liberation.motif ?
-                                                                    liberationTotal += parseFloat(liberationProfesseur.pivot.tempsAloue)
+                                                                    liberationTotal += parseFloat(liberationProfesseur.pivot.temps_aloue)
                                                                     : null
                                                             ))
 
@@ -412,9 +412,9 @@ function DetailsScenario() {
                                                                     professeur.liberations.map((liberationProfesseur) => (
                                                                         liberationProfesseur.motif === liberation.motif ?
                                                                             liberationEstAffiche ? (
-                                                                                liberationTotaleProf += parseFloat(liberationProfesseur.pivot.tempsAloue))
+                                                                                liberationTotaleProf += parseFloat(liberationProfesseur.pivot.temps_aloue))
                                                                                 : (
-                                                                                    liberationTotaleProf = parseFloat(liberationProfesseur.pivot.tempsAloue),
+                                                                                    liberationTotaleProf = parseFloat(liberationProfesseur.pivot.temps_aloue),
                                                                                     liberationEstAffiche = true
                                                                                 )
                                                                             : <td key={liberation.id}></td>
@@ -474,7 +474,7 @@ function DetailsScenario() {
                                                 CITotal += parseFloat(calculCIP(TbRepartitionProfesseur)),
                                                 professeur.liberations.map((liberation) => (
                                                     // On ajoute le CI de la libération au total de CI
-                                                    CITotal += parseFloat(calculCIL(Number(liberation.pivot.tempsAloue)))
+                                                    CITotal += parseFloat(calculCIL(Number(liberation.pivot.temps_aloue)))
                                                 )),
                                                 addCI(CITotal),
                                                 // On affiche le total de CI
@@ -583,9 +583,9 @@ function DetailsScenario() {
 
                     {
                         isLoadingScenario ? (
-                                <div className="loading">
-                                    <Loader />
-                                </div>
+                            <div className="loading">
+                                <Loader />
+                            </div>
                         ) : (
 
                             <>
@@ -596,7 +596,7 @@ function DetailsScenario() {
                                         ) : (
                                             <>
                                                 <h2>
-                                                Departement: 
+                                                    Departement:
                                                     <Link className="lien" to={"/departements/" + scenario.departement.id} >
                                                         {scenario.departement.nom}
                                                     </Link>
@@ -634,7 +634,7 @@ function DetailsScenario() {
                                                     modifications.map((modif) => (
                                                         <div key={modif.id}>
                                                             <p>Date de dernière modification : {modif.date_modif}</p>
-                                                            <p>Utilisateur aillant fait la modification : {modif.user.nom +' '+ modif.user.prenom}</p>
+                                                            <p>Utilisateur aillant fait la modification : {modif.user.nom + ' ' + modif.user.prenom}</p>
                                                         </div>
                                                     ))
                                                 }

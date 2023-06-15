@@ -79,7 +79,7 @@ function TableauLiberation({ liberations, anneesAvant = 1, anneesApres = 1 }) {
                                             // Pour chaque liberation (ligne d une case)
                                             return <div key={liberation.id + liberation.pivot.annee + liberation.pivot.semestre}>
                                                 <div>
-                                                    {motifPersonnalise(liberation)} ({(liberation.pivot.tempsAloue * 100).toFixed(1)}%)
+                                                    {motifPersonnalise(liberation)} ({(liberation.pivot.temps_aloue * 100).toFixed(1)}%)
                                                 </div>
                                             </div>
                                         })}

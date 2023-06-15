@@ -111,7 +111,7 @@ function Departements() {
                             >
                                 <p>
                                     Coordonnateur : {departement.coordonnateur.prenom} {departement.coordonnateur.nom}<br />
-                                    Nombre d'étudiant : {departement.nbEleves}
+                                    Nombre d'étudiant : {departement.nb_eleves}
                                 </p>
                             </CarteHorizontale>
                         ))

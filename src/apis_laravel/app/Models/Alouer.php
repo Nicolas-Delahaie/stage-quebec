@@ -12,7 +12,7 @@ class Alouer extends Model
     protected $fillable = [
         'utilisateur_id',
         'liberation_id',
-        'tempsAloue',
+        'temp_aloue',
         'annee',
         'semestre',
     ];

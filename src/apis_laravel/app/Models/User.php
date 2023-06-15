@@ -39,8 +39,8 @@ class User extends Authenticatable
     public function liberations()
     {
         return $this->belongsToMany(Liberation::class, "alouer", "utilisateur_id", "liberation_id")
-            ->withPivot("annee", "semestre", "tempsAloue")
-            ->orderBy("tempsAloue", "desc");
+            ->withPivot("annee", "semestre", "temps_aloue")
+            ->orderBy("temps_aloue", "desc");
     }
     public function modifications()
     {
