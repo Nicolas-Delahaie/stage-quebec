@@ -3,3 +3,5 @@ src/appli-react/.gitignore
 
 src/Dockerfile
 src/docker-compose.yml
+
+*.lo1
