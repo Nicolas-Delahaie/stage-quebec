@@ -57,7 +57,7 @@ function Liberations() {
         // Recuperation des responsables
         setLoadingResponsables(true);
         const rep = await apiAccess({
-            url: "http://localhost:8000//users/{`id`}/score",
+            url: "http://localhost:8000/api/users/responsables",
         });
 // ""
 

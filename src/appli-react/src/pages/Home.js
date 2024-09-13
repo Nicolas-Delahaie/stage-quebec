@@ -41,7 +41,7 @@ function Home() {
                             <>
                                 {CarteAccueil(Repartir, "Scénarios", "/scenarios")}
                                 {CarteAccueil(Departements, "Départements", "/departements")}
-                                {CarteAccueil(Calendrier, "Profil", "/profil")}
+                                {CarteAccueil(Calendrier, "Libérations", "/liberations")}
                             </>
                         }
                         {type === "responsable" &&
