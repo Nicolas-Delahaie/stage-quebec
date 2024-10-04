@@ -1,0 +1,78 @@
+# LARAVEL : docker container run -d -p 8000:8000 --name stage_laravel -v ./apis_laravel:/app bitnami/laravel:latest
+# REACT : docker container run -d -p 3000:3000 --name mon_projet_react -v /chemin/vers/votre/projet:/app node:latest sh -c "cd /app && npm start"
+
+
+# docker-compose up pour lancer le projet
+version: '1'
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: stage_quebec
+      MYSQL_ROOT_PASSWORD: root
+
+    # volumes:
+    #   - ./mysql_datas:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:80"
+
+  # laravel:
+  #   image: bitnami/laravel:latest
+  #   build: ./apis_laravel # Chemin vers le répertoire du projet Laravel
+  #   ports:
+  #     - "8000:8000" # Port pour accéder au serveur Laravel
+  #   volumes:
+  #     - ./apis_laravel:/app # Montage du répertoire du projet Laravel dans le conteneur
+  #   depends_on:
+  #     - db
+
+  # react:
+  #   image: node:14
+  #   build: ./appli-react # Chemin vers le répertoire du projet React
+  #   ports:
+  #     - "3000:3000" # Port pour accéder au serveur de développement React
+  #   volumes:
+  #     - ./appli-react:/app # Montage du répertoire du projet React dans le conteneur
+
+##############################
+
+# version: '3'
+# services:
+#   app:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     container_name: myapp
+#     volumes:
+#       - .:/var/www
+#     ports:
+#       - "8000:9000"
+#     networks:
+#       - app-network
+#     depends_on:
+#       - db
+
+#   db:
+#     image: mysql:8.0
+#     container_name: mydb
+#     environment:
+#       MYSQL_DATABASE: mydatabase
+#       MYSQL_USER: myuser
+#       MYSQL_PASSWORD: mypassword
+#       MYSQL_ROOT_PASSWORD: myrootpassword
+#     volumes:
+#       - ./mysql_data:/var/lib/mysql
+#     ports:
+#       - "3306:3306"
+#     networks:
+#       - app-network
+
+# networks:
+#   app-network:
+#     driver: bridge
