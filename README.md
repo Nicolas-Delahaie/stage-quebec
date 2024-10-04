@@ -4,11 +4,11 @@
 
 Stage en informatique de 10 semaines au Quebec. Développement d'un outil de gestion des cours pour les professeurs. Projet de A à Z en équipe de 2.
 
-Les APIs sont gérées via Laravel et le front est développé grâce à ReactJS.
-
-La plupart des tâches du diagrammes des cas d'utilisations ont été intégrées, sauf quelques unes. Empêchant l'application d'atteindre le MVP à terme (Minimum Viable Product).
+Les cas d'utilisation ont été rédigés avec notre maitre de stage pour convenir aux besoins. Il sont trouvables dans les diagrammes des cas d'utilisations (dans docs). Ces derniers ont été intégrés, sauf quelques uns, empêchant l'application d'atteindre le MVP à terme (Minimum Viable Product).
 
 De plus, le changement majeur de la structure des données initié en fin de stage n'a pas pu être achevé. Le travail est stocké dans la branche "ModificationsBDD".
+
+Les APIs sont gérées via Laravel et le front est développé grâce à ReactJS.
 
 ## Lancement
 
@@ -22,6 +22,7 @@ La base de données peut être instanciée via la commande `docker-compose up` d
 
 ### Laravel
 
+- Se déplacer dans le dossier `laravel/`
 - Configurer le fichier .env avec les identifiants de la BDD si besoins
 - `php artisan migrate --seed` pour générer la structure et peupler la BDD
 - `php artisan serve` pour lancer le serveur
