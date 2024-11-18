@@ -12,9 +12,7 @@ Les APIs sont gérées via Laravel et le front est développé grâce à ReactJS
 
 ## Lancement
 
-Après de nombreux essais en vain, et ayant passé trop de temps dessus, j'ai abandonné la tentative d'utilisation de Docker pour lier React et Laravel. A la place, on peut l'utiliser seulement pour la base de données MySQL, avec un support phpmyadmin.
-
-A la place, on doit lancer séparément les 3 composantes de ce projet dans l'ordre suivant.
+Les 3 composantes de ce projet doivent être lancés independemment en suivant les consignes suivantes.
 
 ### Base de données
 
